@@ -1,0 +1,10 @@
+{
+  "paneAgents": {
+    "left": "Gemini",
+    "right": "Codex"
+  },
+  "leaderPane": "left",
+  "defaultTarget": "left",
+  "broadcastHeader": "BROADCAST -> ALL",
+  "enforceLeaderWait": true
+}

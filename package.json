@@ -1,0 +1,28 @@
+{
+  "name": "mcp-collaboration-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "npx tsc -p tsconfig.json && node --test dist/tests/unit/*.js dist/tests/contract/*.js",
+    "sdd:check": "npx tsc -p tsconfig.json && node dist/scripts/fixture-audit.js && node dist/scripts/mock-fixture-map.js",
+    "tui": "npx tsc -p tsconfig.json && node dist/src/tui/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.1",
+    "@types/blessed": "^0.1.27",
+    "@types/uuid": "^10.0.0",
+    "blessed": "^0.1.81",
+    "typescript": "^5.9.3",
+    "uuid": "^13.0.0",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3"
+  }
+}

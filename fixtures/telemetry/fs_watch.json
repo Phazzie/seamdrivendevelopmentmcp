@@ -1,0 +1,21 @@
+{
+  "platform": "darwin",
+  "events": [
+    {
+      "eventType": "change",
+      "filename": "probe.log",
+      "latency": 103
+    },
+    {
+      "eventType": "change",
+      "filename": "probe.log",
+      "latency": 154
+    },
+    {
+      "eventType": "rename",
+      "filename": "probe.log.1",
+      "latency": 254
+    }
+  ],
+  "timings": []
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# Purpose: enforce SDD checks before commit.
+set -e
+
+npm run sdd:check

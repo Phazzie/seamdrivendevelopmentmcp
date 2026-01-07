@@ -1,0 +1,12 @@
+{
+  "captured_at": "2026-01-05T13:30:00.000Z",
+  "messages": [
+    {
+      "id": "00000000-0000-0000-0000-000000000001",
+      "sender": "codex",
+      "content": "Hello world from fixture.",
+      "timestamp": 1700000000000,
+      "metadata": {}
+    }
+  ]
+}

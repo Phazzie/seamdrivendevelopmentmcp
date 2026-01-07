@@ -1,0 +1,15 @@
+{
+  "captured_at": "2026-01-05T15:10:31.956Z",
+  "store_path": "/Users/hbpheonix/.mcp-collaboration/store.json",
+  "store": {
+    "schemaVersion": 1,
+    "revision": 1,
+    "tasks": [],
+    "messages": [],
+    "locks": [],
+    "agents": [],
+    "audit": [],
+    "panic_mode": false,
+    "knowledge": []
+  }
+}
