@@ -20,6 +20,7 @@ import { EventStreamAdapter } from "./lib/adapters/event_stream.adapter.js";
 import { NotificationAdapter } from "./lib/adapters/notifications.adapter.js";
 import { ConfidenceAuctionAdapter } from "./lib/adapters/confidence_auction.adapter.js";
 import { MoodAdapter } from "./lib/adapters/mood.adapter.js";
+import { ArbitrationAdapter } from "./lib/adapters/arbitration.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -46,6 +47,7 @@ const eventStream = new EventStreamAdapter(store);
 const notifications = new NotificationAdapter(store);
 const confidenceAuction = new ConfidenceAuctionAdapter();
 const moods = new MoodAdapter(store);
+const arbitration = new ArbitrationAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -477,6 +479,52 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
+      // --- Arbitration ---
+      {
+        name: "get_gavel_state",
+        description: "Get the current gavel state.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
+      {
+        name: "request_gavel",
+        description: "Request human arbitration.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
+      {
+        name: "grant_gavel",
+        description: "Grant the gavel to an agent.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            targetAgentId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["targetAgentId", "agentId"]
+        }
+      },
+      {
+        name: "release_gavel",
+        description: "Release the gavel.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
       // --- Messages ---
       {
           name: "post_message",
@@ -856,6 +904,36 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const list = await moods.list({ agentId: filterAgentId, limit });
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    // --- Arbitration ---
+    if (name === "get_gavel_state") {
+        const agentId = await requireAgentId();
+        const state = await arbitration.getState();
+        await recordAudit(agentId, name, summarize(args), summarize(state));
+        return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
+    }
+
+    if (name === "request_gavel") {
+        const agentId = await requireAgentId();
+        const state = await arbitration.request(agentId);
+        await recordAudit(agentId, name, summarize(args), summarize(state));
+        return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
+    }
+
+    if (name === "grant_gavel") {
+        const targetAgentId = (args as any).targetAgentId as string;
+        const agentId = await requireAgentId();
+        const state = await arbitration.grant(targetAgentId);
+        await recordAudit(agentId, name, summarize(args), summarize(state));
+        return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
+    }
+
+    if (name === "release_gavel") {
+        const agentId = await requireAgentId();
+        const state = await arbitration.release();
+        await recordAudit(agentId, name, summarize(args), summarize(state));
+        return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
     }
 
     // --- Messages ---

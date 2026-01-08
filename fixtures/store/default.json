@@ -11,9 +11,13 @@
     "nodes": [],
     "edges": []
   },
-  "captured_at": "2026-01-08T03:30:52.497Z",
+  "captured_at": "2026-01-08T03:35:01.296Z",
   "adrs": [],
   "events": [],
   "notifications": [],
-  "moods": []
+  "moods": [],
+  "arbitration": {
+    "status": "idle",
+    "updated_at": 0
+  }
 }

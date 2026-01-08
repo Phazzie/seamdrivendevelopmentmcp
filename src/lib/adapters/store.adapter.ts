@@ -40,6 +40,7 @@ export class StoreAdapter implements IStore {
         events: [],
         notifications: [],
         moods: [],
+        arbitration: { status: "idle", updated_at: 0 },
       };
     }
 
