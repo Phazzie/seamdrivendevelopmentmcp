@@ -18,6 +18,7 @@ import { KnowledgeAdapter } from "./lib/adapters/knowledge.adapter.js";
 import { AdrAdapter } from "./lib/adapters/adr.adapter.js";
 import { EventStreamAdapter } from "./lib/adapters/event_stream.adapter.js";
 import { NotificationAdapter } from "./lib/adapters/notifications.adapter.js";
+import { ConfidenceAuctionAdapter } from "./lib/adapters/confidence_auction.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -42,6 +43,7 @@ const knowledge = new KnowledgeAdapter(store);
 const adrs = new AdrAdapter(store);
 const eventStream = new EventStreamAdapter(store);
 const notifications = new NotificationAdapter(store);
+const confidenceAuction = new ConfidenceAuctionAdapter();
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -432,6 +434,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
+      // --- Confidence Auction ---
+      {
+        name: "resolve_confidence_auction",
+        description: "Resolve confidence bids and select a winner.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            bids: { type: "array", items: { type: "object" } },
+            agentId: { type: "string" }
+          },
+          required: ["bids", "agentId"]
+        }
+      },
       // --- Messages ---
       {
           name: "post_message",
@@ -782,6 +797,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const list = await notifications.list({ limit, minPriority });
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    // --- Confidence Auction ---
+    if (name === "resolve_confidence_auction") {
+        const bids = (args as any).bids as any;
+        const agentId = await requireAgentId();
+        const result = await confidenceAuction.resolve({ bids });
+        await recordAudit(agentId, name, summarize(args), summarize(result));
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
 
     // --- Messages ---

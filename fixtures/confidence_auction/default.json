@@ -1,0 +1,50 @@
+{
+  "captured_at": "2026-01-08T03:28:12.863Z",
+  "scenarios": {
+    "basic": {
+      "input": {
+        "bids": [
+          {
+            "agentId": "codex",
+            "confidence": 0.8,
+            "rationale": "Strong implementation track record."
+          },
+          {
+            "agentId": "gemini",
+            "confidence": 0.9,
+            "rationale": "High confidence in planning."
+          },
+          {
+            "agentId": "other",
+            "confidence": 0.9,
+            "rationale": "Equivalent confidence but later bid."
+          }
+        ]
+      },
+      "expected": {
+        "winner": {
+          "agentId": "gemini",
+          "confidence": 0.9,
+          "rationale": "High confidence in planning."
+        },
+        "ranking": [
+          {
+            "agentId": "gemini",
+            "confidence": 0.9,
+            "rationale": "High confidence in planning."
+          },
+          {
+            "agentId": "other",
+            "confidence": 0.9,
+            "rationale": "Equivalent confidence but later bid."
+          },
+          {
+            "agentId": "codex",
+            "confidence": 0.8,
+            "rationale": "Strong implementation track record."
+          }
+        ]
+      }
+    }
+  }
+}

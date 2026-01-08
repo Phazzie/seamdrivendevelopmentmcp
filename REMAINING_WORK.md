@@ -14,7 +14,7 @@
     *   **Plan Decomposition (`decompose_plan`)**: Tool to parse plans into tasks (**COMPLETE**).
     *   **Task Dependency Linking (`link_tasks`)**: Adds blocking logic (**COMPLETE**).
 *   **The "Meta-Cognition" Suite**:
-    *   **Confidence Auction**: Agents bidding on tasks.
+    *   **Confidence Auction**: Agents bidding on tasks (**COMPLETE**).
     *   **Mood/Confusion Log**: Tracking agent thrashing.
     *   **Human Arbitration**: Specialized "Gavel" state.
 
