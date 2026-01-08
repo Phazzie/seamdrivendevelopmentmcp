@@ -1,4 +1,12 @@
 import { z } from "zod";
+import { KnowledgeGraphSchema } from "./knowledge.contract.js";
+
+const KnowledgeStoreSchema = z.preprocess((value) => {
+  if (Array.isArray(value)) {
+    return { nodes: [], edges: [] };
+  }
+  return value;
+}, KnowledgeGraphSchema);
 
 // --- Standard Error Envelope (From AGENTS.md) ---
 export const AppErrorCodeSchema = z.enum([
@@ -40,7 +48,7 @@ export const PersistedStoreSchema = z.object({
   agents: z.array(z.unknown()).default([]),
   audit: z.array(z.unknown()).default([]),
   panic_mode: z.boolean().default(false),
-  knowledge: z.array(z.unknown()).default([]),
+  knowledge: KnowledgeStoreSchema.default({ nodes: [], edges: [] }),
 });
 
 export type PersistedStore = z.infer<typeof PersistedStoreSchema>;

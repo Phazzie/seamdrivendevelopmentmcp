@@ -14,6 +14,7 @@ import { LockerAdapter } from "./lib/adapters/locker.adapter.js";
 import { TaskAdapter } from "./lib/adapters/tasks.adapter.js";
 import { DependencyAdapter } from "./lib/adapters/dependency.adapter.js";
 import { SchedulerAdapter } from "./lib/adapters/scheduler.adapter.js";
+import { KnowledgeAdapter } from "./lib/adapters/knowledge.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -34,6 +35,7 @@ const locker = new LockerAdapter(store);
 const tasks = new TaskAdapter(store);
 const dependencies = new DependencyAdapter(store);
 const scheduler = new SchedulerAdapter();
+const knowledge = new KnowledgeAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -280,6 +282,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             agentId: { type: "string" }
           },
           required: ["tasks", "agents", "agentId"]
+        }
+      },
+      // --- Knowledge ---
+      {
+        name: "knowledge_add_node",
+        description: "Add a node to the shared knowledge graph.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            type: { type: "string" },
+            content: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["type", "content", "agentId"]
+        }
+      },
+      {
+        name: "knowledge_link_nodes",
+        description: "Link two knowledge graph nodes.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            fromId: { type: "string" },
+            toId: { type: "string" },
+            relation: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["fromId", "toId", "relation", "agentId"]
+        }
+      },
+      {
+        name: "knowledge_query",
+        description: "Query the knowledge graph.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            type: { type: "string" },
+            text: { type: "string" },
+            relation: { type: "string" },
+            limit: { type: "number" },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
         }
       },
       // --- Messages ---
@@ -533,6 +578,34 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const agentsInput = (args as any).agents as any;
         const agentId = await requireAgentId();
         const result = await scheduler.schedule({ tasks: tasksInput, agents: agentsInput });
+        await recordAudit(agentId, name, summarize(args), summarize(result));
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+
+    // --- Knowledge ---
+    if (name === "knowledge_add_node") {
+        const type = (args as any).type as string;
+        const content = (args as any).content as string;
+        const agentId = await requireAgentId();
+        const node = await knowledge.addNode(type, content);
+        await recordAudit(agentId, name, summarize(args), summarize(node));
+        return { content: [{ type: "text", text: JSON.stringify(node, null, 2) }] };
+    }
+
+    if (name === "knowledge_link_nodes") {
+        const fromId = (args as any).fromId as string;
+        const toId = (args as any).toId as string;
+        const relation = (args as any).relation as string;
+        const agentId = await requireAgentId();
+        const edge = await knowledge.linkNodes(fromId, toId, relation);
+        await recordAudit(agentId, name, summarize(args), summarize(edge));
+        return { content: [{ type: "text", text: JSON.stringify(edge, null, 2) }] };
+    }
+
+    if (name === "knowledge_query") {
+        const agentId = await requireAgentId();
+        const { type, text, relation, limit } = args as any;
+        const result = await knowledge.query({ type, text, relation, limit });
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }

@@ -92,12 +92,13 @@ This document outlines the Seam-Driven Development path for the remaining infras
 *   **Seam:** Graph/Document Store (JSON File or SQLite).
 *   **Contract:** `contracts/knowledge.contract.ts`
     *   Methods: `addNode(type, content)`, `linkNodes(from, to, relation)`, `query(params)`.
-*   **Probe:** `probes/graph_persistence.ts`
-    *   Verifies the performance of reading/writing a large JSON graph vs a simple flat file.
+*   **Probe:** `probes/knowledge_sample.probe.ts`
+    *   Captures a sample graph fixture using the real adapter.
 *   **Mock:** `src/lib/mocks/knowledge.mock.ts`
     *   In-memory graph structure supporting queries.
 *   **Adapter:** `src/lib/adapters/knowledge.adapter.ts`
-    *   Extends the `StoreAdapter` to include a `knowledge` key in `collaboration_store.json`.
+    *   Stores `knowledge` as `{ nodes, edges }` in `store.json`.
+    *   MCP tools: `knowledge_add_node`, `knowledge_link_nodes`, `knowledge_query`.
 
 ### B. Decision Records (ADR)
 **Goal:** Immutable log of architectural decisions.

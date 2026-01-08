@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-05T15:10:31.956Z",
+  "captured_at": "2026-01-08T03:02:34.517Z",
   "store_path": "/Users/hbpheonix/.mcp-collaboration/store.json",
   "store": {
     "schemaVersion": 1,
@@ -10,6 +10,9 @@
     "agents": [],
     "audit": [],
     "panic_mode": false,
-    "knowledge": []
+    "knowledge": {
+      "nodes": [],
+      "edges": []
+    }
   }
 }
