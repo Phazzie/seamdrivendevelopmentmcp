@@ -1,0 +1,26 @@
+{
+  "captured_at": "2026-01-08T03:24:18.733Z",
+  "notifications": [
+    {
+      "id": "00000000-0000-4000-8000-000000000501",
+      "title": "Urgent review",
+      "message": "Please review the latest plan.",
+      "priority": "urgent",
+      "created_at": 1700000600002
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000502",
+      "title": "Build status",
+      "message": "CI passed.",
+      "priority": "normal",
+      "created_at": 1700000600001
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000503",
+      "title": "Heads up",
+      "message": "New task assigned.",
+      "priority": "high",
+      "created_at": 1700000600000
+    }
+  ]
+}

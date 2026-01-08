@@ -17,6 +17,7 @@ import { SchedulerAdapter } from "./lib/adapters/scheduler.adapter.js";
 import { KnowledgeAdapter } from "./lib/adapters/knowledge.adapter.js";
 import { AdrAdapter } from "./lib/adapters/adr.adapter.js";
 import { EventStreamAdapter } from "./lib/adapters/event_stream.adapter.js";
+import { NotificationAdapter } from "./lib/adapters/notifications.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -40,6 +41,7 @@ const scheduler = new SchedulerAdapter();
 const knowledge = new KnowledgeAdapter(store);
 const adrs = new AdrAdapter(store);
 const eventStream = new EventStreamAdapter(store);
+const notifications = new NotificationAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -402,6 +404,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
+      // --- Notifications ---
+      {
+        name: "send_notification",
+        description: "Send a priority notification.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            message: { type: "string" },
+            priority: { type: "string", enum: ["low", "normal", "high", "urgent"] },
+            agentId: { type: "string" }
+          },
+          required: ["title", "message", "agentId"]
+        }
+      },
+      {
+        name: "list_notifications",
+        description: "List notifications ordered by priority.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            limit: { type: "number" },
+            minPriority: { type: "string", enum: ["low", "normal", "high", "urgent"] },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
       // --- Messages ---
       {
           name: "post_message",
@@ -733,6 +763,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const result = await eventStream.waitForEvents({ limit, type, since, timeoutMs });
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+
+    // --- Notifications ---
+    if (name === "send_notification") {
+        const title = (args as any).title as string;
+        const message = (args as any).message as string;
+        const priority = (args as any).priority as any;
+        const agentId = await requireAgentId();
+        const notification = await notifications.send({ title, message, priority });
+        await recordAudit(agentId, name, summarize(args), summarize(notification));
+        return { content: [{ type: "text", text: JSON.stringify(notification, null, 2) }] };
+    }
+
+    if (name === "list_notifications") {
+        const agentId = await requireAgentId();
+        const { limit, minPriority } = args as any;
+        const list = await notifications.list({ limit, minPriority });
+        await recordAudit(agentId, name, summarize(args), summarize(list));
+        return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Messages ---

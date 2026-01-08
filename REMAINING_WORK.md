@@ -21,7 +21,7 @@
 *   **The "Communication" Suite**:
     *   **Discussion Channels**: Channelized messaging via `channelId`/`threadId` (**COMPLETE**).
     *   **Real-Time Event Stream**: Agents subscribe to event updates (**COMPLETE**).
-    *   **Priority Notifications**: Urgent review interrupts.
+    *   **Priority Notifications**: Urgent review interrupts (**COMPLETE**).
 
 ## 3. Maintenance & Improvements
 *   **Security Fix**: 1 High Severity vulnerability in `@modelcontextprotocol/sdk` (ReDoS) needs monitoring.

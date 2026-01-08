@@ -38,6 +38,7 @@ export class StoreAdapter implements IStore {
         knowledge: { nodes: [], edges: [] },
         adrs: [],
         events: [],
+        notifications: [],
       };
     }
 

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { KnowledgeGraphSchema } from "./knowledge.contract.js";
 import { AdrSchema } from "./adr.contract.js";
 import { EventSchema } from "./event_stream.contract.js";
+import { NotificationSchema } from "./notifications.contract.js";
 
 const KnowledgeStoreSchema = z.preprocess((value) => {
   if (Array.isArray(value)) {
@@ -53,6 +54,7 @@ export const PersistedStoreSchema = z.object({
   knowledge: KnowledgeStoreSchema.default({ nodes: [], edges: [] }),
   adrs: z.array(AdrSchema).default([]),
   events: z.array(EventSchema).default([]),
+  notifications: z.array(NotificationSchema).default([]),
 });
 
 export type PersistedStore = z.infer<typeof PersistedStoreSchema>;

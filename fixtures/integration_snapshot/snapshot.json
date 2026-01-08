@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-08T03:17:30.537Z",
+  "captured_at": "2026-01-08T03:22:52.504Z",
   "store_path": "/Users/hbpheonix/.mcp-collaboration/store.json",
   "store": {
     "schemaVersion": 1,
@@ -15,6 +15,7 @@
       "edges": []
     },
     "adrs": [],
-    "events": []
+    "events": [],
+    "notifications": []
   }
 }
