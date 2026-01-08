@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-01-08T03:41:07.265Z",
+  "gates": [
+    {
+      "id": "00000000-0000-4000-8000-000000000701",
+      "planId": "plan-001",
+      "status": "pending",
+      "plan": "## Plan\n- [ ] Task A\n",
+      "created_at": 1700000900000,
+      "updated_at": 1700000900000
+    }
+  ]
+}

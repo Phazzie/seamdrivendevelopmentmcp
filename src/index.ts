@@ -21,6 +21,7 @@ import { NotificationAdapter } from "./lib/adapters/notifications.adapter.js";
 import { ConfidenceAuctionAdapter } from "./lib/adapters/confidence_auction.adapter.js";
 import { MoodAdapter } from "./lib/adapters/mood.adapter.js";
 import { ArbitrationAdapter } from "./lib/adapters/arbitration.adapter.js";
+import { ReviewGateAdapter } from "./lib/adapters/review_gate.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -48,6 +49,7 @@ const notifications = new NotificationAdapter(store);
 const confidenceAuction = new ConfidenceAuctionAdapter();
 const moods = new MoodAdapter(store);
 const arbitration = new ArbitrationAdapter(store);
+const reviewGates = new ReviewGateAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -525,6 +527,69 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
+      // --- Review Gate ---
+      {
+        name: "submit_plan",
+        description: "Submit a plan for critique.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            planId: { type: "string" },
+            plan: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["planId", "plan", "agentId"]
+        }
+      },
+      {
+        name: "submit_critique",
+        description: "Submit a critique for a plan.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            planId: { type: "string" },
+            critique: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["planId", "critique", "agentId"]
+        }
+      },
+      {
+        name: "approve_plan",
+        description: "Approve a plan after critique.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            planId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["planId", "agentId"]
+        }
+      },
+      {
+        name: "get_review_gate",
+        description: "Get review gate status for a plan.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            planId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["planId", "agentId"]
+        }
+      },
+      {
+        name: "list_review_gates",
+        description: "List review gates by status.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            status: { type: "string", enum: ["pending", "critique_submitted", "approved"] },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
       // --- Messages ---
       {
           name: "post_message",
@@ -934,6 +999,49 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const state = await arbitration.release();
         await recordAudit(agentId, name, summarize(args), summarize(state));
         return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
+    }
+
+    // --- Review Gate ---
+    if (name === "submit_plan") {
+        const planId = (args as any).planId as string;
+        const plan = (args as any).plan as string;
+        const agentId = await requireAgentId();
+        const gate = await reviewGates.submitPlan(planId, plan);
+        await recordAudit(agentId, name, summarize(args), summarize(gate));
+        return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
+    }
+
+    if (name === "submit_critique") {
+        const planId = (args as any).planId as string;
+        const critique = (args as any).critique as string;
+        const agentId = await requireAgentId();
+        const gate = await reviewGates.submitCritique(planId, critique);
+        await recordAudit(agentId, name, summarize(args), summarize(gate));
+        return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
+    }
+
+    if (name === "approve_plan") {
+        const planId = (args as any).planId as string;
+        const agentId = await requireAgentId();
+        const gate = await reviewGates.approvePlan(planId);
+        await recordAudit(agentId, name, summarize(args), summarize(gate));
+        return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
+    }
+
+    if (name === "get_review_gate") {
+        const planId = (args as any).planId as string;
+        const agentId = await requireAgentId();
+        const gate = await reviewGates.getGate(planId);
+        await recordAudit(agentId, name, summarize(args), summarize(gate));
+        return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
+    }
+
+    if (name === "list_review_gates") {
+        const status = (args as any).status as any;
+        const agentId = await requireAgentId();
+        const list = await reviewGates.list(status);
+        await recordAudit(agentId, name, summarize(args), summarize(list));
+        return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Messages ---

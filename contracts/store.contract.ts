@@ -5,6 +5,7 @@ import { EventSchema } from "./event_stream.contract.js";
 import { NotificationSchema } from "./notifications.contract.js";
 import { MoodEntrySchema } from "./mood.contract.js";
 import { GavelStateSchema } from "./arbitration.contract.js";
+import { ReviewGateSchema } from "./review_gate.contract.js";
 
 const KnowledgeStoreSchema = z.preprocess((value) => {
   if (Array.isArray(value)) {
@@ -59,6 +60,7 @@ export const PersistedStoreSchema = z.object({
   notifications: z.array(NotificationSchema).default([]),
   moods: z.array(MoodEntrySchema).default([]),
   arbitration: GavelStateSchema.default({ status: "idle", updated_at: 0 }),
+  review_gates: z.array(ReviewGateSchema).default([]),
 });
 
 export type PersistedStore = z.infer<typeof PersistedStoreSchema>;

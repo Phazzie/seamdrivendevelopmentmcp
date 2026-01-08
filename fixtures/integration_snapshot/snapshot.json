@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-08T03:35:01.297Z",
+  "captured_at": "2026-01-08T03:39:27.332Z",
   "store_path": "/Users/hbpheonix/.mcp-collaboration/store.json",
   "store": {
     "schemaVersion": 1,
@@ -21,6 +21,7 @@
     "arbitration": {
       "status": "idle",
       "updated_at": 0
-    }
+    },
+    "review_gates": []
   }
 }

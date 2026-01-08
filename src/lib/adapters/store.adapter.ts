@@ -41,6 +41,7 @@ export class StoreAdapter implements IStore {
         notifications: [],
         moods: [],
         arbitration: { status: "idle", updated_at: 0 },
+        review_gates: [],
       };
     }
 

@@ -17,6 +17,7 @@
     *   **Confidence Auction**: Agents bidding on tasks (**COMPLETE**).
     *   **Mood/Confusion Log**: Tracking agent thrashing (**COMPLETE**).
     *   **Human Arbitration**: Specialized "Gavel" state (**COMPLETE**).
+    *   **Devil's Advocate Gate**: Critique required before approval (**COMPLETE**).
 
 *   **The "Communication" Suite**:
     *   **Discussion Channels**: Channelized messaging via `channelId`/`threadId` (**COMPLETE**).
