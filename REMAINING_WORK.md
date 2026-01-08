@@ -9,7 +9,7 @@
     *   **Shared Knowledge Graph**: Persistent repository for project insights/jargon.
     *   **Decision Records (ADR)**: Immutable logs for technical decisions.
 *   **The "Management" Suite**:
-    *   **Work Distribution (`divvy_work`)**: Tool to split plans into sub-tasks and assign to agents.
+    *   **Work Distribution (`divvy_work`)**: Tool to split plans into sub-tasks and assign to agents (**COMPLETE**).
     *   **Plan Builder (`build_plan`)**: Converts structured input into canonical Markdown (**COMPLETE**).
     *   **Plan Decomposition (`decompose_plan`)**: Tool to parse plans into tasks (**COMPLETE**).
     *   **Task Dependency Linking (`link_tasks`)**: Adds blocking logic (**COMPLETE**).

@@ -13,6 +13,7 @@ import { StoreAdapter } from "./lib/adapters/store.adapter.js";
 import { LockerAdapter } from "./lib/adapters/locker.adapter.js";
 import { TaskAdapter } from "./lib/adapters/tasks.adapter.js";
 import { DependencyAdapter } from "./lib/adapters/dependency.adapter.js";
+import { SchedulerAdapter } from "./lib/adapters/scheduler.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -32,6 +33,7 @@ const store = new StoreAdapter(STORE_PATH);
 const locker = new LockerAdapter(store);
 const tasks = new TaskAdapter(store);
 const dependencies = new DependencyAdapter(store);
+const scheduler = new SchedulerAdapter();
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -264,6 +266,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             agentId: { type: "string" }
           },
           required: ["agentId"]
+        }
+      },
+      // --- Scheduler ---
+      {
+        name: "divvy_work",
+        description: "Assign unassigned tasks to agents based on role and availability.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            tasks: { type: "array", items: { type: "object" } },
+            agents: { type: "array", items: { type: "object" } },
+            agentId: { type: "string" }
+          },
+          required: ["tasks", "agents", "agentId"]
         }
       },
       // --- Messages ---
@@ -509,6 +525,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const list = await dependencies.listActionable(status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    // --- Scheduler ---
+    if (name === "divvy_work") {
+        const tasksInput = (args as any).tasks as any;
+        const agentsInput = (args as any).agents as any;
+        const agentId = await requireAgentId();
+        const result = await scheduler.schedule({ tasks: tasksInput, agents: agentsInput });
+        await recordAudit(agentId, name, summarize(args), summarize(result));
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
 
     // --- Messages ---

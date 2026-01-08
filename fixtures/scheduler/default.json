@@ -1,0 +1,67 @@
+{
+  "captured_at": "2026-01-08T02:56:27.582Z",
+  "scenarios": {
+    "basic": {
+      "input": {
+        "tasks": [
+          {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Implement API",
+            "description": "Implement the core API surface.",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1700000200000,
+            "updated_at": 1700000200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Review PR",
+            "description": "Review changes for correctness.",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1700000200001,
+            "updated_at": 1700000200001
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Refactor docs",
+            "description": "Update the docs for clarity.",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1700000200002,
+            "updated_at": 1700000200002
+          }
+        ],
+        "agents": [
+          {
+            "agentId": "agent-leader",
+            "role": "leader",
+            "capacity": 1,
+            "currentLoad": 0
+          },
+          {
+            "agentId": "agent-follower",
+            "role": "follower",
+            "capacity": 1,
+            "currentLoad": 0
+          }
+        ]
+      },
+      "expected": {
+        "assignments": [
+          {
+            "taskId": "00000000-0000-4000-8000-000000000101",
+            "agentId": "agent-leader"
+          },
+          {
+            "taskId": "00000000-0000-4000-8000-000000000102",
+            "agentId": "agent-follower"
+          }
+        ],
+        "unassigned": [
+          "00000000-0000-4000-8000-000000000103"
+        ]
+      }
+    }
+  }
+}

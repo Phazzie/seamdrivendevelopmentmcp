@@ -1,0 +1,6 @@
+{
+  "captured_at": "2026-01-08T02:56:40.659Z",
+  "os": "darwin",
+  "node": "v23.8.0",
+  "note": "Scheduler is pure logic; fixture scenarios define expected behavior."
+}

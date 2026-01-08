@@ -67,10 +67,11 @@ This document outlines the Seam-Driven Development path for the remaining infras
 *   **Seam:** Scheduling Logic (Pure Function).
 *   **Contract:** `contracts/scheduler.contract.ts`
     *   Input: `UnassignedTasks[]`, `AgentAvailability`.
-    *   Output: `Assignments` (TaskId -> AgentId).
+    *   Output: `Assignments` (TaskId -> AgentId), `Unassigned[]`.
 *   **Mock:** `src/lib/mocks/scheduler.mock.ts`.
 *   **Adapter:** `src/lib/adapters/scheduler.adapter.ts`
     *   Implements the logic: "If task is 'Review', assign to Follower. If 'Implement', assign to Leader."
+    *   MCP tool: `divvy_work` (pure logic; does not mutate store).
 
 ### D. Dependency Manager (`link_tasks`)
 **Goal:** Block tasks until prerequisites are met to prevent agents from working out of order.
