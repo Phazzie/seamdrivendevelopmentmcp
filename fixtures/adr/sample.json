@@ -1,0 +1,21 @@
+{
+  "captured_at": "2026-01-08T03:07:14.043Z",
+  "adrs": [
+    {
+      "id": "00000000-0000-4000-8000-000000000301",
+      "title": "Adopt SDD",
+      "status": "accepted",
+      "context": "We need a predictable development process.",
+      "decision": "Use seam-driven development for new features.",
+      "created_at": 1700000400000
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000302",
+      "title": "Persist knowledge in store",
+      "status": "proposed",
+      "context": "Knowledge should survive restarts.",
+      "decision": "Store knowledge graph in store.json for v1.",
+      "created_at": 1700000400001
+    }
+  ]
+}

@@ -15,6 +15,7 @@ import { TaskAdapter } from "./lib/adapters/tasks.adapter.js";
 import { DependencyAdapter } from "./lib/adapters/dependency.adapter.js";
 import { SchedulerAdapter } from "./lib/adapters/scheduler.adapter.js";
 import { KnowledgeAdapter } from "./lib/adapters/knowledge.adapter.js";
+import { AdrAdapter } from "./lib/adapters/adr.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -36,6 +37,7 @@ const tasks = new TaskAdapter(store);
 const dependencies = new DependencyAdapter(store);
 const scheduler = new SchedulerAdapter();
 const knowledge = new KnowledgeAdapter(store);
+const adrs = new AdrAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -327,6 +329,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
+      // --- ADRs ---
+      {
+        name: "create_adr",
+        description: "Create a new ADR entry.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            status: { type: "string", enum: ["proposed", "accepted"] },
+            context: { type: "string" },
+            decision: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["title", "context", "decision", "agentId"]
+        }
+      },
+      {
+        name: "list_adrs",
+        description: "List ADR entries.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            status: { type: "string", enum: ["proposed", "accepted"] },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
       // --- Messages ---
       {
           name: "post_message",
@@ -608,6 +638,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const result = await knowledge.query({ type, text, relation, limit });
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+
+    // --- ADRs ---
+    if (name === "create_adr") {
+        const title = (args as any).title as string;
+        const status = (args as any).status as any;
+        const context = (args as any).context as string;
+        const decision = (args as any).decision as string;
+        const agentId = await requireAgentId();
+        const entry = await adrs.create({ title, status, context, decision });
+        await recordAudit(agentId, name, summarize(args), summarize(entry));
+        return { content: [{ type: "text", text: JSON.stringify(entry, null, 2) }] };
+    }
+
+    if (name === "list_adrs") {
+        const status = (args as any).status as any;
+        const agentId = await requireAgentId();
+        const list = await adrs.list(status);
+        await recordAudit(agentId, name, summarize(args), summarize(list));
+        return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Messages ---

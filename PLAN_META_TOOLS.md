@@ -105,7 +105,8 @@ This document outlines the Seam-Driven Development path for the remaining infras
 *   **Seam:** Append-Only Log (Store).
 *   **Contract:** `contracts/adr.contract.ts`
     *   Schema: `id`, `title`, `status` (proposed/accepted), `context`, `decision`.
-*   **Probe:** `probes/immutability_check.ts`
-    *   Verifies that we can efficiently append to a list without reading the entire history (if utilizing a separate file) or optimizing the Store read.
+*   **Probe:** `probes/adr_sample.probe.ts`
+    *   Captures ADR fixtures via the real adapter.
 *   **Mock:** `src/lib/mocks/adr.mock.ts`.
 *   **Adapter:** `src/lib/adapters/adr.adapter.ts`.
+    *   MCP tools: `create_adr`, `list_adrs`.

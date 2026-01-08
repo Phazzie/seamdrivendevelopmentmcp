@@ -7,7 +7,7 @@
 ## 2. Advanced Features (From Spec)
 *   **The "Intelligence" Suite**:
     *   **Shared Knowledge Graph**: Persistent repository for project insights/jargon (**COMPLETE**).
-    *   **Decision Records (ADR)**: Immutable logs for technical decisions.
+    *   **Decision Records (ADR)**: Immutable logs for technical decisions (**COMPLETE**).
 *   **The "Management" Suite**:
     *   **Work Distribution (`divvy_work`)**: Tool to split plans into sub-tasks and assign to agents (**COMPLETE**).
     *   **Plan Builder (`build_plan`)**: Converts structured input into canonical Markdown (**COMPLETE**).

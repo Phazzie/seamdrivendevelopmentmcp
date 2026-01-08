@@ -36,6 +36,7 @@ export class StoreAdapter implements IStore {
         audit: [],
         panic_mode: false,
         knowledge: { nodes: [], edges: [] },
+        adrs: [],
       };
     }
 

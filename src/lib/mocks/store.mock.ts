@@ -17,6 +17,7 @@ function loadDefaultState(): PersistedStore {
       audit: [],
       panic_mode: false,
       knowledge: { nodes: [], edges: [] },
+      adrs: [],
     };
   }
   const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
