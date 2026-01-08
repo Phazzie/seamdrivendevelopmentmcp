@@ -1,5 +1,13 @@
 import { randomUUID } from "crypto";
-import type { IMessageBridge, Message, UpdateEvent } from "../../../contracts/messages.contract.js";
+import {
+  IMessageBridge,
+  Message,
+  MessageListOptions,
+  MessageListOptionsSchema,
+  MessagePostOptions,
+  MessagePostOptionsSchema,
+  UpdateEvent,
+} from "../../../contracts/messages.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
 import type { IStore, PersistedStore } from "../../../contracts/store.contract.js";
 import { runTransaction } from "../helpers/store.helper.js";
@@ -11,17 +19,26 @@ export class MessageAdapter implements IMessageBridge {
     this.store = store;
   }
 
-  async post(sender: string, content: string, metadata?: Record<string, any>): Promise<Message> {
+  async post(sender: string, content: string, options: MessagePostOptions = {}): Promise<Message> {
+    const parsed = MessagePostOptionsSchema.safeParse(options ?? {});
+    if (!parsed.success) {
+      throw new AppError("VALIDATION_FAILED", "Invalid message options.", {
+        issues: parsed.error.issues,
+      });
+    }
+
     return runTransaction(this.store, (current) => {
       const msg: Message = {
         id: randomUUID(),
         sender,
         content,
         timestamp: Date.now(),
-        metadata
+        channelId: parsed.data.channelId ?? "general",
+        threadId: parsed.data.threadId,
+        metadata: parsed.data.metadata
       };
       
-      const messages = (current.messages as Message[]) || [];
+      const messages = normalizeMessages((current.messages as MessageRecord[]) || []);
       return {
         nextState: { ...current, messages: [...messages, msg] },
         result: msg
@@ -29,10 +46,25 @@ export class MessageAdapter implements IMessageBridge {
     });
   }
 
-  async list(limit: number = 50): Promise<Message[]> {
+  async list(options: MessageListOptions = {}): Promise<Message[]> {
+    const parsed = MessageListOptionsSchema.safeParse(options ?? {});
+    if (!parsed.success) {
+      throw new AppError("VALIDATION_FAILED", "Invalid message list options.", {
+        issues: parsed.error.issues,
+      });
+    }
+
     const current = await this.store.load();
-    const messages = (current.messages as Message[]) || [];
-    return messages.slice(-limit);
+    const messages = normalizeMessages((current.messages as MessageRecord[]) || []);
+    let filtered = messages;
+    if (parsed.data.channelId) {
+      filtered = filtered.filter((message) => message.channelId === parsed.data.channelId);
+    }
+    if (parsed.data.threadId) {
+      filtered = filtered.filter((message) => message.threadId === parsed.data.threadId);
+    }
+    const limit = parsed.data.limit ?? 50;
+    return filtered.slice(-limit);
   }
 
   async waitForUpdate(sinceRevision: number, timeoutMs: number = 1000): Promise<UpdateEvent | null> {
@@ -66,4 +98,13 @@ export class MessageAdapter implements IMessageBridge {
       this.store.on('change', listener);
     });
   }
+}
+
+type MessageRecord = Message & { channelId?: string };
+
+function normalizeMessages(messages: MessageRecord[]): Message[] {
+  return messages.map((message) => ({
+    ...message,
+    channelId: message.channelId ?? "general",
+  }));
 }

@@ -95,7 +95,7 @@ export class TuiDataAdapter implements ITuiDataClient {
   }
 
   async getChatHistory(): Promise<TuiChatMessage[]> {
-    const messages = await this.messageBridge.list(this.messageLimit);
+    const messages = await this.messageBridge.list({ limit: this.messageLimit });
     return messages.flatMap((message) => this.mapMessage(message));
   }
 
@@ -114,7 +114,9 @@ export class TuiDataAdapter implements ITuiDataClient {
     try {
       switch (command.type) {
         case "send_message":
-          await this.messageBridge.post("User", command.message.content, this.buildMetadata(command));
+          await this.messageBridge.post("User", command.message.content, {
+            metadata: this.buildMetadata(command),
+          });
           this.lastCommand = { status: "healthy", lastResult: "success" };
           return { ok: true };
         case "set_target":

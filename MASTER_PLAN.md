@@ -75,7 +75,7 @@ A safety mechanism to freeze all operations in case of anomalies.
     *   **Benefit:** Prevents out-of-order execution.
 
 ### The "Communication" Suite
-*   **Discussion Channels:** Dedicated tools for brainstorming.
+*   **Discussion Channels:** Dedicated tools for brainstorming (implemented via `Message.channelId`/`threadId`).
 *   **Real-Time Event Stream:** Allows agents to subscribe to specific events.
 *   **Priority Notifications:** Interrupts for urgent reviews.
 

@@ -1,7 +1,13 @@
 import { EventEmitter } from "events";
 import fs from "fs";
 import path from "path";
-import type { IMessageBridge, Message, UpdateEvent } from "../../../contracts/messages.contract.js";
+import type {
+  IMessageBridge,
+  Message,
+  MessageListOptions,
+  MessagePostOptions,
+  UpdateEvent,
+} from "../../../contracts/messages.contract.js";
 
 const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "messages", "sample.json");
 const BASE_TIME = 1700000003000;
@@ -27,7 +33,12 @@ export class MockMessageBridge implements IMessageBridge {
 
   constructor() {
     const fixture = loadFixture();
-    this.messages = fixture.messages ? [...fixture.messages] : [];
+    this.messages = fixture.messages
+      ? fixture.messages.map((message) => ({
+        ...message,
+        channelId: message.channelId ?? "general",
+      }))
+      : [];
     this.currentRevision = typeof fixture.revision === "number" ? fixture.revision : 1;
     const timestamps = this.messages.map((msg) => msg.timestamp);
     const maxTime = timestamps.length ? Math.max(...timestamps) : BASE_TIME;
@@ -35,12 +46,17 @@ export class MockMessageBridge implements IMessageBridge {
     this.idIndex = 1;
   }
 
-  async post(sender: string, content: string, metadata?: Record<string, any>): Promise<Message> {
+  async post(sender: string, content: string, options: MessagePostOptions = {}): Promise<Message> {
+    const channelId = options.channelId ?? "general";
+    const threadId = options.threadId;
+    const metadata = options.metadata;
     const msg: Message = {
       id: this.nextId(),
       sender,
       content,
       timestamp: this.nextTime(),
+      channelId,
+      threadId,
       metadata
     };
     this.messages.push(msg);
@@ -49,8 +65,16 @@ export class MockMessageBridge implements IMessageBridge {
     return msg;
   }
 
-  async list(limit: number = 50): Promise<Message[]> {
-    return this.messages.slice(-limit);
+  async list(options: MessageListOptions = {}): Promise<Message[]> {
+    let filtered = this.messages;
+    if (options.channelId) {
+      filtered = filtered.filter((message) => message.channelId === options.channelId);
+    }
+    if (options.threadId) {
+      filtered = filtered.filter((message) => message.threadId === options.threadId);
+    }
+    const limit = options.limit ?? 50;
+    return filtered.slice(-limit);
   }
 
   async waitForUpdate(sinceRevision: number, timeoutMs: number = 1000): Promise<UpdateEvent | null> {

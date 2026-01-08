@@ -54,6 +54,14 @@ export function runMessageContractTests(createBridge: () => Promise<IMessageBrid
       assert.ok(list.find((msg) => msg.content === "hello"));
     });
 
+    it("should filter messages by channel", async () => {
+      await bridge.post("codex", "general message");
+      await bridge.post("codex", "ops message", { channelId: "ops" });
+      const list = await bridge.list({ channelId: "ops" });
+      assert.ok(list.every((msg) => msg.channelId === "ops"));
+      assert.ok(list.find((msg) => msg.content === "ops message"));
+    });
+
     it("should wait for update (async)", async () => {
       const fixtureRevision = loadFixtureRevision();
       const sinceRevision = typeof fixtureRevision === "number" ? fixtureRevision : 1;

@@ -367,6 +367,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                   content: { type: "string" },
                   sender: { type: "string" }, // Ideally inferred
                   metadata: { type: "object" },
+                  channelId: { type: "string" },
+                  threadId: { type: "string" },
                   agentId: { type: "string" }
               },
               required: ["content", "sender", "agentId"]
@@ -379,6 +381,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "object",
               properties: {
                   limit: { type: "number", default: 50 },
+                  channelId: { type: "string" },
+                  threadId: { type: "string" },
                   agentId: { type: "string" }
               },
               required: ["agentId"]
@@ -665,16 +669,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const content = (args as any).content as string;
         const sender = (args as any).sender as string;
         const metadata = (args as any).metadata as any;
+        const channelId = (args as any).channelId as string | undefined;
+        const threadId = (args as any).threadId as string | undefined;
         const agentId = await requireAgentId();
-        const msg = await messages.post(sender, content, metadata);
+        const msg = await messages.post(sender, content, { metadata, channelId, threadId });
         await recordAudit(agentId, name, summarize(args), summarize(msg));
         return { content: [{ type: "text", text: JSON.stringify(msg, null, 2) }] };
     }
 
     if (name === "list_messages") {
         const limit = (args as any).limit || 50;
+        const channelId = (args as any).channelId as string | undefined;
+        const threadId = (args as any).threadId as string | undefined;
         const agentId = await requireAgentId();
-        const list = await messages.list(limit);
+        const list = await messages.list({ limit, channelId, threadId });
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }

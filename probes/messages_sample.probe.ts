@@ -17,7 +17,7 @@ async function main() {
     const messages = new MessageAdapter(store);
 
     await messages.post("codex", "Probe hello");
-    await messages.post("gemini", "Probe response", { channel: "probe" });
+    await messages.post("gemini", "Probe response", { channelId: "probe" });
 
     const list = await messages.list();
     const current = await store.load();

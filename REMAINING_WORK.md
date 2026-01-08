@@ -18,6 +18,11 @@
     *   **Mood/Confusion Log**: Tracking agent thrashing.
     *   **Human Arbitration**: Specialized "Gavel" state.
 
+*   **The "Communication" Suite**:
+    *   **Discussion Channels**: Channelized messaging via `channelId`/`threadId` (**COMPLETE**).
+    *   **Real-Time Event Stream**: Agents subscribe to event updates.
+    *   **Priority Notifications**: Urgent review interrupts.
+
 ## 3. Maintenance & Improvements
 *   **Security Fix**: 1 High Severity vulnerability in `@modelcontextprotocol/sdk` (ReDoS) needs monitoring.
 

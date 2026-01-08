@@ -30,6 +30,7 @@ function toMessages(history: TuiChatMessage[]): Message[] {
     sender: entry.author,
     content: entry.content,
     timestamp: entry.timestamp,
+    channelId: "general",
     metadata: {
       target: entry.target,
       role: entry.role,
