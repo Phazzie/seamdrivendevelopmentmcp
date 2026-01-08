@@ -16,11 +16,12 @@ export class TaskAdapter implements ITaskRegistry {
         description,
         status: "todo",
         assignee,
+        blockedBy: [],
         created_at: now,
         updated_at: now
       };
 
-      const tasks = (current.tasks as Task[]) || [];
+      const tasks = normalizeTasks((current.tasks as TaskRecord[]) || []);
       
       return {
         nextState: { ...current, tasks: [...tasks, task] },
@@ -31,7 +32,7 @@ export class TaskAdapter implements ITaskRegistry {
 
   async updateStatus(id: string, status: TaskStatus): Promise<Task> {
     return runTransaction(this.store, (current) => {
-      const tasks = (current.tasks as Task[]) || [];
+      const tasks = normalizeTasks((current.tasks as TaskRecord[]) || []);
       const index = tasks.findIndex(t => t.id === id);
       
       if (index === -1) {
@@ -56,10 +57,19 @@ export class TaskAdapter implements ITaskRegistry {
 
   async list(status?: TaskStatus): Promise<Task[]> {
     const current = await this.store.load();
-    const tasks = (current.tasks as Task[]) || [];
+    const tasks = normalizeTasks((current.tasks as TaskRecord[]) || []);
     if (status) {
       return tasks.filter(t => t.status === status);
     }
     return tasks;
   }
+}
+
+type TaskRecord = Task & { blockedBy?: string[] };
+
+function normalizeTasks(tasks: TaskRecord[]): Task[] {
+  return tasks.map((task) => ({
+    ...task,
+    blockedBy: Array.isArray(task.blockedBy) ? task.blockedBy : [],
+  }));
 }

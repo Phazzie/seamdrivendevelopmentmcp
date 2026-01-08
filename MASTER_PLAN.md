@@ -69,6 +69,10 @@ A safety mechanism to freeze all operations in case of anomalies.
     *   **Goal:** Automatically split a large plan/task into sub-tasks.
     *   **Function:** Assign specific sub-tasks to specific agents based on strengths/availability.
     *   **Benefit:** Enables true parallel execution.
+*   **Dependency Manager (`link_tasks`):**
+    *   **Goal:** Block tasks until prerequisites are complete.
+    *   **Function:** Add/remove dependencies and list actionable tasks.
+    *   **Benefit:** Prevents out-of-order execution.
 
 ### The "Communication" Suite
 *   **Discussion Channels:** Dedicated tools for brainstorming.

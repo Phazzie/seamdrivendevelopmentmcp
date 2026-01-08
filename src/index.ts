@@ -12,6 +12,7 @@ import fs from "fs";
 import { StoreAdapter } from "./lib/adapters/store.adapter.js";
 import { LockerAdapter } from "./lib/adapters/locker.adapter.js";
 import { TaskAdapter } from "./lib/adapters/tasks.adapter.js";
+import { DependencyAdapter } from "./lib/adapters/dependency.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -30,6 +31,7 @@ if (!fs.existsSync(storeDir)) {
 const store = new StoreAdapter(STORE_PATH);
 const locker = new LockerAdapter(store);
 const tasks = new TaskAdapter(store);
+const dependencies = new DependencyAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -212,6 +214,57 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               },
               required: ["agentId"]
           }
+      },
+      // --- Dependencies ---
+      {
+        name: "add_dependency",
+        description: "Add a prerequisite relationship between tasks.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            childId: { type: "string" },
+            parentId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["childId", "parentId", "agentId"]
+        }
+      },
+      {
+        name: "remove_dependency",
+        description: "Remove a prerequisite relationship between tasks.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            childId: { type: "string" },
+            parentId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["childId", "parentId", "agentId"]
+        }
+      },
+      {
+        name: "get_dependencies",
+        description: "Get dependencies for a task.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            taskId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["taskId", "agentId"]
+        }
+      },
+      {
+        name: "list_actionable_tasks",
+        description: "List tasks whose dependencies are complete.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            status: { type: "string", enum: ["todo", "in_progress", "review_pending", "done"] },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
       },
       // --- Messages ---
       {
@@ -419,6 +472,41 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const status = (args as any).status as any;
         const agentId = await requireAgentId();
         const list = await tasks.list(status);
+        await recordAudit(agentId, name, summarize(args), summarize(list));
+        return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    // --- Dependencies ---
+    if (name === "add_dependency") {
+        const childId = (args as any).childId as string;
+        const parentId = (args as any).parentId as string;
+        const agentId = await requireAgentId();
+        const task = await dependencies.addDependency(childId, parentId);
+        await recordAudit(agentId, name, summarize(args), summarize(task));
+        return { content: [{ type: "text", text: JSON.stringify(task, null, 2) }] };
+    }
+
+    if (name === "remove_dependency") {
+        const childId = (args as any).childId as string;
+        const parentId = (args as any).parentId as string;
+        const agentId = await requireAgentId();
+        const task = await dependencies.removeDependency(childId, parentId);
+        await recordAudit(agentId, name, summarize(args), summarize(task));
+        return { content: [{ type: "text", text: JSON.stringify(task, null, 2) }] };
+    }
+
+    if (name === "get_dependencies") {
+        const taskId = (args as any).taskId as string;
+        const agentId = await requireAgentId();
+        const info = await dependencies.getDependencies(taskId);
+        await recordAudit(agentId, name, summarize(args), summarize(info));
+        return { content: [{ type: "text", text: JSON.stringify(info, null, 2) }] };
+    }
+
+    if (name === "list_actionable_tasks") {
+        const status = (args as any).status as any;
+        const agentId = await requireAgentId();
+        const list = await dependencies.listActionable(status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }

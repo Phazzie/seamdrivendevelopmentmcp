@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-08T02:04:52.000Z",
+  "captured_at": "2026-01-08T02:50:03.903Z",
   "scenarios": {
     "basic": {
       "input": {
@@ -14,7 +14,8 @@
             "description": "Section Header",
             "status": "todo",
             "created_at": 1700000000000,
-            "updated_at": 1700000000000
+            "updated_at": 1700000000000,
+            "blockedBy": []
           },
           {
             "id": "00000000-0000-4000-8000-000000000002",
@@ -22,7 +23,8 @@
             "description": "From: Phase 1: Setup",
             "status": "todo",
             "created_at": 1700000000001,
-            "updated_at": 1700000000001
+            "updated_at": 1700000000001,
+            "blockedBy": []
           },
           {
             "id": "00000000-0000-4000-8000-000000000003",
@@ -30,7 +32,8 @@
             "description": "From: Phase 1: Setup",
             "status": "todo",
             "created_at": 1700000000002,
-            "updated_at": 1700000000002
+            "updated_at": 1700000000002,
+            "blockedBy": []
           },
           {
             "id": "00000000-0000-4000-8000-000000000004",
@@ -38,7 +41,8 @@
             "description": "Section Header",
             "status": "todo",
             "created_at": 1700000000003,
-            "updated_at": 1700000000003
+            "updated_at": 1700000000003,
+            "blockedBy": []
           },
           {
             "id": "00000000-0000-4000-8000-000000000005",
@@ -46,7 +50,8 @@
             "description": "From: Phase 2: CLI",
             "status": "todo",
             "created_at": 1700000000004,
-            "updated_at": 1700000000004
+            "updated_at": 1700000000004,
+            "blockedBy": []
           },
           {
             "id": "00000000-0000-4000-8000-000000000006",
@@ -54,7 +59,8 @@
             "description": "From: Phase 2: CLI",
             "status": "todo",
             "created_at": 1700000000005,
-            "updated_at": 1700000000005
+            "updated_at": 1700000000005,
+            "blockedBy": []
           },
           {
             "id": "00000000-0000-4000-8000-000000000007",
@@ -62,7 +68,8 @@
             "description": "From: Phase 2: CLI",
             "status": "todo",
             "created_at": 1700000000006,
-            "updated_at": 1700000000006
+            "updated_at": 1700000000006,
+            "blockedBy": []
           },
           {
             "id": "00000000-0000-4000-8000-000000000008",
@@ -70,7 +77,8 @@
             "description": "From: Phase 2: CLI",
             "status": "todo",
             "created_at": 1700000000007,
-            "updated_at": 1700000000007
+            "updated_at": 1700000000007,
+            "blockedBy": []
           }
         ]
       }

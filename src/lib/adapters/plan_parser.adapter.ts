@@ -56,6 +56,7 @@ function createTask(title: string, description: string): Task {
     title,
     description,
     status: "todo",
+    blockedBy: [],
     created_at: now,
     updated_at: now,
   };

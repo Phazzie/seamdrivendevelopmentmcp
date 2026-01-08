@@ -76,10 +76,11 @@ This document outlines the Seam-Driven Development path for the remaining infras
 **Goal:** Block tasks until prerequisites are met to prevent agents from working out of order.
 *   **Seam:** Graph State (Store).
 *   **Contract:** `contracts/dependency.contract.ts`
-    *   Methods: `addDependency(childId, parentId)`, `getActionableTasks()`.
+    *   Methods: `addDependency(childId, parentId)`, `removeDependency(childId, parentId)`, `getDependencies(taskId)`, `listActionable(status?)`.
 *   **Mock:** `src/lib/mocks/dependency.mock.ts`.
 *   **Adapter:** `src/lib/adapters/dependency.adapter.ts`
     *   Updates the `Task` schema to include `blockedBy: uuid[]`.
+    *   MCP tools: `add_dependency`, `remove_dependency`, `get_dependencies`, `list_actionable_tasks`.
 
 ---
 

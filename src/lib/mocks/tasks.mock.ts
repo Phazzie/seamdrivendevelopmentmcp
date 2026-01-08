@@ -15,7 +15,11 @@ function loadFixtureTasks(): Task[] {
   if (!fs.existsSync(FIXTURE_PATH)) return [];
   const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
   const parsed = JSON.parse(raw) as TaskFixture;
-  return Array.isArray(parsed.tasks) ? parsed.tasks : [];
+  const tasks = Array.isArray(parsed.tasks) ? parsed.tasks : [];
+  return tasks.map((task) => ({
+    ...task,
+    blockedBy: Array.isArray(task.blockedBy) ? task.blockedBy : [],
+  }));
 }
 
 export class MockTaskRegistry implements ITaskRegistry {
@@ -38,6 +42,7 @@ export class MockTaskRegistry implements ITaskRegistry {
       description,
       status: "todo",
       assignee,
+      blockedBy: [],
       created_at: this.nextTime(),
       updated_at: this.nextTime()
     };

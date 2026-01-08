@@ -12,7 +12,7 @@
     *   **Work Distribution (`divvy_work`)**: Tool to split plans into sub-tasks and assign to agents.
     *   **Plan Builder (`build_plan`)**: Converts structured input into canonical Markdown (**COMPLETE**).
     *   **Plan Decomposition (`decompose_plan`)**: Tool to parse plans into tasks (**COMPLETE**).
-    *   **Task Dependency Linking (`link_tasks`)**: Adds blocking logic.
+    *   **Task Dependency Linking (`link_tasks`)**: Adds blocking logic (**COMPLETE**).
 *   **The "Meta-Cognition" Suite**:
     *   **Confidence Auction**: Agents bidding on tasks.
     *   **Mood/Confusion Log**: Tracking agent thrashing.

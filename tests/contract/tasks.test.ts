@@ -28,6 +28,7 @@ export function runTaskContractTests(createRegistry: () => Promise<ITaskRegistry
       assert.strictEqual(list.length, fixtureTasks.length);
       if (fixtureTasks.length) {
         assert.strictEqual(list[0].id, fixtureTasks[0].id);
+        assert.ok(Array.isArray(list[0].blockedBy));
       }
     });
 
@@ -35,6 +36,7 @@ export function runTaskContractTests(createRegistry: () => Promise<ITaskRegistry
       const task = await tasks.create("Fix Bug", "Null pointer in auth");
       assert.strictEqual(task.title, "Fix Bug");
       assert.strictEqual(task.status, "todo");
+      assert.deepStrictEqual(task.blockedBy, []);
       assert.ok(task.id);
       assert.ok(task.created_at);
     });

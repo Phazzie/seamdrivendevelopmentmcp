@@ -15,6 +15,7 @@ export const TaskSchema = z.object({
   description: z.string(),
   status: TaskStatusSchema,
   assignee: z.string().optional(),
+  blockedBy: z.array(z.string().uuid()).default([]),
   created_at: z.number(),
   updated_at: z.number(),
 });
