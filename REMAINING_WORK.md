@@ -20,7 +20,7 @@
 
 *   **The "Communication" Suite**:
     *   **Discussion Channels**: Channelized messaging via `channelId`/`threadId` (**COMPLETE**).
-    *   **Real-Time Event Stream**: Agents subscribe to event updates.
+    *   **Real-Time Event Stream**: Agents subscribe to event updates (**COMPLETE**).
     *   **Priority Notifications**: Urgent review interrupts.
 
 ## 3. Maintenance & Improvements

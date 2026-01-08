@@ -16,6 +16,7 @@ import { DependencyAdapter } from "./lib/adapters/dependency.adapter.js";
 import { SchedulerAdapter } from "./lib/adapters/scheduler.adapter.js";
 import { KnowledgeAdapter } from "./lib/adapters/knowledge.adapter.js";
 import { AdrAdapter } from "./lib/adapters/adr.adapter.js";
+import { EventStreamAdapter } from "./lib/adapters/event_stream.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -38,6 +39,7 @@ const dependencies = new DependencyAdapter(store);
 const scheduler = new SchedulerAdapter();
 const knowledge = new KnowledgeAdapter(store);
 const adrs = new AdrAdapter(store);
+const eventStream = new EventStreamAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -357,6 +359,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
+      // --- Event Stream ---
+      {
+        name: "publish_event",
+        description: "Publish an event to the event stream.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            type: { type: "string" },
+            data: { type: "object" },
+            agentId: { type: "string" }
+          },
+          required: ["type", "agentId"]
+        }
+      },
+      {
+        name: "get_recent_events",
+        description: "List recent events from the event stream.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            limit: { type: "number" },
+            type: { type: "string" },
+            since: { type: "number" },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
+      {
+        name: "subscribe_to_events",
+        description: "Wait for new events matching the filters.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            limit: { type: "number" },
+            type: { type: "string" },
+            since: { type: "number" },
+            timeoutMs: { type: "number" },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
       // --- Messages ---
       {
           name: "post_message",
@@ -662,6 +707,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const list = await adrs.list(status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    // --- Event Stream ---
+    if (name === "publish_event") {
+        const type = (args as any).type as string;
+        const data = (args as any).data as any;
+        const agentId = await requireAgentId();
+        const event = await eventStream.publish({ type, data });
+        await recordAudit(agentId, name, summarize(args), summarize(event));
+        return { content: [{ type: "text", text: JSON.stringify(event, null, 2) }] };
+    }
+
+    if (name === "get_recent_events") {
+        const agentId = await requireAgentId();
+        const { limit, type, since } = args as any;
+        const list = await eventStream.list({ limit, type, since });
+        await recordAudit(agentId, name, summarize(args), summarize(list));
+        return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    if (name === "subscribe_to_events") {
+        const agentId = await requireAgentId();
+        const { limit, type, since, timeoutMs } = args as any;
+        const result = await eventStream.waitForEvents({ limit, type, since, timeoutMs });
+        await recordAudit(agentId, name, summarize(args), summarize(result));
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
 
     // --- Messages ---

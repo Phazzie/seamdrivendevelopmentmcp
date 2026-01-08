@@ -37,6 +37,7 @@ export class StoreAdapter implements IStore {
         panic_mode: false,
         knowledge: { nodes: [], edges: [] },
         adrs: [],
+        events: [],
       };
     }
 
