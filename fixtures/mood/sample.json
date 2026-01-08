@@ -1,0 +1,19 @@
+{
+  "captured_at": "2026-01-08T03:32:08.645Z",
+  "entries": [
+    {
+      "id": "00000000-0000-4000-8000-000000000601",
+      "agentId": "codex",
+      "mood": "focused",
+      "note": "Deep in implementation.",
+      "timestamp": 1700000700000
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000602",
+      "agentId": "gemini",
+      "mood": "confused",
+      "note": "Need clarity on requirements.",
+      "timestamp": 1700000700001
+    }
+  ]
+}

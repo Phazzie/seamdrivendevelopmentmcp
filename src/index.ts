@@ -19,6 +19,7 @@ import { AdrAdapter } from "./lib/adapters/adr.adapter.js";
 import { EventStreamAdapter } from "./lib/adapters/event_stream.adapter.js";
 import { NotificationAdapter } from "./lib/adapters/notifications.adapter.js";
 import { ConfidenceAuctionAdapter } from "./lib/adapters/confidence_auction.adapter.js";
+import { MoodAdapter } from "./lib/adapters/mood.adapter.js";
 import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
@@ -44,6 +45,7 @@ const adrs = new AdrAdapter(store);
 const eventStream = new EventStreamAdapter(store);
 const notifications = new NotificationAdapter(store);
 const confidenceAuction = new ConfidenceAuctionAdapter();
+const moods = new MoodAdapter(store);
 const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
@@ -447,6 +449,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["bids", "agentId"]
         }
       },
+      // --- Mood Log ---
+      {
+        name: "log_mood",
+        description: "Log a mood entry for an agent.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            mood: { type: "string" },
+            note: { type: "string" },
+            subjectAgentId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["mood", "agentId"]
+        }
+      },
+      {
+        name: "list_moods",
+        description: "List mood entries.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            limit: { type: "number" },
+            filterAgentId: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
       // --- Messages ---
       {
           name: "post_message",
@@ -806,6 +836,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const result = await confidenceAuction.resolve({ bids });
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+
+    // --- Mood Log ---
+    if (name === "log_mood") {
+        const mood = (args as any).mood as string;
+        const note = (args as any).note as string | undefined;
+        const subjectAgentId = (args as any).subjectAgentId as string | undefined;
+        const agentId = await requireAgentId();
+        const entry = await moods.log({ agentId: subjectAgentId ?? agentId, mood, note });
+        await recordAudit(agentId, name, summarize(args), summarize(entry));
+        return { content: [{ type: "text", text: JSON.stringify(entry, null, 2) }] };
+    }
+
+    if (name === "list_moods") {
+        const limit = (args as any).limit as number | undefined;
+        const filterAgentId = (args as any).filterAgentId as string | undefined;
+        const agentId = await requireAgentId();
+        const list = await moods.list({ agentId: filterAgentId, limit });
+        await recordAudit(agentId, name, summarize(args), summarize(list));
+        return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Messages ---

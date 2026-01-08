@@ -39,6 +39,7 @@ export class StoreAdapter implements IStore {
         adrs: [],
         events: [],
         notifications: [],
+        moods: [],
       };
     }
 
