@@ -1,0 +1,17 @@
+{
+  "platform": "darwin",
+  "scenarios": [
+    {
+      "name": "success",
+      "code": 0,
+      "stdout": "hello world",
+      "stderr": ""
+    },
+    {
+      "name": "fail",
+      "code": 1,
+      "stdout": "",
+      "stderr": "ls: /non-existent-directory-gemini-test: No such file or directory"
+    }
+  ]
+}

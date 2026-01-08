@@ -1,5 +1,158 @@
 # Mission Control Handoff Log
 
+## 2026-01-07 (Codex)
+
+### 1) Current State
+- Repo: `/Users/hbpheonix/mcp-collaboration-server`
+- TUI cockpit implemented with telemetry, target switching, and CLI.
+- New Planning tools: `build_plan` (JSON -> Markdown) and `decompose_plan` (Markdown -> Task[] JSON).
+- Docs: `MASTER_PLAN.md`, `PLAN_META_TOOLS.md`, `REMAINING_WORK.md` exist and are partially updated.
+- Outstanding: full-roadmap plan sent to Gemini for critique; waiting on review before proceeding.
+
+### 2) Key Seams Completed
+- `build_plan` seam (contract/probe/fixture/mock/adapter/tests + CLI).
+- `decompose_plan` seam (contract/probe/fixture/mock/adapter/tests + CLI).
+- `probe_runner` and `scaffolder` seams added by Gemini.
+
+### 3) How to Run
+- TUI: `npm run tui`
+- Build plan: `npm run build-plan -- --input plan.json --output plan.md`
+- Decompose plan: `npm run decompose-plan -- --input plan.md`
+- Scaffold seam: `npm run scaffold -- --seam my_seam`
+
+### 4) Tests Run
+- `npx tsc -p tsconfig.json`
+- `node --test dist/tests/contract/plan_parser.test.js`
+- `node --test dist/tests/contract/build_plan.test.js`
+
+### 5) Known Gaps / Risks
+- Probes for plan tools are currently self-fulfilling (probe logic mirrors adapter); fixtures may not catch logic errors.
+- `build_plan` probe uses local types instead of importing contract (probe compilation constraints).
+- No round-trip test yet (build_plan -> decompose_plan).
+- Many files are uncommitted and include doc archiving + new seams; review before commit.
+
+### 6) Git State Snapshot
+- There are uncommitted changes (new seams, archived docs, updated CLI bindings, etc.).
+- Before committing, verify: `git status -sb` and review new files.
+
+### 7) Full Roadmap Plan (Granular)
+Phase 0: Preflight + Hygiene
+- Verify fixture freshness or document waivers.
+- Baseline tests: `npx tsc -p tsconfig.json`, `npm test`.
+- Confirm tool names and schema naming to prevent churn.
+- Create MCP tasks per seam.
+
+Phase 1: Meta-Tools
+1) run_probe
+- Contract: `contracts/probe_runner.contract.ts`
+- Probe + fixture: `probes/probe_runner.probe.ts` -> `fixtures/probe_runner/*.json`
+- Mock: `src/lib/mocks/probe_runner.mock.ts`
+- Tests: `tests/contract/probe_runner.test.ts`
+- Adapter: `src/lib/adapters/probe_runner.adapter.ts`
+- CLI: `src/tools/probes.ts` + `npm run probes`
+- MCP tool registration in `src/index.ts`
+
+2) scaffold_seam
+- Verify contract/probe/fixture/mock/test/adapter + CLI (`src/tools/scaffold.ts`) are documented and stable.
+
+Phase 2: Planning Suite
+3) build_plan (DONE)
+- Contract: `contracts/build_plan.contract.ts`
+- Probe + fixture: `probes/build_plan.probe.ts`, `fixtures/build_plan/default.json`
+- Mock: `src/lib/mocks/build_plan.mock.ts`
+- Tests: `tests/contract/build_plan.test.ts` (mock + adapter)
+- Adapter: `src/lib/adapters/build_plan.adapter.ts`
+- CLI: `src/tools/build_plan.ts`, `npm run build-plan`
+
+4) decompose_plan (DONE)
+- Contract: `contracts/plan_parser.contract.ts`
+- Probe + fixture: `probes/plan_parser.probe.ts`, `fixtures/plan_parser/default.json`
+- Mock: `src/lib/mocks/plan_parser.mock.ts`
+- Tests: `tests/contract/plan_parser.test.ts` (mock + adapter)
+- Adapter: `src/lib/adapters/plan_parser.adapter.ts`
+- CLI: `src/tools/decompose_plan.ts`, `npm run decompose-plan`
+- Semantics: headers + checklist items become individual tasks.
+
+5) Round-trip test
+- `tests/integration/plan_roundtrip.test.ts` (build -> decompose, assert title/description invariants).
+
+Phase 3: Management Suite (Reordered)
+6) link_tasks (dependencies)
+- Contract change: add `blockedBy: string[]` to Task schema.
+- Follow Contract Change Workflow (probe/fixtures -> contract -> tests -> mocks/adapters).
+- Update TaskRegistry + MCP tools: `add_dependency`, `remove_dependency`, `get_dependencies`.
+
+7) divvy_work (scheduler)
+- Contract: `contracts/scheduler.contract.ts` (tasks + agents + roles -> assignments).
+- Probe + fixture: `probes/scheduler.probe.ts` -> `fixtures/scheduler/default.json`.
+- Mock + tests; adapter is pure function.
+- Optional CLI: `npm run divvy-work`.
+
+Phase 4: Intelligence Suite
+8) knowledge_graph
+- Storage: extend `PersistedStoreSchema` in `contracts/store.contract.ts` (V1 in store.json).
+- Contract: `contracts/knowledge.contract.ts` (nodes, edges, query).
+- Probe + fixture for persistence behavior.
+- Mock + tests; adapter updates store.
+- MCP tools: add_node, link_nodes, query_graph.
+
+9) adr (Decision Records)
+- Contract: `contracts/adr.contract.ts` (append-only).
+- Probe + fixture for append/read behavior.
+- Mock + tests; adapter appends + lists.
+- MCP tools: create_adr, list_adrs.
+
+Phase 5: Communication Suite (Merged)
+10) discussion_channels -> merge into Message seam
+- Contract change: add `channelId: string` and optional `threadId?: string` to `MessageSchema`.
+- Follow Contract Change Workflow (fixtures, mocks, adapters, TUI).
+- MCP tools: `start_discussion`, `reply_to_discussion`, `list_discussions` (wrap Message seam).
+
+11) event_stream
+- Contract: `contracts/event_stream.contract.ts` (subscribe/get_recent).
+- Probe + fixture for ordering/timestamps.
+- Mock + tests; adapter uses store event log.
+- MCP tools: subscribe_to_events, get_recent_events.
+
+12) priority_notifications
+- Contract: `contracts/notifications.contract.ts` (priority + read state).
+- Probe + fixture for priority ordering.
+- Mock + tests; adapter stores notifications.
+- MCP tools: send_notification, list_notifications.
+
+Phase 6: Meta-Cognition Suite
+13) confidence_auction
+- Contract: `contracts/confidence.contract.ts` (bids -> winner).
+- Probe + fixture scenarios.
+- Mock + tests; adapter is pure function + optional store record.
+- MCP tools: submit_bid, resolve_auction.
+
+14) mood_log
+- Contract: `contracts/mood.contract.ts` (timestamped entries).
+- Probe + fixture for append behavior.
+- Mock + tests; adapter append/list.
+- MCP tools: log_mood, list_moods.
+
+15) human_arbitration
+- Contract: `contracts/arbitration.contract.ts` (gavel state machine).
+- Probe + fixture for transitions.
+- Mock + tests; adapter enforces gating.
+- MCP tools: request_gavel, grant_gavel, release_gavel.
+
+16) devils_advocate
+- Contract: `contracts/review_gate.contract.ts` (plan + critique gate).
+- Probe + fixture for review flow.
+- Mock + tests; adapter enforces critique before approval.
+- MCP tools: submit_plan, submit_critique, approve_plan.
+
+Phase 7: Integration + Docs
+- Wire all MCP tools in `src/index.ts`.
+- Add CLIs for user-facing tools.
+- Update MASTER_PLAN/PLAN_META_TOOLS/REMAINING_WORK.
+- Run full test suite + `scripts/sdd-check.ts`.
+
+---
+
 **Date:** 2026-01-05
 **From:** Gemini
 **To:** Codex / User

@@ -1,0 +1,79 @@
+{
+  "captured_at": "2026-01-08T02:04:52.000Z",
+  "scenarios": {
+    "basic": {
+      "input": {
+        "markdown": "# Project Plan\n\n## Phase 1: Setup\n- [ ] Initialize repo\n- [ ] Add lint config\n\n## Phase 2: CLI\n- [ ] Create CLI entrypoint\n  - [ ] Add --config flag\n- [ ] Add help text\n\n- [ ] Orphan task",
+        "source": "inline_sample"
+      },
+      "expected": {
+        "tasks": [
+          {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "title": "Phase 1: Setup",
+            "description": "Section Header",
+            "status": "todo",
+            "created_at": 1700000000000,
+            "updated_at": 1700000000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000002",
+            "title": "Initialize repo",
+            "description": "From: Phase 1: Setup",
+            "status": "todo",
+            "created_at": 1700000000001,
+            "updated_at": 1700000000001
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "title": "Add lint config",
+            "description": "From: Phase 1: Setup",
+            "status": "todo",
+            "created_at": 1700000000002,
+            "updated_at": 1700000000002
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000004",
+            "title": "Phase 2: CLI",
+            "description": "Section Header",
+            "status": "todo",
+            "created_at": 1700000000003,
+            "updated_at": 1700000000003
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000005",
+            "title": "Create CLI entrypoint",
+            "description": "From: Phase 2: CLI",
+            "status": "todo",
+            "created_at": 1700000000004,
+            "updated_at": 1700000000004
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000006",
+            "title": "Add --config flag",
+            "description": "From: Phase 2: CLI",
+            "status": "todo",
+            "created_at": 1700000000005,
+            "updated_at": 1700000000005
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000007",
+            "title": "Add help text",
+            "description": "From: Phase 2: CLI",
+            "status": "todo",
+            "created_at": 1700000000006,
+            "updated_at": 1700000000006
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000008",
+            "title": "Orphan task",
+            "description": "From: Phase 2: CLI",
+            "status": "todo",
+            "created_at": 1700000000007,
+            "updated_at": 1700000000007
+          }
+        ]
+      }
+    }
+  }
+}

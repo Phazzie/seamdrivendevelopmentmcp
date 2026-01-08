@@ -122,6 +122,23 @@ export async function startCockpitUi(
   screen.key(["2"], () => setTarget("right"));
   screen.key(["3"], () => setTarget("broadcast"));
 
+  const inputListenerHost = input as unknown as {
+    _listener: (ch: string, key: blessed.Widgets.Events.IKeyEventArg) => void;
+  };
+  const baseInputListener = inputListenerHost._listener.bind(input);
+  inputListenerHost._listener = (ch, key) => {
+    if (key?.meta && (key.name === "1" || key.name === "2" || key.name === "3")) {
+      const target = key.name === "1" ? "left" : key.name === "2" ? "right" : "broadcast";
+      setTarget(target);
+      return;
+    }
+    if (key?.name === "tab") {
+      setTarget(nextTarget(inputState.target));
+      return;
+    }
+    return baseInputListener(ch, key);
+  };
+
   targetBar.on("click", (data) => {
     const width =
       typeof targetBar.width === "number"
@@ -163,7 +180,7 @@ export async function startCockpitUi(
     const left = target === "left" ? "{inverse}Left{/inverse}" : "Left";
     const right = target === "right" ? "{inverse}Right{/inverse}" : "Right";
     const broadcast = target === "broadcast" ? "{inverse}Broadcast{/inverse}" : "Broadcast";
-    targetBar.setContent(`Target: ${left}  ${right}  ${broadcast}  (Tab/1/2/3)`);
+    targetBar.setContent(`Target: ${left}  ${right}  ${broadcast}  (Tab/1/2/3/Alt+1/2/3)`);
   }
 
   const logState: Record<"left" | "right", string> = {

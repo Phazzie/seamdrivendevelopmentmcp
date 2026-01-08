@@ -1,3 +1,6 @@
+> **⚠️ ARCHIVED: This document is deprecated.**
+> **Please refer to [MASTER_PLAN.md](./MASTER_PLAN.md) for the active documentation.**
+
 # Implementation Plan: MCP Collaboration Server
 
 ## Phase 1: The Foundation (SDD)

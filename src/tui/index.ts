@@ -110,17 +110,18 @@ function resolveConfig(argv: RuntimeConfig, fileConfig: RuntimeConfig): {
     right: argv.rightLogPath ?? fileConfig.rightLogPath,
   };
 
+  const defaultConfig = TuiConfigSchema.parse({});
   const paneAgents = {
-    left: argv.paneAgents?.left ?? fileConfig.paneAgents?.left,
-    right: argv.paneAgents?.right ?? fileConfig.paneAgents?.right,
+    left: argv.paneAgents?.left ?? fileConfig.paneAgents?.left ?? defaultConfig.paneAgents.left,
+    right: argv.paneAgents?.right ?? fileConfig.paneAgents?.right ?? defaultConfig.paneAgents.right,
   };
 
   const tuiConfig = TuiConfigSchema.parse({
     paneAgents,
-    leaderPane: argv.leaderPane ?? fileConfig.leaderPane,
-    defaultTarget: argv.defaultTarget ?? fileConfig.defaultTarget,
-    broadcastHeader: argv.broadcastHeader ?? fileConfig.broadcastHeader,
-    enforceLeaderWait: argv.enforceLeaderWait ?? fileConfig.enforceLeaderWait,
+    leaderPane: argv.leaderPane ?? fileConfig.leaderPane ?? defaultConfig.leaderPane,
+    defaultTarget: argv.defaultTarget ?? fileConfig.defaultTarget ?? defaultConfig.defaultTarget,
+    broadcastHeader: argv.broadcastHeader ?? fileConfig.broadcastHeader ?? defaultConfig.broadcastHeader,
+    enforceLeaderWait: argv.enforceLeaderWait ?? fileConfig.enforceLeaderWait ?? defaultConfig.enforceLeaderWait,
   });
 
   return { storePath, refreshIntervalMs, logPaths, tuiConfig };

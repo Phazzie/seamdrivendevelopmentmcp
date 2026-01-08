@@ -1,3 +1,6 @@
+> **⚠️ ARCHIVED: This document is deprecated.**
+> **Please refer to [MASTER_PLAN.md](./MASTER_PLAN.md) for the active documentation.**
+
 # MCP Server Improvements & Ideas
 
 ## Process Protocols

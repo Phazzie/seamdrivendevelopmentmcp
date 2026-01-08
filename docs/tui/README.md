@@ -34,4 +34,5 @@ You can provide a JSON configuration file. See `config.example.json` for a templ
 - `1`: Set target to Left.
 - `2`: Set target to Right.
 - `3`: Set target to Broadcast.
+- `Alt+1/2/3`: Set target to Left/Right/Broadcast.
 - `Q` / `Ctrl-C` / `Esc`: Quit.
