@@ -47,22 +47,39 @@ function main(): void {
   const contractPath = path.join(root, "contracts", `${seam}.contract.ts`);
   const probePath = path.join(root, "probes", `${seam}.probe.ts`);
   const fixturesDir = path.join(root, "fixtures", seam);
+  const fixturePath = path.join(fixturesDir, "sample.json");
   const mockPath = path.join(root, "src", "lib", "mocks", `${seam}.mock.ts`);
   const adapterPath = path.join(root, "src", "lib", "adapters", `${seam}.adapter.ts`);
   const testPath = path.join(root, "tests", "contract", `${seam}.test.ts`);
 
-  const contractContents = `import { z } from "zod";
+  const contractContents = `/**
+ * Purpose: Define contract for ${seam} (seam: ${seam}).
+ */
+import { z } from "zod";
+import { AppErrorCodeSchema } from "./store.contract.js";
 
 // TODO: replace schema and interface with real contract.
-export const ${pascal}Schema = z.object({});
+export const ${pascal}Schema = z.object({
+  // TODO: add fields
+});
 export type ${pascal} = z.infer<typeof ${pascal}Schema>;
 
-export interface I${pascal}Adapter {
+export const ${pascal}ErrorSchema = z.object({
+  code: AppErrorCodeSchema,
+  message: z.string(),
+  details: z.record(z.unknown()).optional()
+});
+export type ${pascal}Error = z.infer<typeof ${pascal}ErrorSchema>;
+
+export interface I${pascal} {
   // TODO: define contract methods.
 }
 `;
 
-  const probeContents = `import fs from "fs";
+  const probeContents = `/**
+ * Purpose: Probe external reality for ${seam}.
+ */
+import fs from "fs";
 import path from "path";
 
 async function main(): Promise<void> {
@@ -72,43 +89,113 @@ async function main(): Promise<void> {
   // TODO: call the real system and capture fixtures with captured_at.
   const payload = {
     captured_at: new Date().toISOString(),
-    scenario: "success",
-    data: {}
+    scenarios: {
+      success: {
+        description: "Happy path",
+        outputs: {
+          example: { note: "TODO: capture output" }
+        }
+      }
+    }
   };
 
-  const outputPath = path.join(fixtureDir, "success.json");
+  const outputPath = path.join(fixtureDir, "sample.json");
   fs.writeFileSync(outputPath, JSON.stringify(payload, null, 2));
   console.log(\`Wrote \${outputPath}\`);
 }
 
 main().catch((err) => {
-  console.error(err);
+  console.error("PROBE FAILED:", err);
   process.exitCode = 1;
 });
 `;
 
-  const mockContents = `import type { I${pascal}Adapter } from "../../../contracts/${seam}.contract.js";
-
-export class Mock${pascal}Adapter implements I${pascal}Adapter {
-  // TODO: load fixtures by scenario and implement contract methods.
+  const fixtureContents = `{
+  "captured_at": "${new Date().toISOString()}",
+  "scenarios": {
+    "success": {
+      "description": "Happy path",
+      "outputs": {
+        "example": { "note": "TODO: capture output" }
+      }
+    }
+  }
 }
 `;
 
-  const adapterContents = `import type { I${pascal}Adapter } from "../../../contracts/${seam}.contract.js";
+  const mockContents = `/**
+ * Purpose: Mock implementation for ${seam} using fixtures.
+ */
+import fs from "fs";
+import path from "path";
+import { AppError } from "../../../contracts/store.contract.js";
+import type { I${pascal} } from "../../../contracts/${seam}.contract.js";
 
-export class ${pascal}Adapter implements I${pascal}Adapter {
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "${seam}", "sample.json");
+
+type ScenarioFixture = {
+  outputs?: Record<string, unknown>;
+  error?: { code: string; message: string };
+};
+
+type FixtureFile = {
+  captured_at?: string;
+  scenarios?: Record<string, ScenarioFixture>;
+};
+
+function loadFixture(): FixtureFile {
+  if (!fs.existsSync(FIXTURE_PATH)) return {};
+  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
+  return JSON.parse(raw) as FixtureFile;
+}
+
+export class Mock${pascal} implements I${pascal} {
+  private readonly fixture: FixtureFile;
+
+  constructor(private scenario = "success") {
+    this.fixture = loadFixture();
+  }
+
+  protected getScenario(): ScenarioFixture {
+    const scenario = this.fixture.scenarios?.[this.scenario];
+    if (!scenario) {
+      throw new AppError("VALIDATION_FAILED", \`Unknown scenario: \${this.scenario}\`);
+    }
+    if (scenario.error) {
+      throw new AppError("VALIDATION_FAILED", scenario.error.message);
+    }
+    return scenario;
+  }
+
+  // TODO: implement contract methods using fixture outputs.
+}
+`;
+
+  const adapterContents = `/**
+ * Purpose: Real implementation for ${seam}.
+ */
+import { AppError } from "../../../contracts/store.contract.js";
+import type { I${pascal} } from "../../../contracts/${seam}.contract.js";
+
+export class ${pascal}Adapter implements I${pascal} {
   // TODO: implement using real dependencies.
+  private notImplemented(method: string): never {
+    throw new AppError("INTERNAL_ERROR", \`${pascal}.\${method} not implemented\`);
+  }
 }
 `;
 
-  const testContents = `import { describe, it, beforeEach } from "node:test";
+  const testContents = `/**
+ * Purpose: Verify ${seam} contract compliance.
+ */
+import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
-import type { I${pascal}Adapter } from "../../contracts/${seam}.contract.js";
-import { Mock${pascal}Adapter } from "../../src/lib/mocks/${seam}.mock.js";
+import type { I${pascal} } from "../../contracts/${seam}.contract.js";
+import { Mock${pascal} } from "../../src/lib/mocks/${seam}.mock.js";
 
-export function run${pascal}ContractTests(createAdapter: () => Promise<I${pascal}Adapter>) {
+export function run${pascal}ContractTests(createAdapter: () => Promise<I${pascal}>) {
   describe("${pascal} Contract", () => {
-    let adapter: I${pascal}Adapter;
+    let adapter: I${pascal};
 
     beforeEach(async () => {
       adapter = await createAdapter();
@@ -120,15 +207,15 @@ export function run${pascal}ContractTests(createAdapter: () => Promise<I${pascal
   });
 }
 
-describe("Mock${pascal}Adapter", () => {
-  run${pascal}ContractTests(async () => new Mock${pascal}Adapter());
+describe("Mock${pascal}", () => {
+  run${pascal}ContractTests(async () => new Mock${pascal}());
 });
 `;
 
   writeFileIfMissing(contractPath, contractContents, result);
   writeFileIfMissing(probePath, probeContents, result);
   ensureDir(fixturesDir);
-  writeFileIfMissing(path.join(fixturesDir, ".gitkeep"), "", result);
+  writeFileIfMissing(fixturePath, fixtureContents, result);
   writeFileIfMissing(mockPath, mockContents, result);
   writeFileIfMissing(adapterPath, adapterContents, result);
   writeFileIfMissing(testPath, testContents, result);

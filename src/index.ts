@@ -12,6 +12,7 @@ import fs from "fs";
 import { StoreAdapter } from "./lib/adapters/store.adapter.js";
 import { LockerAdapter } from "./lib/adapters/locker.adapter.js";
 import { TaskAdapter } from "./lib/adapters/tasks.adapter.js";
+import { IdeaAdapter } from "./lib/adapters/ideas.adapter.js";
 import { DependencyAdapter } from "./lib/adapters/dependency.adapter.js";
 import { SchedulerAdapter } from "./lib/adapters/scheduler.adapter.js";
 import { KnowledgeAdapter } from "./lib/adapters/knowledge.adapter.js";
@@ -44,6 +45,7 @@ if (!fs.existsSync(storeDir)) {
 const store = new StoreAdapter(STORE_PATH);
 const locker = new LockerAdapter(store);
 const tasks = new TaskAdapter(store);
+const ideas = new IdeaAdapter(store);
 const dependencies = new DependencyAdapter(store);
 const scheduler = new SchedulerAdapter();
 const knowledge = new KnowledgeAdapter(store);
@@ -263,6 +265,83 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               },
               required: ["agentId"]
           }
+      },
+      // --- Ideas ---
+      {
+        name: "create_idea",
+        description: "Create a new idea.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            summary: { type: "string" },
+            status: { type: "string", enum: ["draft", "active", "parked", "archived"] },
+            tags: { type: "array", items: { type: "string" } },
+            relatedTaskIds: { type: "array", items: { type: "string" } },
+            relatedIdeaIds: { type: "array", items: { type: "string" } },
+            agentId: { type: "string" }
+          },
+          required: ["title", "agentId"]
+        }
+      },
+      {
+        name: "update_idea",
+        description: "Update an idea.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            title: { type: "string" },
+            summary: { type: "string" },
+            status: { type: "string", enum: ["draft", "active", "parked", "archived"] },
+            tags: { type: "array", items: { type: "string" } },
+            relatedTaskIds: { type: "array", items: { type: "string" } },
+            relatedIdeaIds: { type: "array", items: { type: "string" } },
+            agentId: { type: "string" }
+          },
+          required: ["id", "agentId"]
+        }
+      },
+      {
+        name: "list_ideas",
+        description: "List ideas with optional filters.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            status: { type: "string", enum: ["draft", "active", "parked", "archived"] },
+            tag: { type: "string" },
+            query: { type: "string" },
+            limit: { type: "number" },
+            agentId: { type: "string" }
+          },
+          required: ["agentId"]
+        }
+      },
+      {
+        name: "get_idea",
+        description: "Fetch a single idea.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["id", "agentId"]
+        }
+      },
+      {
+        name: "add_idea_note",
+        description: "Add a note to an idea.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            ideaId: { type: "string" },
+            author: { type: "string" },
+            body: { type: "string" },
+            agentId: { type: "string" }
+          },
+          required: ["ideaId", "body", "agentId"]
+        }
       },
       // --- Dependencies ---
       {
@@ -833,6 +912,50 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const list = await tasks.list(status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    // --- Ideas ---
+    if (name === "create_idea") {
+        const { title, summary, status, tags, relatedTaskIds, relatedIdeaIds } = args as any;
+        const agentId = await requireAgentId();
+        const idea = await ideas.create({ title, summary, status, tags, relatedTaskIds, relatedIdeaIds });
+        await recordAudit(agentId, name, summarize(args), summarize(idea));
+        return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
+    }
+
+    if (name === "update_idea") {
+        const { id, title, summary, status, tags, relatedTaskIds, relatedIdeaIds } = args as any;
+        const agentId = await requireAgentId();
+        const idea = await ideas.update({ id, title, summary, status, tags, relatedTaskIds, relatedIdeaIds });
+        await recordAudit(agentId, name, summarize(args), summarize(idea));
+        return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
+    }
+
+    if (name === "list_ideas") {
+        const { status, tag, query, limit } = args as any;
+        const agentId = await requireAgentId();
+        const filter = status || tag || query || limit
+          ? { status, tag, query, limit }
+          : undefined;
+        const list = await ideas.list(filter);
+        await recordAudit(agentId, name, summarize(args), summarize(list));
+        return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    if (name === "get_idea") {
+        const id = (args as any).id as string;
+        const agentId = await requireAgentId();
+        const idea = await ideas.get({ id });
+        await recordAudit(agentId, name, summarize(args), summarize(idea));
+        return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
+    }
+
+    if (name === "add_idea_note") {
+        const { ideaId, author, body } = args as any;
+        const agentId = await requireAgentId();
+        const idea = await ideas.addNote({ ideaId, author, body });
+        await recordAudit(agentId, name, summarize(args), summarize(idea));
+        return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
     }
 
     // --- Dependencies ---

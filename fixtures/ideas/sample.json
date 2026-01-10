@@ -1,0 +1,104 @@
+{
+  "captured_at": "2026-01-10T23:26:31.530Z",
+  "scenarios": {
+    "success": {
+      "description": "Happy path",
+      "outputs": {
+        "create": {
+          "id": "16bf7524-4580-4f1f-a267-9d6a6adcdaf7",
+          "title": "New capture",
+          "summary": "",
+          "status": "draft",
+          "tags": [],
+          "notes": [],
+          "relatedTaskIds": [],
+          "relatedIdeaIds": [],
+          "created_at": 1768087591530,
+          "updated_at": 1768087591530
+        },
+        "update": {
+          "id": "16bf7524-4580-4f1f-a267-9d6a6adcdaf7",
+          "title": "New capture",
+          "summary": "",
+          "status": "active",
+          "tags": [
+            "focus"
+          ],
+          "notes": [],
+          "relatedTaskIds": [],
+          "relatedIdeaIds": [],
+          "created_at": 1768087591530,
+          "updated_at": 1768087591531
+        },
+        "list": [
+          {
+            "id": "16bf7524-4580-4f1f-a267-9d6a6adcdaf7",
+            "title": "New capture",
+            "summary": "",
+            "status": "draft",
+            "tags": [],
+            "notes": [],
+            "relatedTaskIds": [],
+            "relatedIdeaIds": [],
+            "created_at": 1768087591530,
+            "updated_at": 1768087591530
+          },
+          {
+            "id": "646f6bea-5f1c-4ac7-82d2-43556c790dde",
+            "title": "Backlog idea",
+            "summary": "Parking lot",
+            "status": "parked",
+            "tags": [
+              "backlog"
+            ],
+            "notes": [],
+            "relatedTaskIds": [],
+            "relatedIdeaIds": [
+              "16bf7524-4580-4f1f-a267-9d6a6adcdaf7"
+            ],
+            "created_at": 1768087591533,
+            "updated_at": 1768087591533
+          }
+        ],
+        "get": {
+          "id": "16bf7524-4580-4f1f-a267-9d6a6adcdaf7",
+          "title": "New capture",
+          "summary": "",
+          "status": "draft",
+          "tags": [],
+          "notes": [],
+          "relatedTaskIds": [],
+          "relatedIdeaIds": [],
+          "created_at": 1768087591530,
+          "updated_at": 1768087591530
+        },
+        "addNote": {
+          "id": "16bf7524-4580-4f1f-a267-9d6a6adcdaf7",
+          "title": "New capture",
+          "summary": "",
+          "status": "draft",
+          "tags": [],
+          "notes": [
+            {
+              "id": "5eb601e4-c9b0-4201-b34c-88ffea47411c",
+              "author": "codex",
+              "body": "First note",
+              "created_at": 1768087591532
+            }
+          ],
+          "relatedTaskIds": [],
+          "relatedIdeaIds": [],
+          "created_at": 1768087591530,
+          "updated_at": 1768087591532
+        }
+      }
+    },
+    "not_found": {
+      "description": "Idea not found",
+      "error": {
+        "code": "VALIDATION_FAILED",
+        "message": "Idea not found"
+      }
+    }
+  }
+}

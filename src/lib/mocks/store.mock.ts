@@ -11,6 +11,7 @@ function loadDefaultState(): PersistedStore {
       schemaVersion: 1,
       revision: 1,
       tasks: [],
+      ideas: [],
       messages: [],
       locks: [],
       agents: [],

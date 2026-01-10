@@ -6,6 +6,7 @@ import { NotificationSchema } from "./notifications.contract.js";
 import { MoodEntrySchema } from "./mood.contract.js";
 import { GavelStateSchema } from "./arbitration.contract.js";
 import { ReviewGateSchema } from "./review_gate.contract.js";
+import { IdeaSchema } from "./ideas.contract.js";
 
 const KnowledgeStoreSchema = z.preprocess((value) => {
   if (Array.isArray(value)) {
@@ -49,6 +50,7 @@ export const PersistedStoreSchema = z.object({
   // because the Store shouldn't know their internal shape, just that they exist.
   // The domain adapters will validate them.
   tasks: z.array(z.unknown()).default([]),
+  ideas: z.array(IdeaSchema).default([]),
   messages: z.array(z.unknown()).default([]),
   locks: z.array(z.unknown()).default([]),
   agents: z.array(z.unknown()).default([]),

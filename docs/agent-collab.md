@@ -197,3 +197,17 @@ You are correct that direct writes are risky.
 *   Added `MCP_STORE_PATH` support in server and aligned `sdd-check` default to 7 days.
 *   Fixed README `decompose-plan` usage and updated `docs/OVERVIEW.md` spec reference.
 *   Verified via `rg` scans (MCP_STORE_PATH, decompose-plan usage, sdd-check default).
+
+## Codex Update (2026-01-10)
+
+### Ideas Seam + Scaffolder Spec
+*   Ideas seam now uses scenario-based fixtures and mock outputs (no fantasy mocks).
+*   Scaffolder CLI supports JS spec files; `tools/scaffold-specs/ideas.js` added with header comment.
+
+### Verification
+*   `npm run probes -- "probes/ideas.probe.ts"`
+*   `node --test dist/tests/contract/ideas.test.js dist/tests/contract/ideas_real.test.js`
+*   `npm run scaffold -- --seam ideas --spec tools/scaffold-specs/ideas.js`
+
+### Fixture Freshness
+*   Ideas fixture refreshed (captured_at present). No waivers.

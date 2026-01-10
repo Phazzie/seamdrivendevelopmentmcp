@@ -1,0 +1,39 @@
+{
+  "captured_at": "2026-01-10T22:46:08.475Z",
+  "scenarios": {
+    "success": {
+      "description": "Sample scaffold output",
+      "outputs": {
+        "scaffold": {
+          "success": true,
+          "files": [
+            {
+              "path": "${baseDir}/contracts/example_seam.contract.ts",
+              "type": "contract"
+            },
+            {
+              "path": "${baseDir}/probes/example_seam.probe.ts",
+              "type": "probe"
+            },
+            {
+              "path": "${baseDir}/fixtures/example_seam/sample.json",
+              "type": "fixture"
+            },
+            {
+              "path": "${baseDir}/src/lib/mocks/example_seam.mock.ts",
+              "type": "mock"
+            },
+            {
+              "path": "${baseDir}/tests/contract/example_seam.test.ts",
+              "type": "test"
+            },
+            {
+              "path": "${baseDir}/src/lib/adapters/example_seam.adapter.ts",
+              "type": "adapter"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

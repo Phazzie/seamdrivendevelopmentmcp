@@ -30,6 +30,7 @@ export class StoreAdapter implements IStore {
         schemaVersion: 1,
         revision: 1,
         tasks: [],
+        ideas: [],
         messages: [],
         locks: [],
         agents: [],
