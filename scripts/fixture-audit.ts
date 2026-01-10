@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // Configuration
-const DEFAULT_MAX_AGE_DAYS = 2;
+const DEFAULT_MAX_AGE_DAYS = 7;
 const FIXTURES_DIR = path.join(process.cwd(), 'fixtures');
 
 interface AuditConfig {

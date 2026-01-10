@@ -28,7 +28,7 @@ test("Plan Tools - Round-Trip Verification", async () => {
     ]
   });
 
-  console.log("GENERATED MARKDOWN:\n", markdown);
+  // console.log("GENERATED MARKDOWN:\n", markdown);
 
   assert.ok(markdown.includes("## Phase 1: Setup"));
   assert.ok(markdown.includes("- [ ] Initialize repo"));

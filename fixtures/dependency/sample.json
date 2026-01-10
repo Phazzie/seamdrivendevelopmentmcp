@@ -1,39 +1,36 @@
 {
-  "captured_at": "2026-01-08T02:50:04.048Z",
+  "captured_at": "2026-01-09T18:48:57.090Z",
   "tasks": [
     {
-      "id": "00000000-0000-0000-0000-000000000010",
+      "id": "424e6af2-2723-4186-a032-ab8f7e980dc3",
       "title": "Dependency root",
       "description": "Root task with no dependencies.",
       "status": "done",
-      "assignee": "codex",
       "blockedBy": [],
-      "created_at": 1700000100000,
-      "updated_at": 1700000100000
+      "created_at": 1767984535986,
+      "updated_at": 1767984536224
     },
     {
-      "id": "00000000-0000-0000-0000-000000000011",
+      "id": "7fc28ca1-4063-4bc0-b084-6ad1a315e3dd",
       "title": "Dependent task",
       "description": "Blocked until root is done.",
       "status": "todo",
-      "assignee": "gemini",
       "blockedBy": [
-        "00000000-0000-0000-0000-000000000010"
+        "424e6af2-2723-4186-a032-ab8f7e980dc3"
       ],
-      "created_at": 1700000100001,
-      "updated_at": 1700000100001
+      "created_at": 1767984536401,
+      "updated_at": 1767984536579
     },
     {
-      "id": "00000000-0000-0000-0000-000000000012",
+      "id": "27fb997e-b8ff-483f-916c-c2894366e82b",
       "title": "Blocked chain",
       "description": "Blocked until dependent task is done.",
       "status": "todo",
-      "assignee": "gemini",
       "blockedBy": [
-        "00000000-0000-0000-0000-000000000011"
+        "7fc28ca1-4063-4bc0-b084-6ad1a315e3dd"
       ],
-      "created_at": 1700000100002,
-      "updated_at": 1700000100002
+      "created_at": 1767984536756,
+      "updated_at": 1767984536935
     }
   ]
 }

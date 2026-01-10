@@ -45,7 +45,7 @@ A safety mechanism to freeze all operations in case of anomalies.
 ### Phase 3: The Integration - **COMPLETE**
 *   **Server:** `src/index.ts` initializes all adapters and registers MCP tools.
 
-### Phase 4: The Meta-Tools (Self-Replication) - **PENDING**
+### Phase 4: The Meta-Tools (Self-Replication) - **COMPLETE**
 *   **Tool:** `scaffold_seam` - Automates the folder creation for future features.
 *   **Tool:** `run_probe` - Runs the probes and updates fixtures.
 
@@ -55,9 +55,15 @@ A safety mechanism to freeze all operations in case of anomalies.
 *   **Step 5.2: The View Model:** Pure `deriveViewModel` logic with strict testing.
 *   **Step 5.3: The Adapter & UI:** `tui.adapter.ts` mapping to MCP tools, and `cockpit.ts` UI using `blessed`.
 
+### Phase 6: Advanced Suites - **COMPLETE**
+*   **Management Suite:** `link_tasks`, `divvy_work`.
+*   **Intelligence Suite:** `knowledge_graph`, `adr`.
+*   **Communication Suite:** channelized messages, `event_stream`, `priority_notifications`.
+*   **Meta-Cognition Suite:** `confidence_auction`, `mood_log`, `human_arbitration`, `devils_advocate`.
+
 ---
 
-## 4. Future Roadmap: Advanced Suites
+## 4. Advanced Suites (Implemented)
 
 ### The "Intelligence" Suite
 *   **Shared Knowledge Graph:** A structured repository for persistent project-specific insights, jargon, and architectural quirks.

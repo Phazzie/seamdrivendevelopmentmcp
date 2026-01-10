@@ -27,7 +27,7 @@ type MockOptions = {
 };
 
 function loadFixture(): TuiChatFixture {
-  if (!fs.existsSync(FIXTURE_PATH)) return {};
+  if (!fs.existsSync(FIXTURE_PATH)) return { scenarios: {} };
   const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
   const parsed = JSON.parse(raw) as unknown;
   const result = TuiChatFixtureSchema.safeParse(parsed);
@@ -38,7 +38,7 @@ function loadFixture(): TuiChatFixture {
 }
 
 function loadScenario(fixture: TuiChatFixture, scenario: string): TuiChatScenario {
-  const selected = fixture[scenario];
+  const selected = fixture.scenarios[scenario];
   if (!selected) {
     throw new Error(`Unknown TUI scenario: ${scenario}`);
   }

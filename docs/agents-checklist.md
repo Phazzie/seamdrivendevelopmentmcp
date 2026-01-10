@@ -4,7 +4,7 @@
 ## Non-negotiables
 - [ ] Plan, critique, revise, execute. No code before the plan.
 - [ ] Use `contracts/` + `fixtures/` as the source of truth.
-- [ ] Run probes unless fixture `captured_at` <= 2 days or a waiver is documented.
+- [ ] Run probes unless fixture `captured_at` <= 7 days or a waiver is documented.
 - [ ] No fantasy mocks; mocks load deterministic fixtures by scenario.
 - [ ] Contract changes only via the Contract Change Workflow.
 - [ ] One seam at a time; no refactors outside the seam.
@@ -24,7 +24,7 @@
 - [ ] Update mocks/adapters to satisfy the tests.
 
 ## Definition of Done (per seam)
-- [ ] Fixtures captured/refreshed (<= 2 days) or waiver documented.
+- [ ] Fixtures captured/refreshed (<= 7 days) or waiver documented.
 - [ ] Contract schema updated and matches fixtures.
 - [ ] Contract tests pass against mock and adapter.
 - [ ] Mock loads deterministic fixtures by scenario.

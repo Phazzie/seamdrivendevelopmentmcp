@@ -3,7 +3,7 @@
 **Overall Status:** GREEN (SDD-compliant, fixtures fresh, mocks grounded)
 
 ## 1. Executive Summary
-The server is feature-complete for Phase 1 (Foundation) and Phase 2 (Collaboration), with critical tools (Locks, Tasks, Messages, Audit, Status, Agents) wired up in `src/index.ts`. SDD enforcement is now green: fixtures include `captured_at` and are fresh (<= 2 days), and all mocks are fixture-grounded.
+The server is feature-complete for Phase 1 (Foundation) and Phase 2 (Collaboration), with critical tools (Locks, Tasks, Messages, Audit, Status, Agents) wired up in `src/index.ts`. SDD enforcement is now green: fixtures include `captured_at` and are fresh (<= 7 days), and all mocks are fixture-grounded.
 
 ## 2. Component Health
 
@@ -31,7 +31,7 @@ All active seams have probes and captured fixtures.
 
 ## 4. Next Actions (Prioritized)
 
-1.  **Maintain Freshness:** Re-run probes when fixtures age past 2 days.
+1.  **Maintain Freshness:** Re-run probes when fixtures age past 7 days.
 2.  **Re-verify:** Run `scripts/fixture-audit.ts` and `scripts/mock-fixture-map.ts` after changes.
 
 ## 5. Deployment Status

@@ -1,4 +1,4 @@
-import { describe } from "node:test";
+import { describe, after } from "node:test";
 import path from "path";
 import fs from "fs";
 import { runStoreContractTests } from "./store.test.js"; // Reuse the contract suite
@@ -10,6 +10,10 @@ describe("Real StoreAdapter Implementation", () => {
 
   // Setup/Teardown
   if (!fs.existsSync(TEST_DIR)) fs.mkdirSync(TEST_DIR, { recursive: true });
+
+  after(() => {
+    if (fs.existsSync(TEST_FILE)) fs.unlinkSync(TEST_FILE);
+  });
 
   runStoreContractTests(async () => {
     // Clean slate for each test

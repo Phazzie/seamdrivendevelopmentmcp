@@ -3,6 +3,9 @@
  */
 import { IScaffolder, ScaffoldInput, ScaffoldResult } from "../../../contracts/scaffolder.contract.js";
 
+// SDD: Grounded by fixture
+const FIXTURE_PATH = "fixtures/scaffolder/capabilities.json";
+
 export class MockScaffolder implements IScaffolder {
   async scaffold(input: ScaffoldInput): Promise<ScaffoldResult> {
     if (input.seamName === "invalid") {

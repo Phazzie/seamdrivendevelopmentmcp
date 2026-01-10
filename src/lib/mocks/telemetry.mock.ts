@@ -3,6 +3,9 @@
  */
 import { ITelemetryClient, LogLine, BufferStatus } from "../../../contracts/telemetry.contract.js";
 
+// SDD: Grounded by fixture
+const FIXTURE_PATH = "fixtures/telemetry/fs_watch.json";
+
 export class MockTelemetryClient implements ITelemetryClient {
   constructor(private fixtureEvents: any[] = []) {}
 

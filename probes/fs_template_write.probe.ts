@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const FIXTURE_DIR = path.join(__dirname, '../../fixtures/scaffolder');
+const FIXTURE_DIR = path.join(process.cwd(), 'fixtures/scaffolder');
 const TEST_FILE = path.join(FIXTURE_DIR, 'probe_test.ts');
 
 // Ensure fixture dir exists
@@ -43,7 +43,8 @@ try {
     platform: process.platform,
     canWrite: true,
     canOverwrite: true,
-    encoding: 'utf-8'
+    encoding: 'utf-8',
+    captured_at: new Date().toISOString()
   };
   fs.writeFileSync(path.join(FIXTURE_DIR, 'capabilities.json'), JSON.stringify(result, null, 2));
 

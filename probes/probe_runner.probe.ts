@@ -27,7 +27,10 @@ async function runProbe() {
   const fail = await exec('ls', ['/non-existent-directory-gemini-test']);
   results.scenarios.push({ name: 'fail', ...fail });
 
-  fs.writeFileSync(path.join(FIXTURE_DIR, 'capabilities.json'), JSON.stringify(results, null, 2));
+  fs.writeFileSync(path.join(FIXTURE_DIR, 'capabilities.json'), JSON.stringify({
+    ...results,
+    captured_at: new Date().toISOString()
+  }, null, 2));
   console.log('Probe Runner capability probe complete.');
 }
 

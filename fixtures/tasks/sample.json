@@ -1,15 +1,23 @@
 {
-  "captured_at": "2026-01-08T02:50:03.738Z",
+  "captured_at": "2026-01-09T18:49:25.639Z",
   "tasks": [
     {
-      "id": "00000000-0000-0000-0000-000000000001",
-      "title": "Initial Task",
-      "description": "This is a captured task fixture.",
+      "id": "26893e25-9b4f-42f6-befb-c9cb445e943e",
+      "title": "Sample Task",
+      "description": "Captured from probe",
       "status": "todo",
-      "assignee": "gemini",
       "blockedBy": [],
-      "created_at": 1700000000000,
-      "updated_at": 1700000000000
+      "created_at": 1767984565110,
+      "updated_at": 1767984565110
+    },
+    {
+      "id": "aafe09e5-0379-4c49-846c-a8a463c8f3cf",
+      "title": "Second Task",
+      "description": "Probe status change",
+      "status": "done",
+      "blockedBy": [],
+      "created_at": 1767984565261,
+      "updated_at": 1767984565450
     }
   ]
 }

@@ -26,11 +26,15 @@ import { MessageAdapter } from "./lib/adapters/messages.adapter.js";
 import { AgentAdapter } from "./lib/adapters/agents.adapter.js";
 import { StatusAdapter } from "./lib/adapters/status.adapter.js";
 import { AuditAdapter } from "./lib/adapters/audit.adapter.js";
+import { ProbeRunnerAdapter } from "./lib/adapters/probe_runner.adapter.js";
+import { ScaffolderAdapter } from "./lib/adapters/scaffolder.adapter.js";
 import { AppError } from "../contracts/store.contract.js";
 
 // Setup
 const HOME_DIR = os.homedir();
-const STORE_PATH = path.join(HOME_DIR, ".mcp-collaboration", "store.json");
+const STORE_PATH = process.env.MCP_STORE_PATH
+  ? path.resolve(process.env.MCP_STORE_PATH)
+  : path.join(HOME_DIR, ".mcp-collaboration", "store.json");
 
 const storeDir = path.dirname(STORE_PATH);
 if (!fs.existsSync(storeDir)) {
@@ -54,6 +58,8 @@ const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
 const audit = new AuditAdapter(store);
+const probeRunner = new ProbeRunnerAdapter();
+const scaffolder = new ScaffolderAdapter();
 
 // MCP Server
 const server = new Server(
@@ -71,6 +77,31 @@ const server = new Server(
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
+      // --- Meta-Tools ---
+      {
+        name: "run_probe",
+        description: "Run executable probes to verify environment and refresh fixtures.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            pattern: { type: "string", description: "Glob or substring pattern for probe files." },
+            agentId: { type: "string" },
+          },
+          required: ["agentId"],
+        },
+      },
+      {
+        name: "scaffold_seam",
+        description: "Scaffold a new SDD seam (Contract, Probe, Mock, Test, Adapter).",
+        inputSchema: {
+          type: "object",
+          properties: {
+            seamName: { type: "string" },
+            agentId: { type: "string" },
+          },
+          required: ["seamName", "agentId"],
+        },
+      },
       // --- Agents ---
       {
         name: "register_agent",

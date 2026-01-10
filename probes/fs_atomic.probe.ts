@@ -2,8 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { randomUUID } from 'crypto';
 
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Use the project root fixtures directory
-const FIXTURE_DIR = path.join(__dirname, '../fixtures/store');
+const FIXTURE_DIR = path.resolve(__dirname, '../fixtures/store');
 const PROBE_FILE = path.join(FIXTURE_DIR, 'probe_atomic.json');
 const TEMP_FILE = path.join(FIXTURE_DIR, `probe_temp_${randomUUID()}.json`);
 

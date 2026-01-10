@@ -72,7 +72,10 @@ export const TuiChatScenarioSchema = z.object({
 });
 export type TuiChatScenario = z.infer<typeof TuiChatScenarioSchema>;
 
-export const TuiChatFixtureSchema = z.record(z.string(), TuiChatScenarioSchema);
+export const TuiChatFixtureSchema = z.object({
+  captured_at: z.string().optional(),
+  scenarios: z.record(z.string(), TuiChatScenarioSchema),
+});
 export type TuiChatFixture = z.infer<typeof TuiChatFixtureSchema>;
 
 export const TuiConfigSchema = z.object({

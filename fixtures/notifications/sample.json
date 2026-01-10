@@ -1,26 +1,26 @@
 {
-  "captured_at": "2026-01-08T03:24:18.733Z",
+  "captured_at": "2026-01-09T18:49:13.616Z",
   "notifications": [
     {
-      "id": "00000000-0000-4000-8000-000000000501",
+      "id": "439bed8e-8701-4805-9ac2-241b7122a75e",
       "title": "Urgent review",
       "message": "Please review the latest plan.",
       "priority": "urgent",
-      "created_at": 1700000600002
+      "created_at": 1767984553084
     },
     {
-      "id": "00000000-0000-4000-8000-000000000502",
-      "title": "Build status",
-      "message": "CI passed.",
-      "priority": "normal",
-      "created_at": 1700000600001
-    },
-    {
-      "id": "00000000-0000-4000-8000-000000000503",
+      "id": "e7ce5923-e25a-4b73-956d-2e1ed081813b",
       "title": "Heads up",
       "message": "New task assigned.",
       "priority": "high",
-      "created_at": 1700000600000
+      "created_at": 1767984553449
+    },
+    {
+      "id": "3a4ec832-ff75-43b3-b79b-d8429efaa2ab",
+      "title": "Build status",
+      "message": "CI passed.",
+      "priority": "normal",
+      "created_at": 1767984553282
     }
   ]
 }

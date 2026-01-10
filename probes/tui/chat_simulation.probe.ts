@@ -50,7 +50,7 @@ interface TuiScenario {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const FIXTURE_PATH = path.join(__dirname, '../../fixtures/tui/chat_simulation.json');
+const FIXTURE_PATH = path.join(process.cwd(), 'fixtures/tui/chat_simulation.json');
 
 // --- Generators ---
 
@@ -178,5 +178,10 @@ console.log(`Generating fixtures at: ${FIXTURE_PATH}`);
 const dir = path.dirname(FIXTURE_PATH);
 if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
-fs.writeFileSync(FIXTURE_PATH, JSON.stringify(scenarios, null, 2));
+const fixture = {
+  captured_at: new Date().toISOString(),
+  scenarios: scenarios
+};
+
+fs.writeFileSync(FIXTURE_PATH, JSON.stringify(fixture, null, 2));
 console.log('Successfully captured TUI chat simulation fixtures.');

@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node dist/src/index.js",
     "test": "npx tsc -p tsconfig.json && node --test dist/tests/unit/*.js dist/tests/contract/*.js dist/tests/integration/*.js",
     "build-plan": "npx tsc -p tsconfig.json && node dist/src/tools/build_plan.js",
     "scaffold": "npx tsc -p tsconfig.json && node dist/src/tools/scaffold.js",
     "decompose-plan": "npx tsc -p tsconfig.json && node dist/src/tools/decompose_plan.js",
+    "probes": "npx tsc -p tsconfig.json && node dist/src/tools/probes.js",
     "sdd:check": "npx tsc -p tsconfig.json && node dist/scripts/fixture-audit.js && node dist/scripts/mock-fixture-map.js",
     "tui": "npx tsc -p tsconfig.json && node dist/src/tui/index.js"
   },

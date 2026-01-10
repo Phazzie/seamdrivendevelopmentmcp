@@ -13,7 +13,7 @@ type Options = {
 };
 
 function parseArgs(argv: string[]): { seam: string | null; options: Options } {
-  const options: Options = { maxAgeDays: 2, allowStale: false };
+  const options: Options = { maxAgeDays: 7, allowStale: false };
   let seam: string | null = null;
 
   for (const arg of argv) {

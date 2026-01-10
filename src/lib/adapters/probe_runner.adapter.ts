@@ -28,7 +28,8 @@ export class ProbeRunnerAdapter implements IProbeRunner {
         // Compile (preserving directory structure flattened or relative - simplest is to just compile file-by-file)
         const compile = await this.exec("npx", [
           "tsc", file,
-          "--outDir", outDir, // This might flatten or mess up structure depending on tsc behavior with single files
+          "--outDir", outDir,
+          "--rootDir", process.cwd(),
           "--module", "esnext",
           "--target", "es2022",
           "--moduleResolution", "node",
@@ -53,7 +54,7 @@ export class ProbeRunnerAdapter implements IProbeRunner {
         // E.g. tsc probes/tui/chat.ts --outDir dist/probes -> dist/probes/probes/tui/chat.js
         // We need to find where it actually landed.
         
-        // For robustness, let's just assume standard tsc behavior mirroring the source structure relative to CWD.
+        // With --rootDir ., tsc mirrors the full structure relative to CWD.
         const relPath = path.relative(process.cwd(), file);
         const jsFile = path.join(outDir, relPath.replace(".ts", ".js"));
 

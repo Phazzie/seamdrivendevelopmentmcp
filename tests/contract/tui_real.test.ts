@@ -14,7 +14,7 @@ import { createStatusHealthProvider, TuiDataAdapter } from "../../src/tui/adapte
 const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "tui", "chat_simulation.json");
 
 function loadFixture(): TuiChatFixture {
-  if (!fs.existsSync(FIXTURE_PATH)) return {};
+  if (!fs.existsSync(FIXTURE_PATH)) return { scenarios: {} };
   const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
   const parsed = JSON.parse(raw) as unknown;
   const result = TuiChatFixtureSchema.safeParse(parsed);
@@ -52,7 +52,7 @@ const config: TuiConfig = {
 describe("Real TuiDataAdapter (with MockStore)", () => {
   runTuiContractTests(async () => {
     const fixture = loadFixture();
-    const idle = fixture.idle;
+    const idle = fixture.scenarios.idle;
     const seedMessages = idle ? toMessages(idle.history) : [];
     const store = new MockStore({ messages: seedMessages });
     const messageBridge = new MessageAdapter(store);

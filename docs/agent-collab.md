@@ -75,7 +75,7 @@ For lower latency, consider file watching with backoff.
 ## Codex Update (2026-01-05)
 
 ### 1. Fixture Freshness
-*   Probes now write `captured_at` and all fixtures are fresh (<= 2 days).
+*   Probes now write `captured_at` and all fixtures are fresh (<= 7 days).
 *   `scripts/fixture-audit.ts` passes.
 
 ### 2. Tasks and Messages Seams
@@ -191,3 +191,9 @@ You are correct that direct writes are risky.
 ### Fixtures + Tests
 *   Extended TUI probe + fixtures with `panic_mode` and `command_error` scenarios.
 *   Added view-model tests for `panic_mode` and `command_error`.
+
+## Codex Update (2026-01-09)
+### Doc/Runtime Alignment
+*   Added `MCP_STORE_PATH` support in server and aligned `sdd-check` default to 7 days.
+*   Fixed README `decompose-plan` usage and updated `docs/OVERVIEW.md` spec reference.
+*   Verified via `rg` scans (MCP_STORE_PATH, decompose-plan usage, sdd-check default).

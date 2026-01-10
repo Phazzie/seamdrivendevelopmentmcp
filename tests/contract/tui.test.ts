@@ -10,7 +10,7 @@ import { MockTuiDataClient } from "../../src/lib/mocks/tui.mock.js";
 const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "tui", "chat_simulation.json");
 
 function loadFixture(): TuiChatFixture {
-  if (!fs.existsSync(FIXTURE_PATH)) return {};
+  if (!fs.existsSync(FIXTURE_PATH)) return { scenarios: {} };
   const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
   const parsed = JSON.parse(raw) as unknown;
   const result = TuiChatFixtureSchema.safeParse(parsed);
@@ -32,7 +32,7 @@ export function runTuiContractTests(createClient: () => Promise<ITuiDataClient>)
 
     it("loads the idle scenario history", async () => {
       const history = await client.getChatHistory();
-      const idle = fixtures.idle;
+      const idle = fixtures.scenarios.idle;
       assert.ok(idle);
       assert.strictEqual(history.length, idle.history.length);
       if (idle.history.length) {
@@ -42,7 +42,7 @@ export function runTuiContractTests(createClient: () => Promise<ITuiDataClient>)
 
     it("returns fixture health for the scenario", async () => {
       const health = await client.getHealth();
-      const idle = fixtures.idle;
+      const idle = fixtures.scenarios.idle;
       assert.ok(idle);
       assert.strictEqual(health.persistence.status, idle.health.persistence.status);
     });
@@ -82,7 +82,7 @@ describe("MockTuiDataClient", () => {
     const fixtures = loadFixture();
     const client = new MockTuiDataClient({ scenario: "broadcast_waiting" });
     const history = await client.getChatHistory();
-    const scenario = fixtures.broadcast_waiting;
+    const scenario = fixtures.scenarios.broadcast_waiting;
     assert.ok(scenario);
     assert.strictEqual(history.length, scenario.history.length);
     assert.strictEqual(history[history.length - 1]?.role, "follower");

@@ -1,23 +1,22 @@
 {
-  "captured_at": "2026-01-08T03:19:59.994Z",
+  "captured_at": "2026-01-09T18:48:59.035Z",
   "events": [
     {
-      "id": "00000000-0000-4000-8000-000000000401",
+      "id": "5a8725d0-d615-45ca-9de9-b2b30aca13b1",
       "type": "task",
       "data": {
-        "taskId": "00000000-0000-4000-8000-000000000101",
-        "action": "created"
+        "action": "created",
+        "taskId": "probe-task"
       },
-      "timestamp": 1700000500000
+      "timestamp": 1767984538714
     },
     {
-      "id": "00000000-0000-4000-8000-000000000402",
+      "id": "3e6494f3-bfa1-472a-8755-154653c63477",
       "type": "message",
       "data": {
-        "messageId": "00000000-0000-4000-8000-000000000001",
         "channelId": "general"
       },
-      "timestamp": 1700000500001
+      "timestamp": 1767984538868
     }
   ]
 }

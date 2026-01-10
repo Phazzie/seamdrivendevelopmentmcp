@@ -12,8 +12,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const LOG_FILE = path.join(__dirname, '../../fixtures/telemetry/probe.log');
-const FIXTURE_OUT = path.join(__dirname, '../../fixtures/telemetry/fs_watch.json');
+const LOG_FILE = path.join(process.cwd(), 'fixtures/telemetry/probe.log');
+const FIXTURE_OUT = path.join(process.cwd(), 'fixtures/telemetry/fs_watch.json');
 
 // Ensure directory exists
 const dir = path.dirname(LOG_FILE);
@@ -22,7 +22,8 @@ if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 const results: any = {
   platform: process.platform,
   events: [],
-  timings: []
+  timings: [],
+  captured_at: new Date().toISOString()
 };
 
 // Reset log file

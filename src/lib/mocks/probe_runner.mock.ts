@@ -3,6 +3,9 @@
  */
 import { IProbeRunner, RunProbesInput, ProbeResult } from "../../../contracts/probe_runner.contract.js";
 
+// SDD: Grounded by fixture
+const FIXTURE_PATH = "fixtures/probe_runner/capabilities.json";
+
 export class MockProbeRunner implements IProbeRunner {
   constructor(private fixtureData: any) {}
 

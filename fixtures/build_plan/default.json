@@ -1,7 +1,36 @@
 {
-  "captured_at": "2026-01-08T00:59:20.782Z",
-  "os": "darwin",
-  "env": {
-    "lineEnding": "\n"
+  "captured_at": "2026-01-08T07:20:00.000Z",
+  "scenarios": {
+    "basic": {
+      "input": {
+        "title": "Project Plan",
+        "sections": [
+          {
+            "title": "Phase 1",
+            "items": [
+              {
+                "text": "Init repo",
+                "subitems": []
+              },
+              {
+                "text": "Add lint",
+                "subitems": [
+                  "Use eslint"
+                ]
+              }
+            ]
+          }
+        ],
+        "orphanItems": [
+          {
+            "text": "Global Task",
+            "subitems": []
+          }
+        ]
+      },
+      "expected": {
+        "markdown": "# Project Plan\n\n## Phase 1\n- [ ] Init repo\n- [ ] Add lint\n  - [ ] Use eslint\n\n- [ ] Global Task"
+      }
+    }
   }
 }

@@ -1,787 +1,790 @@
 {
-  "idle": {
-    "history": [
-      {
-        "id": "a26d36de-6c28-444e-a3fa-a590916c1dd2",
-        "timestamp": 1767792116690,
-        "author": "System",
-        "content": "Welcome to MCP Mission Control.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "58e6ed34-2595-4b42-9d88-a55c1e525dfc",
-        "timestamp": 1767792116690,
-        "author": "System",
-        "content": "Connected to server rev: 42.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      }
-    ],
-    "health": {
-      "persistence": {
-        "status": "healthy",
-        "latencyMs": 5
-      },
-      "telemetry": {
-        "status": "healthy",
-        "bufferUsage": 12
-      },
-      "state": {
-        "status": "synced",
-        "driftMs": 100
-      },
-      "command": {
-        "status": "healthy",
-        "lastResult": "success"
-      }
-    }
-  },
-  "broadcast_waiting": {
-    "history": [
-      {
-        "id": "f05fc92c-9bbe-448d-905e-b0ff1e196fe1",
-        "timestamp": 1767792116690,
-        "author": "System",
-        "content": "User: \"Optimize the store adapter.\"",
-        "pane": "left",
-        "target": "broadcast",
-        "role": "none",
-        "metadata": {
-          "broadcastHeader": "BROADCAST -> ALL"
+  "captured_at": "2026-01-09T18:49:26.904Z",
+  "scenarios": {
+    "idle": {
+      "history": [
+        {
+          "id": "d3511f95-e8a8-4fb7-bd32-225e700029f5",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "Welcome to MCP Mission Control.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "7ab00b96-d5e8-488a-8926-3200c8b3a4c0",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "Connected to server rev: 42.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
         }
-      },
-      {
-        "id": "0684ccc2-afe0-4fdb-a1da-d89b0c9d9fc6",
-        "timestamp": 1767792116690,
-        "author": "System",
-        "content": "User: \"Optimize the store adapter.\"",
-        "pane": "right",
-        "target": "broadcast",
-        "role": "none",
-        "metadata": {
-          "broadcastHeader": "BROADCAST -> ALL"
-        }
-      },
-      {
-        "id": "93c3e2df-b431-476c-a6c4-b972a3fd2069",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "I am analyzing the current implementation.",
-        "pane": "left",
-        "target": "left",
-        "role": "leader",
-        "metadata": {}
-      },
-      {
-        "id": "e6b10724-fcad-4346-875c-1b5af881983a",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Waiting for leader response.",
-        "pane": "right",
-        "target": "right",
-        "role": "follower",
-        "metadata": {
-          "waitingForAgentId": "Gemini"
+      ],
+      "health": {
+        "persistence": {
+          "status": "healthy",
+          "latencyMs": 5
+        },
+        "telemetry": {
+          "status": "healthy",
+          "bufferUsage": 12
+        },
+        "state": {
+          "status": "synced",
+          "driftMs": 100
+        },
+        "command": {
+          "status": "healthy",
+          "lastResult": "success"
         }
       }
-    ],
-    "health": {
-      "persistence": {
-        "status": "healthy",
-        "latencyMs": 5
-      },
-      "telemetry": {
-        "status": "healthy",
-        "bufferUsage": 12
-      },
-      "state": {
-        "status": "synced",
-        "driftMs": 100
-      },
-      "command": {
-        "status": "healthy",
-        "lastResult": "success"
-      }
-    }
-  },
-  "leader_response": {
-    "history": [
-      {
-        "id": "b3c1bcc4-8ef4-4a4e-8a9a-0962cfcbbdbd",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Analysis complete. I will implement the atomic rename pattern.",
-        "pane": "left",
-        "target": "left",
-        "role": "leader",
-        "metadata": {}
-      },
-      {
-        "id": "e4dc027d-b801-4724-b0aa-b27d6c5be21e",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Acknowledged. I will review the plan.",
-        "pane": "right",
-        "target": "right",
-        "role": "follower",
-        "metadata": {}
-      }
-    ],
-    "health": {
-      "persistence": {
-        "status": "healthy",
-        "latencyMs": 5
-      },
-      "telemetry": {
-        "status": "healthy",
-        "bufferUsage": 12
-      },
-      "state": {
-        "status": "synced",
-        "driftMs": 100
-      },
-      "command": {
-        "status": "healthy",
-        "lastResult": "success"
-      }
-    }
-  },
-  "dual_pane_history": {
-    "history": [
-      {
-        "id": "bb08e103-4e53-45e4-b76c-e33f73b9fe92",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 0: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "15be6569-eb11-4d8d-afcc-eacb35d44662",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 1: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "b5bcf124-dd59-4634-8647-543bc3e30907",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 2: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "37d0228a-ff85-4896-a8fb-2a7dc06daa01",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 3: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "333c44a2-73b9-43ac-932e-5d13b65e6f4c",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 4: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "85054814-fac1-455f-ae56-44e55e819e9b",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 5: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "e9d0cd21-2af9-4adb-8429-903c0b384edc",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 6: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "1797dbc2-230b-4c00-b924-4d9e50fe1b81",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 7: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "0e7246ca-afb2-4825-a6fe-4f7c0781bdf4",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 8: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "3d0a2baa-92ca-4522-8941-59c51a754bdd",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 9: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "b884a49d-395f-4d41-bde4-7851d583eb47",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 10: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "d08d84aa-7651-4ce8-a4e4-bfe434a514e4",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 11: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "50c4f477-b5e3-4dfd-8975-16d68011ecbd",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 12: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "e8f3518f-5130-4d2b-a25d-526ef3a7ccba",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 13: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "4ba377a5-eabf-4ca8-b036-40155e4c14bb",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 14: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "102e373c-09d0-4a42-bbd4-5987a9c48d9c",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 15: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "559cf8ec-5309-42d4-a2d0-3e88aef0e3bf",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 16: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "4ee2db8e-75ce-4ac8-9b54-6b174693a5d2",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 17: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "6ca97f06-7f1d-475b-b8b8-264100f7e477",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 18: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "3d0e5e67-6ad7-4370-8bed-33589ee1b884",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 19: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "e45dc999-f683-4f52-9b28-2688fcb475b4",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 20: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "5eeb5d0e-cec6-4d91-975c-2f3ca0b6c1ec",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 21: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "09e4ee0e-c6e0-465b-94a6-13388adc1852",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 22: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "8241fd8f-8d67-4735-b852-6245f242f3b2",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 23: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "2c4ef6e3-fc6e-48f4-abef-82279ab993af",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 24: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "dba73153-924c-4f6e-a00a-a9beb8408f9b",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 25: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "1fc9ec29-15bf-4818-adcf-e7efa6480f25",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 26: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "4968e7f6-9d7f-45fd-ac59-2602180eec00",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 27: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "c69cefb8-888e-48ee-a3a0-cd4fd95cd338",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 28: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "c9339be4-bb86-4135-bdf9-9e9ba341100b",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 29: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "f48a337e-2869-48c2-99d1-f7b6fba93817",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 30: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "9866c040-6b72-400b-bfe3-d282d3cdfb4a",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 31: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "b0c3dcc2-d1e6-41ca-a103-0e9c0d79b386",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 32: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "78086f3d-119d-439c-8e3a-a09dbdfaa003",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 33: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "1c81278d-324b-4346-8eb3-22dc750c3250",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 34: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "2054f5ee-936e-4ffd-a6c9-36ba33e66349",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 35: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "6556cf28-30c4-438a-bbbc-0f976b3509ac",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 36: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "564758fa-9820-45fa-9470-923db0288706",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 37: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "96281ee7-6a81-48d1-b350-8a27e6dedce5",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 38: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "a18779af-e37f-4230-ac60-c335414207a6",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 39: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "dcf2fa8a-e8dd-411a-91ee-9957ad30584e",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 40: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "37579b0b-9c75-4d18-9162-af421385c8aa",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 41: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "a037c311-8194-4dae-9e56-5a48a878a45d",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 42: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "be679b28-13fd-440d-b0c8-32806a7f0e60",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 43: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "6518d2bb-9370-49b9-83ae-1513f80832e6",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 44: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "fcc025c8-6855-4951-93b9-ec7ce48f41d9",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 45: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "36f7a5de-a70c-478b-9652-3dc2627206d3",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 46: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "c4ebec4a-00a4-42bc-b771-d60c14744fdd",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 47: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "68346083-7dbe-4e9b-ba52-ef97bfef310e",
-        "timestamp": 1767792116690,
-        "author": "Gemini",
-        "content": "Message 48: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      },
-      {
-        "id": "3e71724f-9184-46ea-9f9f-45850c7590e4",
-        "timestamp": 1767792116690,
-        "author": "Codex",
-        "content": "Message 49: This is a high-volume test message to verify scroll performance and pane separation.",
-        "pane": "right",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      }
-    ],
-    "health": {
-      "persistence": {
-        "status": "healthy",
-        "latencyMs": 5
-      },
-      "telemetry": {
-        "status": "degraded",
-        "bufferUsage": 85
-      },
-      "state": {
-        "status": "synced",
-        "driftMs": 100
-      },
-      "command": {
-        "status": "healthy",
-        "lastResult": "success"
-      }
-    }
-  },
-  "stale_state": {
-    "history": [
-      {
-        "id": "651ee92c-a3dd-4d49-92cd-bb6b44b16e61",
-        "timestamp": 1767792116690,
-        "author": "System",
-        "content": "Connectivity issues detected.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
-      }
-    ],
-    "health": {
-      "persistence": {
-        "status": "healthy",
-        "latencyMs": 5
-      },
-      "telemetry": {
-        "status": "healthy",
-        "bufferUsage": 12
-      },
-      "state": {
-        "status": "stale",
-        "driftMs": 18500
-      },
-      "command": {
-        "status": "healthy",
-        "lastResult": "success"
-      }
-    }
-  },
-  "panic_mode": {
-    "history": [
-      {
-        "id": "9db2daf4-1f5c-48d7-b192-6e653c1e6d72",
-        "timestamp": 1767792116690,
-        "author": "System",
-        "content": "Panic mode enabled.",
-        "pane": "left",
-        "target": "broadcast",
-        "role": "none",
-        "metadata": {
-          "broadcastHeader": "BROADCAST -> ALL"
+    },
+    "broadcast_waiting": {
+      "history": [
+        {
+          "id": "88103b40-9323-4cd9-8328-b7fffb7c96d7",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "User: \"Optimize the store adapter.\"",
+          "pane": "left",
+          "target": "broadcast",
+          "role": "none",
+          "metadata": {
+            "broadcastHeader": "BROADCAST -> ALL"
+          }
+        },
+        {
+          "id": "e55c2f49-4c75-44ff-bfc2-ab513f95029a",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "User: \"Optimize the store adapter.\"",
+          "pane": "right",
+          "target": "broadcast",
+          "role": "none",
+          "metadata": {
+            "broadcastHeader": "BROADCAST -> ALL"
+          }
+        },
+        {
+          "id": "b57da218-b449-4534-afea-1badc00e804b",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "I am analyzing the current implementation.",
+          "pane": "left",
+          "target": "left",
+          "role": "leader",
+          "metadata": {}
+        },
+        {
+          "id": "bc6ff886-00e9-4dd4-9ef7-c98662ad58a2",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Waiting for leader response.",
+          "pane": "right",
+          "target": "right",
+          "role": "follower",
+          "metadata": {
+            "waitingForAgentId": "Gemini"
+          }
         }
-      },
-      {
-        "id": "ec990c64-7329-474f-99bb-83f3a89031b5",
-        "timestamp": 1767792116690,
-        "author": "System",
-        "content": "Panic mode enabled.",
-        "pane": "right",
-        "target": "broadcast",
-        "role": "none",
-        "metadata": {
-          "broadcastHeader": "BROADCAST -> ALL"
+      ],
+      "health": {
+        "persistence": {
+          "status": "healthy",
+          "latencyMs": 5
+        },
+        "telemetry": {
+          "status": "healthy",
+          "bufferUsage": 12
+        },
+        "state": {
+          "status": "synced",
+          "driftMs": 100
+        },
+        "command": {
+          "status": "healthy",
+          "lastResult": "success"
         }
       }
-    ],
-    "health": {
-      "persistence": {
-        "status": "healthy",
-        "latencyMs": 5
-      },
-      "telemetry": {
-        "status": "healthy",
-        "bufferUsage": 12
-      },
-      "state": {
-        "status": "synced",
-        "driftMs": 100
-      },
-      "command": {
-        "status": "failed",
-        "lastResult": "error",
-        "lastError": "PANIC_MODE"
+    },
+    "leader_response": {
+      "history": [
+        {
+          "id": "6308c0e0-0c1c-4a21-8337-d9eca7c1b845",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Analysis complete. I will implement the atomic rename pattern.",
+          "pane": "left",
+          "target": "left",
+          "role": "leader",
+          "metadata": {}
+        },
+        {
+          "id": "f86e195a-4cd8-4492-833b-d5b5265b0461",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Acknowledged. I will review the plan.",
+          "pane": "right",
+          "target": "right",
+          "role": "follower",
+          "metadata": {}
+        }
+      ],
+      "health": {
+        "persistence": {
+          "status": "healthy",
+          "latencyMs": 5
+        },
+        "telemetry": {
+          "status": "healthy",
+          "bufferUsage": 12
+        },
+        "state": {
+          "status": "synced",
+          "driftMs": 100
+        },
+        "command": {
+          "status": "healthy",
+          "lastResult": "success"
+        }
       }
-    }
-  },
-  "command_error": {
-    "history": [
-      {
-        "id": "2cf2f924-9578-408d-b5ef-46e34eb10554",
-        "timestamp": 1767792116691,
-        "author": "System",
-        "content": "Send failed: server offline.",
-        "pane": "left",
-        "target": "left",
-        "role": "none",
-        "metadata": {}
+    },
+    "dual_pane_history": {
+      "history": [
+        {
+          "id": "24dcb5d2-b763-4a3d-a110-cd583d304fb7",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 0: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "97214346-8ca1-4e0d-8a1a-4ca2ba466c51",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 1: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "47e0d9d7-f5a3-4e9f-aef3-1171d4281cf5",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 2: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "f4c62f71-2bf5-4493-b473-d6b452d91d12",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 3: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "18073bae-11f3-4cb5-87f2-fd8e75f5d859",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 4: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "2475cf2b-f46e-4b54-92e6-3323aed1dc08",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 5: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "c70b70b2-b7b4-42d3-a3b6-5a88e1c91427",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 6: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "e3b4cde1-cab6-43bb-8beb-a9c241d7322e",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 7: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "4a1d2dac-d8b4-41f3-b64d-9bba275e926f",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 8: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "4de442a0-94f0-490c-ba81-781dfc476878",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 9: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "ed4e33c2-9919-4bbe-86cc-d16ce795ffa6",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 10: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "03d0085a-f49c-4b46-b192-1cb98829b693",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 11: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "629706d5-e5b4-4380-ba3b-b6dc1e4b801b",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 12: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "d05cfeb2-9077-416c-a918-ce4cf1e40152",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 13: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "c112a4a4-5280-466e-9359-681b2fc204b8",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 14: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "11f90003-2e9f-4109-93d6-6ad789ba1912",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 15: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "ccb95cf6-653f-4a10-830f-623715419b88",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 16: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "1ab3b1e8-9d4c-4791-9294-6d5d0c773a4b",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 17: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "da3e1c68-ac37-4916-a6c2-912ea8faaabc",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 18: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "1f097975-9039-40da-b0fb-5c4026edc39d",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 19: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "cf9f3ca0-bdd9-4dbb-aa18-0d90a2c8c8bd",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 20: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "7a35b7f4-c29a-45f1-a29a-79d6e941a450",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 21: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "24093e5f-5b87-4da4-89ea-2e543d9fb0a7",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 22: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "a38569de-c030-474b-b7b2-de5a67676b32",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 23: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "b9603788-ca7c-4096-8c00-97c0aade3cc1",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 24: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "52f18559-7b2f-45e8-91ac-59be90856bb1",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 25: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "02d4472f-58f4-466a-91b3-51c1509fbd49",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 26: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "4a89c496-96b5-41e8-98ef-23c164fa65b3",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 27: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "191d8bf1-12bd-4e61-ab8d-9da1d43aedde",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 28: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "03cb5303-c73f-4575-94cd-73a2c1580b0e",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 29: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "3fdacef1-b668-4c30-b754-72b2ede4cea5",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 30: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "06e1b467-536d-4d3d-8efd-93613dff0ce1",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 31: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "c68cf0ba-913a-49f3-94d5-ead1ba77b6d2",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 32: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "c0bcd21c-d8bb-4320-9224-ae45245c4518",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 33: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "3b111bd1-4541-4c5e-b9f5-30b2762a4524",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 34: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "f057c64a-a7ab-48d1-9dc8-48d384f04629",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 35: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "5335e02a-febb-47b4-9c11-af735148a10e",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 36: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "5e4c3490-02dc-443f-96d6-51f13b163076",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 37: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "83bd1b4e-de90-42a7-b611-d569c65e53a2",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 38: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "982153e0-dd7d-462f-bce5-a8738408d958",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 39: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "ca293895-f4e0-4629-8efe-68ab22cd2879",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 40: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "1b5bf001-7bab-4fbe-927b-e72096926050",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 41: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "8c211918-3867-4781-b627-cbb83a3ab8f6",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 42: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "d37eb79a-88fa-4872-a5ca-d1191a50ab50",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 43: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "86a69a95-8386-4af4-9961-07791440fc14",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 44: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "fed13eec-9532-4837-990e-8d0e705c4443",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 45: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "f5b691ac-8918-41f8-9f11-6b4393b7bb37",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 46: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "d4970dc5-2b54-418e-ba2a-a31a9b20b065",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 47: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "90b011f1-63b0-4950-b6ca-900064d894df",
+          "timestamp": 1767984566901,
+          "author": "Gemini",
+          "content": "Message 48: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        },
+        {
+          "id": "369d8c5c-4646-457f-98b6-871dfc5b32d4",
+          "timestamp": 1767984566901,
+          "author": "Codex",
+          "content": "Message 49: This is a high-volume test message to verify scroll performance and pane separation.",
+          "pane": "right",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        }
+      ],
+      "health": {
+        "persistence": {
+          "status": "healthy",
+          "latencyMs": 5
+        },
+        "telemetry": {
+          "status": "degraded",
+          "bufferUsage": 85
+        },
+        "state": {
+          "status": "synced",
+          "driftMs": 100
+        },
+        "command": {
+          "status": "healthy",
+          "lastResult": "success"
+        }
       }
-    ],
-    "health": {
-      "persistence": {
-        "status": "healthy",
-        "latencyMs": 5
-      },
-      "telemetry": {
-        "status": "healthy",
-        "bufferUsage": 12
-      },
-      "state": {
-        "status": "synced",
-        "driftMs": 100
-      },
-      "command": {
-        "status": "failed",
-        "lastResult": "error",
-        "lastError": "SERVER_OFFLINE"
+    },
+    "stale_state": {
+      "history": [
+        {
+          "id": "260faec7-4f6e-4598-abdc-a8391ddfc7f2",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "Connectivity issues detected.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        }
+      ],
+      "health": {
+        "persistence": {
+          "status": "healthy",
+          "latencyMs": 5
+        },
+        "telemetry": {
+          "status": "healthy",
+          "bufferUsage": 12
+        },
+        "state": {
+          "status": "stale",
+          "driftMs": 18500
+        },
+        "command": {
+          "status": "healthy",
+          "lastResult": "success"
+        }
+      }
+    },
+    "panic_mode": {
+      "history": [
+        {
+          "id": "a5a85799-daa3-47ef-b5b1-e846ae99f0d6",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "Panic mode enabled.",
+          "pane": "left",
+          "target": "broadcast",
+          "role": "none",
+          "metadata": {
+            "broadcastHeader": "BROADCAST -> ALL"
+          }
+        },
+        {
+          "id": "fae4ebae-9c45-40a7-8eb9-073d6516b058",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "Panic mode enabled.",
+          "pane": "right",
+          "target": "broadcast",
+          "role": "none",
+          "metadata": {
+            "broadcastHeader": "BROADCAST -> ALL"
+          }
+        }
+      ],
+      "health": {
+        "persistence": {
+          "status": "healthy",
+          "latencyMs": 5
+        },
+        "telemetry": {
+          "status": "healthy",
+          "bufferUsage": 12
+        },
+        "state": {
+          "status": "synced",
+          "driftMs": 100
+        },
+        "command": {
+          "status": "failed",
+          "lastResult": "error",
+          "lastError": "PANIC_MODE"
+        }
+      }
+    },
+    "command_error": {
+      "history": [
+        {
+          "id": "9f569eca-c3c8-48c4-896a-e88cdfd5e63b",
+          "timestamp": 1767984566901,
+          "author": "System",
+          "content": "Send failed: server offline.",
+          "pane": "left",
+          "target": "left",
+          "role": "none",
+          "metadata": {}
+        }
+      ],
+      "health": {
+        "persistence": {
+          "status": "healthy",
+          "latencyMs": 5
+        },
+        "telemetry": {
+          "status": "healthy",
+          "bufferUsage": 12
+        },
+        "state": {
+          "status": "synced",
+          "driftMs": 100
+        },
+        "command": {
+          "status": "failed",
+          "lastResult": "error",
+          "lastError": "SERVER_OFFLINE"
+        }
       }
     }
   }

@@ -11,7 +11,6 @@
     "nodes": [],
     "edges": []
   },
-  "captured_at": "2026-01-08T03:39:27.331Z",
   "adrs": [],
   "events": [],
   "notifications": [],
@@ -20,5 +19,6 @@
     "status": "idle",
     "updated_at": 0
   },
-  "review_gates": []
+  "review_gates": [],
+  "captured_at": "2026-01-09T18:49:23.494Z"
 }
