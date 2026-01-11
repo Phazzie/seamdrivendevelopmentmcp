@@ -1,36 +1,36 @@
 {
-  "captured_at": "2026-01-09T18:48:57.090Z",
+  "captured_at": "2026-01-11T00:16:20.145Z",
   "tasks": [
     {
-      "id": "424e6af2-2723-4186-a032-ab8f7e980dc3",
+      "id": "75ec6cfb-45d8-4167-b73b-c340a0f2f402",
       "title": "Dependency root",
       "description": "Root task with no dependencies.",
       "status": "done",
       "blockedBy": [],
-      "created_at": 1767984535986,
-      "updated_at": 1767984536224
+      "created_at": 1768090579082,
+      "updated_at": 1768090579266
     },
     {
-      "id": "7fc28ca1-4063-4bc0-b084-6ad1a315e3dd",
+      "id": "d2bd6703-4568-47d8-b008-607e995f7e7b",
       "title": "Dependent task",
       "description": "Blocked until root is done.",
       "status": "todo",
       "blockedBy": [
-        "424e6af2-2723-4186-a032-ab8f7e980dc3"
+        "75ec6cfb-45d8-4167-b73b-c340a0f2f402"
       ],
-      "created_at": 1767984536401,
-      "updated_at": 1767984536579
+      "created_at": 1768090579467,
+      "updated_at": 1768090579633
     },
     {
-      "id": "27fb997e-b8ff-483f-916c-c2894366e82b",
+      "id": "e0a4f158-0fab-435b-803b-83c65224c7d6",
       "title": "Blocked chain",
       "description": "Blocked until dependent task is done.",
       "status": "todo",
       "blockedBy": [
-        "7fc28ca1-4063-4bc0-b084-6ad1a315e3dd"
+        "d2bd6703-4568-47d8-b008-607e995f7e7b"
       ],
-      "created_at": 1767984536756,
-      "updated_at": 1767984536935
+      "created_at": 1768090579800,
+      "updated_at": 1768090579989
     }
   ]
 }

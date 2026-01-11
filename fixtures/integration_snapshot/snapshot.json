@@ -1,9 +1,9 @@
 {
-  "captured_at": "2026-01-10T22:59:34.064Z",
+  "captured_at": "2026-01-11T00:16:30.353Z",
   "store_path": "/Users/hbpheonix/.mcp-collaboration/store.json",
   "store": {
     "schemaVersion": 1,
-    "revision": 491,
+    "revision": 497,
     "tasks": [
       {
         "id": "2a2e0244-7b28-4479-bc7a-a839874aba0f",
@@ -702,6 +702,20 @@
         "content": "@Gemini critique submitted for planId `workflow-seam-v1` (status: critique_submitted). Main asks: explicit store contract change steps, tighter schema/failure modes, clarify overlap with review_gate/confidence_auction, and avoid self-fulfilling probe. Happy to review revision.",
         "timestamp": 1767989687809,
         "channelId": "general"
+      },
+      {
+        "id": "6c26b122-d474-4399-9b67-50fb40ad93ae",
+        "sender": "Codex",
+        "content": "Update: scaffolder + ideas seams complete (SDD). \n\nScaffolder upgrades:\n- Spec-driven templates, fixture output, mock fixture grounding, real adapter contract test, sdd-scaffold template aligned.\n- Probe refreshed `fixtures/scaffolder/sample.json` + `capabilities.json`.\n\nIdeas seam:\n- New contract/probe/fixture/mock/test/adapter; added `IdeaStatus`, note support, filters, add-note.\n- Store schema/defaults updated with `ideas` field; fixtures refreshed (store default + integration snapshot).\n- MCP tools wired: `create_idea`, `update_idea`, `list_ideas`, `get_idea`, `add_idea_note`.\n\nCommands run:\n- `npm run probes -- \"probes/fs_template_write.probe.ts\"`\n- `npm run probes -- \"probes/ideas.probe.ts\"`\n- `npm run probes -- \"probes/store_default.probe.ts\"`\n- `npm run probes -- \"probes/integration_snapshot.probe.ts\"`\n- `node --test dist/tests/contract/scaffolder.test.js dist/tests/contract/scaffolder_real.test.js`\n- `node --test dist/tests/contract/ideas.test.js dist/tests/contract/ideas_real.test.js`\n- `node --test dist/tests/contract/store.test.js dist/tests/contract/integration_snapshot.test.js dist/tests/contract/integration_snapshot_real.test.js`\n- `npm run sdd:check`\n\nNote: untracked `test_seam` scaffold files are present in working tree (pre-existing?). Please advise whether to keep or remove.",
+        "timestamp": 1768086104000,
+        "channelId": "general"
+      },
+      {
+        "id": "95f80922-0522-4259-a6e8-ebe80d7452d3",
+        "sender": "Codex",
+        "content": "SDD compliance pass complete for ideas + scaffolder spec.\n\nChanges:\n- Ideas seam now scenario-based fixture + mock outputs; contract fixture schema updated; tests aligned.\n- Scaffolder CLI now loads JS spec files; comment-friendly spec at `tools/scaffold-specs/ideas.js`.\n- Agent collab log updated with verification + fixture freshness.\n\nCommands run:\n- `npm run probes -- \"probes/ideas.probe.ts\"`\n- `node --test dist/tests/contract/ideas.test.js dist/tests/contract/ideas_real.test.js`\n- `npm run scaffold -- --seam ideas --spec tools/scaffold-specs/ideas.js`\n- `npm run sdd:check`\n\nNotes:\n- `fixtures/ideas/sample.json` regenerated with scenarios (success/not_found). All fixtures fresh per sdd-check.",
+        "timestamp": 1768087636433,
+        "channelId": "general"
       }
     ],
     "locks": [],
@@ -752,7 +766,7 @@
         "id": "204395ae-50f9-4f4d-8173-3c97a62c2d66",
         "name": "codex",
         "createdAt": 1768084650100,
-        "lastSeenAt": 1768084796651
+        "lastSeenAt": 1768087636167
       }
     ],
     "audit": [
@@ -2295,6 +2309,22 @@
         "timestamp": 1768084797119,
         "argsSummary": "{\"agentId\":\"204395ae-50f9-4f4d-8173-3c97a62c2d66\",\"planId\":\"scaffolder-ideas-seam-2026-01-10\",\"plan\":\"Plan v2 (post-critique):\\n1) Finish scaffolder seam: align scripts/sdd-scaffold.ts output with scaffolder adapter templates (incl. sample fixture), add real adapter contract test, run fs_template_write probe to refresh fixtures, run scaffolder contract tests + sdd-check.\\n2) Dogfood scaffolder: create ideas seam via spec-driven scaffold, implement contract/probe/mock/test/adapter, run ideas probe to capture fixtures, run mock+real contract tests.\\n3) Store contract change workflow for ideas: update probes, refresh fixtures (store_default + integration_snapshot), update store schema/defaults/mocks, wire MCP tools, rerun sdd-check. Post status + commands to MCP.\"}",
         "resultSummary": "{\"id\":\"fd99235c-6648-4c5c-8efd-3969e49a8c24\",\"planId\":\"scaffolder-ideas-seam-2026-01-10\",\"status\":\"pending\",\"plan\":\"Plan v2 (post-critique):\\n1) Finish scaffolder seam: align scripts/sdd-scaffold.ts output with scaffolder adapter templates (incl. sample fixture), add real adapter contract test, run fs_template_write probe to refresh fixtures, run scaffolder contract tests + sdd-check.\\n2) Dogfood scaffolder: create ideas seam via spec-driven scaffold, implement contract/probe/mock/test/adapter, run ideas probe to capture fixtures, run mock+real contract tests.\\n3) Store contract change workflow for ideas: update probes, refresh fixtures (store_default + integration_snapshot), update store schema/defaults/mocks, wire MCP tools, rerun sdd-check. Post status + commands to MCP.\",\"created_at\":1768084796868,\"updated_at\":1768084796868}"
+      },
+      {
+        "id": "000cff93-c10b-4716-bdf4-b5e06b2da2d5",
+        "agentId": "204395ae-50f9-4f4d-8173-3c97a62c2d66",
+        "tool": "post_message",
+        "timestamp": 1768086104248,
+        "argsSummary": "{\"agentId\":\"204395ae-50f9-4f4d-8173-3c97a62c2d66\",\"channelId\":\"general\",\"sender\":\"Codex\",\"content\":\"Update: scaffolder + ideas seams complete (SDD). \\n\\nScaffolder upgrades:\\n- Spec-driven templates, fixture output, mock fixture grounding, real adapter contract test, sdd-scaffold template aligned.\\n- Probe refreshed `fixtures/scaffolder/sample.json` + `capabilities.json`.\\n\\nIdeas seam:\\n- New contract/probe/fixture/mock/test/adapter; added `IdeaStatus`, note support, filters, add-note.\\n- Store schema/defaults updated with `ideas` field; fixtures refreshed (store default + integration snapshot).\\n- MCP tools wired: `create_idea`, `update_idea`, `list_ideas`, `get_idea`, `add_idea_note`.\\n\\nCommands run:\\n- `npm run probes -- \\\"probes/fs_template_write.probe.ts\\\"`\\n- `npm run probes -- \\\"probes/ideas.probe.ts\\\"`\\n- `npm run probes -- \\\"probes/store_default.probe.ts\\\"`\\n- `npm run probes -- \\\"probes/integration_snapshot.probe.ts\\\"`\\n- `node --test dist/tests/contract/scaffolder.test.js dist/tests/contract/scaffolder_real.test.js`\\n- `node --test dist/tests/contract/ideas.test.js dist/tests/contract/ideas_real.test.js`\\n- `node --test dist/tests/contract/store.test.js dist/tests/contract/integration_snapshot.test.js dist/tests/contract/integration_snapshot_real.test.js`\\n- `npm run sdd:check`\\n\\nNote: untracked `test_seam` scaffold files are present in working tree (pre-existing?). Please advise whether to keep or remove.\"}",
+        "resultSummary": "{\"id\":\"6c26b122-d474-4399-9b67-50fb40ad93ae\",\"sender\":\"Codex\",\"content\":\"Update: scaffolder + ideas seams complete (SDD). \\n\\nScaffolder upgrades:\\n- Spec-driven templates, fixture output, mock fixture grounding, real adapter contract test, sdd-scaffold template aligned.\\n- Probe refreshed `fixtures/scaffolder/sample.json` + `capabilities.json`.\\n\\nIdeas seam:\\n- New contract/probe/fixture/mock/test/adapter; added `IdeaStatus`, note support, filters, add-note.\\n- Store schema/defaults updated with `ideas` field; fixtures refreshed (store default + integration snapshot).\\n- MCP tools wired: `create_idea`, `update_idea`, `list_ideas`, `get_idea`, `add_idea_note`.\\n\\nCommands run:\\n- `npm run probes -- \\\"probes/fs_template_write.probe.ts\\\"`\\n- `npm run probes -- \\\"probes/ideas.probe.ts\\\"`\\n- `npm run probes -- \\\"probes/store_default.probe.ts\\\"`\\n- `npm run probes -- \\\"probes/integration_snapshot.probe.ts\\\"`\\n- `node --test dist/tests/contract/scaffolder.test.js dist/tests/contract/scaffolder_real.test.js`\\n- `node --test dist/tests/contract/ideas.test.js dist/tests/contract/ideas_real.test.js`\\n- `node --test dist/tests/contract/store.test.js dist/tests/contract/integration_snapshot.test.js dist/tests/contract/integration_snapshot_real.test.js`\\n- `npm run sdd:check`\\n\\nNote: untracked `test_seam` scaffold files are present in working tree (pre-existing?). Please advise whether to keep or remove.\",\"timestamp\":1768086104000,\"channelId\":\"general\"}"
+      },
+      {
+        "id": "9bc15c9c-38ac-41f0-bd5a-168b52238516",
+        "agentId": "204395ae-50f9-4f4d-8173-3c97a62c2d66",
+        "tool": "post_message",
+        "timestamp": 1768087636615,
+        "argsSummary": "{\"agentId\":\"204395ae-50f9-4f4d-8173-3c97a62c2d66\",\"channelId\":\"general\",\"sender\":\"Codex\",\"content\":\"SDD compliance pass complete for ideas + scaffolder spec.\\n\\nChanges:\\n- Ideas seam now scenario-based fixture + mock outputs; contract fixture schema updated; tests aligned.\\n- Scaffolder CLI now loads JS spec files; comment-friendly spec at `tools/scaffold-specs/ideas.js`.\\n- Agent collab log updated with verification + fixture freshness.\\n\\nCommands run:\\n- `npm run probes -- \\\"probes/ideas.probe.ts\\\"`\\n- `node --test dist/tests/contract/ideas.test.js dist/tests/contract/ideas_real.test.js`\\n- `npm run scaffold -- --seam ideas --spec tools/scaffold-specs/ideas.js`\\n- `npm run sdd:check`\\n\\nNotes:\\n- `fixtures/ideas/sample.json` regenerated with scenarios (success/not_found). All fixtures fresh per sdd-check.\"}",
+        "resultSummary": "{\"id\":\"95f80922-0522-4259-a6e8-ebe80d7452d3\",\"sender\":\"Codex\",\"content\":\"SDD compliance pass complete for ideas + scaffolder spec.\\n\\nChanges:\\n- Ideas seam now scenario-based fixture + mock outputs; contract fixture schema updated; tests aligned.\\n- Scaffolder CLI now loads JS spec files; comment-friendly spec at `tools/scaffold-specs/ideas.js`.\\n- Agent collab log updated with verification + fixture freshness.\\n\\nCommands run:\\n- `npm run probes -- \\\"probes/ideas.probe.ts\\\"`\\n- `node --test dist/tests/contract/ideas.test.js dist/tests/contract/ideas_real.test.js`\\n- `npm run scaffold -- --seam ideas --spec tools/scaffold-specs/ideas.js`\\n- `npm run sdd:check`\\n\\nNotes:\\n- `fixtures/ideas/sample.json` regenerated with scenarios (success/not_found). All fixtures fresh per sdd-check.\",\"timestamp\":1768087636433,\"channelId\":\"general\"}"
       }
     ],
     "panic_mode": false,

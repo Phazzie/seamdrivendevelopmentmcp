@@ -1,28 +1,28 @@
 {
-  "captured_at": "2026-01-09T18:49:05.492Z",
+  "captured_at": "2026-01-11T00:16:33.547Z",
   "nodes": [
     {
-      "id": "279452d2-0741-48c8-ab7f-b6e21738e66d",
+      "id": "bd542c3a-f599-4bdc-810a-b59145884e5e",
       "type": "term",
       "content": "SDD",
-      "created_at": 1767984545013,
-      "updated_at": 1767984545013
+      "created_at": 1768090592701,
+      "updated_at": 1768090592701
     },
     {
-      "id": "bf1ee96f-1ed5-4222-942a-6833197d1c23",
+      "id": "b2ddbbd5-bc0b-4f6d-98cb-58e0279d969c",
       "type": "decision",
       "content": "Store uses JSON for persistence.",
-      "created_at": 1767984545158,
-      "updated_at": 1767984545158
+      "created_at": 1768090592914,
+      "updated_at": 1768090592914
     }
   ],
   "edges": [
     {
-      "id": "18550873-e92d-4892-8e68-5ddad8f2d88a",
-      "from": "279452d2-0741-48c8-ab7f-b6e21738e66d",
-      "to": "bf1ee96f-1ed5-4222-942a-6833197d1c23",
+      "id": "a9b647ed-3ffe-427d-af10-2692b8fe74fb",
+      "from": "bd542c3a-f599-4bdc-810a-b59145884e5e",
+      "to": "b2ddbbd5-bc0b-4f6d-98cb-58e0279d969c",
       "relation": "explains",
-      "created_at": 1767984545336
+      "created_at": 1768090593181
     }
   ]
 }

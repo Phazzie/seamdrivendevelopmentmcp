@@ -1,23 +1,23 @@
 {
-  "captured_at": "2026-01-09T18:49:25.639Z",
+  "captured_at": "2026-01-11T00:16:55.583Z",
   "tasks": [
     {
-      "id": "26893e25-9b4f-42f6-befb-c9cb445e943e",
+      "id": "21bba279-a66a-4df7-9e75-21aef1a658a9",
       "title": "Sample Task",
       "description": "Captured from probe",
       "status": "todo",
       "blockedBy": [],
-      "created_at": 1767984565110,
-      "updated_at": 1767984565110
+      "created_at": 1768090615009,
+      "updated_at": 1768090615009
     },
     {
-      "id": "aafe09e5-0379-4c49-846c-a8a463c8f3cf",
+      "id": "aa173e9d-1da1-4572-a9eb-64f92b10193e",
       "title": "Second Task",
       "description": "Probe status change",
       "status": "done",
       "blockedBy": [],
-      "created_at": 1767984565261,
-      "updated_at": 1767984565450
+      "created_at": 1768090615194,
+      "updated_at": 1768090615383
     }
   ]
 }

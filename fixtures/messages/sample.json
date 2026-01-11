@@ -1,19 +1,19 @@
 {
-  "captured_at": "2026-01-09T18:49:09.482Z",
+  "captured_at": "2026-01-11T00:16:37.981Z",
   "revision": 3,
   "messages": [
     {
-      "id": "eb694a67-6ae4-49ea-b3c2-0ce007a892a0",
+      "id": "124657bc-6d28-4ec8-b092-2baa669a476a",
       "sender": "codex",
       "content": "Probe hello",
-      "timestamp": 1767984549114,
+      "timestamp": 1768090597661,
       "channelId": "general"
     },
     {
-      "id": "e9ae301e-5f0f-4d63-a141-04a5b1a1aefb",
+      "id": "cde67c9c-701b-492b-97c1-019c3382c6c8",
       "sender": "gemini",
       "content": "Probe response",
-      "timestamp": 1767984549303,
+      "timestamp": 1768090597803,
       "channelId": "probe"
     }
   ]

@@ -211,3 +211,18 @@ You are correct that direct writes are risky.
 
 ### Fixture Freshness
 *   Ideas fixture refreshed (captured_at present). No waivers.
+
+## Codex Update (2026-01-11)
+
+### Agent Identity Tightening
+*   Added strict agent name validation and Claude identity probe.
+*   Updated agent identity probe to capture "User" fixture (enum-compliant).
+
+### Verification
+*   `npm run probes -- "probes/agent_identity.probe.ts"`
+*   `npm run probes -- "probes/agent_claude.probe.ts"`
+*   `node --test dist/tests/contract/agents.test.js dist/tests/contract/agents_real.test.js dist/tests/contract/agent_claude.test.js`
+*   `npm run sdd:check`
+
+### Fixture Freshness
+*   Agent fixtures refreshed (captured_at present). No waivers.

@@ -1,4 +1,3 @@
-import os from "os";
 import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
@@ -10,12 +9,11 @@ if (!fs.existsSync(FIXTURE_DIR)) {
 }
 
 async function main() {
-  const user = os.userInfo();
   const now = Date.now();
 
   const fixture = {
     id: randomUUID(),
-    name: user.username,
+    name: "User",
     createdAt: now,
     lastSeenAt: now,
     captured_at: new Date().toISOString(),

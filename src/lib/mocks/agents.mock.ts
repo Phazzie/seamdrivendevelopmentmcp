@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { Agent, IAgentRegistry } from "../../../contracts/agents.contract.js";
+import { AgentNameSchema } from "../../../contracts/agents.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
 
 const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "agents", "local_user.json");
@@ -38,13 +39,14 @@ export class MockAgentRegistry implements IAgentRegistry {
   }
 
   async register(name: string): Promise<Agent> {
-    const existing = this.agents.find((agent) => agent.name === name);
+    const validatedName = AgentNameSchema.parse(name);
+    const existing = this.agents.find((agent) => agent.name === validatedName);
     if (existing) return existing;
 
     const now = this.nextTime();
     const agent: Agent = {
       id: this.nextId(),
-      name,
+      name: validatedName,
       createdAt: now,
       lastSeenAt: now,
     };

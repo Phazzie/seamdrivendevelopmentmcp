@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import type { Agent, IAgentRegistry } from "../../../contracts/agents.contract.js";
+import { AgentNameSchema } from "../../../contracts/agents.contract.js";
 import type { IStore, PersistedStore } from "../../../contracts/store.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
 
@@ -31,11 +32,12 @@ export class AgentAdapter implements IAgentRegistry {
   }
 
   async register(name: string): Promise<Agent> {
+    const validatedName = AgentNameSchema.parse(name);
     return this.runTransaction((current) => {
       const now = Date.now();
       const agent: Agent = {
         id: randomUUID(),
-        name,
+        name: validatedName,
         createdAt: now,
         lastSeenAt: now,
       };

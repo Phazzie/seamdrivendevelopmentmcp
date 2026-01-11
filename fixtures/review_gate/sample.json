@@ -1,13 +1,13 @@
 {
-  "captured_at": "2026-01-09T18:49:19.116Z",
+  "captured_at": "2026-01-11T00:16:48.660Z",
   "gates": [
     {
-      "id": "cdb5b106-5948-4219-9f20-753bb0a67e99",
+      "id": "2405a1ce-fde2-44fe-bd23-7abc3ff3ba31",
       "planId": "plan-001",
       "status": "pending",
       "plan": "## Plan\n- [ ] Task A\n",
-      "created_at": 1767984558923,
-      "updated_at": 1767984558923
+      "created_at": 1768090608512,
+      "updated_at": 1768090608512
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-09T18:49:20.337Z",
+  "captured_at": "2026-01-11T00:16:49.930Z",
   "os": "darwin",
   "node": "v23.8.0",
   "note": "Scheduler is pure logic; fixture scenarios define expected behavior."

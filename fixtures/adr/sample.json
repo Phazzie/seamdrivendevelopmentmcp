@@ -1,21 +1,21 @@
 {
-  "captured_at": "2026-01-09T18:48:47.644Z",
+  "captured_at": "2026-01-11T00:16:04.910Z",
   "adrs": [
     {
-      "id": "169d5a7d-8c64-4fe7-88d5-1230a6c5454e",
+      "id": "0d8c48d2-9ace-41c4-82c4-45ec7ad445f1",
       "title": "Adopt SDD",
       "status": "accepted",
       "context": "We need a predictable development process.",
       "decision": "Use seam-driven development for new features.",
-      "created_at": 1767984527317
+      "created_at": 1768090564490
     },
     {
-      "id": "4e1522a1-b898-4b55-925e-260a97ea7697",
+      "id": "019b25cf-cbef-4565-baf2-26565b0a45e8",
       "title": "Persist knowledge in store",
       "status": "proposed",
       "context": "Knowledge should survive restarts.",
       "decision": "Store knowledge graph in store.json for v1.",
-      "created_at": 1767984527489
+      "created_at": 1768090564741
     }
   ]
 }
