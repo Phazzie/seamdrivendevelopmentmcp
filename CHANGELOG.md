@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## 2026-01-11
+- **Agent Identity**: Enforced enum names, refreshed agent fixtures, and added Claude identity probe + tests.
+- **Creative Notes**: Added creative writing adaptation and Wu-Tang collaboration profiles.
+- **SDD Logs**: Recorded verification and fixture refresh in `docs/agent-collab.md`.
+
+## 2026-01-10
+- **Ideas Seam**: Added contract/probe/fixture/mock/adapter/tests and MCP tools (`create_idea`, `update_idea`, `list_ideas`, `get_idea`, `add_idea_note`) with scenario-based fixtures.
+- **Scaffolder**: Upgraded to spec-driven templates, added real adapter contract test, and enabled JS spec files.
+- **Store/Fixtures**: Added `ideas` to store schema/defaults and refreshed integration snapshot fixtures.
+
 ## 2026-01-05
 - **Mission Control V2 (The Cockpit)**: Major architectural rebuild of the TUI.
     - **Dual-Pane Chat**: Implemented split-screen leader/follower view with broadcast capabilities.
