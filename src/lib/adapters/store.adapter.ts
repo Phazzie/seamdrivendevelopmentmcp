@@ -43,11 +43,11 @@ export class StoreAdapter implements IStore {
         moods: [],
         arbitration: { status: "idle", updated_at: 0 },
         review_gates: [],
+        experiments: []
       };
     }
-
     try {
-      const content = fs.readFileSync(this.filePath, 'utf-8');
+      const content = fs.readFileSync(this.filePath, "utf-8");
       const data = JSON.parse(content);
       // Validate schema
       const result = PersistedStoreSchema.safeParse(data);

@@ -55,11 +55,17 @@ A safety mechanism to freeze all operations in case of anomalies.
 *   **Step 5.2: The View Model:** Pure `deriveViewModel` logic with strict testing.
 *   **Step 5.3: The Adapter & UI:** `tui.adapter.ts` mapping to MCP tools, and `cockpit.ts` UI using `blessed`.
 
-### Phase 6: Advanced Suites - **COMPLETE**
-*   **Management Suite:** `link_tasks`, `divvy_work`.
-*   **Intelligence Suite:** `knowledge_graph`, `adr`.
-*   **Communication Suite:** channelized messages, `event_stream`, `priority_notifications`.
-*   **Meta-Cognition Suite:** `confidence_auction`, `mood_log`, `human_arbitration`, `devils_advocate`.
+### Phase 6: Meta-Cognition Suite - **COMPLETE**
+*   **Confidence Auction:** `resolve_confidence_auction`.
+*   **Mood Log:** `log_mood`, `list_moods`.
+*   **Human Arbitration:** `request_gavel`, `grant_gavel`.
+*   **Review Gate:** `submit_plan`, `approve_plan`.
+
+### Phase 7: Emergent Capabilities - **IN PROGRESS**
+*   **The Scientist Seam (Autonomous Probing):** - **COMPLETE**
+    *   **Goal:** Auto-generate and run probes for "hypothesis" ideas.
+    *   **Tools:** `create_experiment`, `run_experiment`, `list_experiments`.
+    *   **Artifacts:** Contract, Probe, Fixture, Mock, Adapter, Store Extension.
 
 ---
 

@@ -119,5 +119,6 @@ All errors must conform to `AppError`:
 - **Mood:** `log_mood`, `list_moods`
 - **Arbitration:** `get_gavel_state`, `request_gavel`, `grant_gavel`, `release_gavel`
 - **Review:** `submit_plan`, `submit_critique`, `approve_plan`, `get_review_gate`, `list_review_gates`
+- **Scientist:** `create_experiment`, `run_experiment`, `list_experiments`
 - **Messages:** `post_message`, `list_messages`, `wait_for_update`
 - **Panic:** `trigger_panic`, `resolve_panic`

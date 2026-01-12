@@ -24,6 +24,7 @@ function loadDefaultState(): PersistedStore {
       moods: [],
       arbitration: { status: "idle", updated_at: 0 },
       review_gates: [],
+      experiments: []
     };
   }
   const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");

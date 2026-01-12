@@ -63,6 +63,7 @@ export const PersistedStoreSchema = z.object({
   moods: z.array(MoodEntrySchema).default([]),
   arbitration: GavelStateSchema.default({ status: "idle", updated_at: 0 }),
   review_gates: z.array(ReviewGateSchema).default([]),
+  experiments: z.array(z.unknown()).default([]),
 });
 
 export type PersistedStore = z.infer<typeof PersistedStoreSchema>;
