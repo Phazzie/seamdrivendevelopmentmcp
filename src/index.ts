@@ -29,13 +29,13 @@ import { StatusAdapter } from "./lib/adapters/status.adapter.js";
 import { AuditAdapter } from "./lib/adapters/audit.adapter.js";
 import { ProbeRunnerAdapter } from "./lib/adapters/probe_runner.adapter.js";
 import { ScaffolderAdapter } from "./lib/adapters/scaffolder.adapter.js";
-import { ScientistAdapter } from "./lib/adapters/scientist.adapter.js";
 import { AppError } from "../contracts/store.contract.js";
 
 // Setup
+const HOME_DIR = os.homedir();
 const STORE_PATH = process.env.MCP_STORE_PATH
   ? path.resolve(process.env.MCP_STORE_PATH)
-  : "/Users/hbpheonix/.mcp-collaboration/store.json";
+  : path.join(HOME_DIR, ".mcp-collaboration", "store.json");
 
 const storeDir = path.dirname(STORE_PATH);
 if (!fs.existsSync(storeDir)) {
@@ -64,7 +64,6 @@ const status = new StatusAdapter(store);
 const audit = new AuditAdapter(store);
 const probeRunner = new ProbeRunnerAdapter();
 const scaffolder = new ScaffolderAdapter();
-const scientist = new ScientistAdapter(store);
 
 // MCP Server
 const server = new Server(
@@ -82,45 +81,6 @@ const server = new Server(
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
-      // --- Scientist ---
-      {
-        name: "create_experiment",
-        description: "Create a new experiment hypothesis.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            ideaId: { type: "string" },
-            hypothesis: { type: "string" },
-            probeCode: { type: "string" },
-            agentId: { type: "string" }
-          },
-          required: ["ideaId", "hypothesis", "probeCode", "agentId"]
-        }
-      },
-      {
-        name: "run_experiment",
-        description: "Execute a pending experiment probe.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            id: { type: "string" },
-            agentId: { type: "string" }
-          },
-          required: ["id", "agentId"]
-        }
-      },
-      {
-        name: "list_experiments",
-        description: "List experiments.",
-        inputSchema: {
-          type: "object",
-          properties: {
-            status: { type: "string", enum: ["pending", "running", "completed", "failed"] },
-            agentId: { type: "string" }
-          },
-          required: ["agentId"]
-        }
-      },
       // --- Meta-Tools ---
       {
         name: "run_probe",
@@ -845,31 +805,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   };
 
   try {
-    // --- Scientist ---
-    if (name === "create_experiment") {
-      const { ideaId, hypothesis, probeCode } = args as any;
-      const agentId = await requireAgentId();
-      const experiment = await scientist.createExperiment(ideaId, hypothesis, probeCode);
-      await recordAudit(agentId, name, summarize(args), summarize(experiment));
-      return { content: [{ type: "text", text: JSON.stringify(experiment, null, 2) }] };
-    }
-
-    if (name === "run_experiment") {
-      const id = (args as any).id as string;
-      const agentId = await requireAgentId();
-      const result = await scientist.runExperiment(id);
-      await recordAudit(agentId, name, summarize(args), summarize(result));
-      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
-
-    if (name === "list_experiments") {
-      const status = (args as any).status as any;
-      const agentId = await requireAgentId();
-      const list = await scientist.listExperiments(status);
-      await recordAudit(agentId, name, summarize(args), summarize(list));
-      return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
-    }
-
     // --- Agents ---
     if (name === "register_agent") {
       const agentName = (args as any).name as string;

@@ -61,12 +61,6 @@ A safety mechanism to freeze all operations in case of anomalies.
 *   **Human Arbitration:** `request_gavel`, `grant_gavel`.
 *   **Review Gate:** `submit_plan`, `approve_plan`.
 
-### Phase 7: Emergent Capabilities - **IN PROGRESS**
-*   **The Scientist Seam (Autonomous Probing):** - **COMPLETE**
-    *   **Goal:** Auto-generate and run probes for "hypothesis" ideas.
-    *   **Tools:** `create_experiment`, `run_experiment`, `list_experiments`.
-    *   **Artifacts:** Contract, Probe, Fixture, Mock, Adapter, Store Extension.
-
 ---
 
 ## 4. Advanced Suites (Implemented)

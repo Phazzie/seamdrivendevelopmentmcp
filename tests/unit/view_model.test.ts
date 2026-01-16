@@ -26,7 +26,7 @@ const input: TuiInputState = {
 
 test("deriveViewModel - idle scenario", () => {
   const fixtures = JSON.parse(fs.readFileSync(FIXTURE_PATH, "utf8"));
-  const { history, health } = fixtures.idle;
+  const { history, health } = fixtures.scenarios.idle;
 
   const vm = deriveViewModel(config, input, history, health);
 
@@ -38,7 +38,7 @@ test("deriveViewModel - idle scenario", () => {
 
 test("deriveViewModel - broadcast_waiting scenario", () => {
   const fixtures = JSON.parse(fs.readFileSync(FIXTURE_PATH, "utf8"));
-  const { history, health } = fixtures.broadcast_waiting;
+  const { history, health } = fixtures.scenarios.broadcast_waiting;
 
   const vm = deriveViewModel(config, input, history, health);
 
@@ -51,7 +51,7 @@ test("deriveViewModel - broadcast_waiting scenario", () => {
 
 test("deriveViewModel - dual_pane_history scenario", () => {
   const fixtures = JSON.parse(fs.readFileSync(FIXTURE_PATH, "utf8"));
-  const { history, health } = fixtures.dual_pane_history;
+  const { history, health } = fixtures.scenarios.dual_pane_history;
 
   const vm = deriveViewModel(config, input, history, health);
 
@@ -62,7 +62,7 @@ test("deriveViewModel - dual_pane_history scenario", () => {
 
 test("deriveViewModel - leader_response scenario", () => {
   const fixtures = JSON.parse(fs.readFileSync(FIXTURE_PATH, "utf8"));
-  const { history, health } = fixtures.leader_response;
+  const { history, health } = fixtures.scenarios.leader_response;
 
   const vm = deriveViewModel(config, input, history, health);
 
@@ -74,7 +74,7 @@ test("deriveViewModel - leader_response scenario", () => {
 
 test("deriveViewModel - stale_state scenario", () => {
   const fixtures = JSON.parse(fs.readFileSync(FIXTURE_PATH, "utf8"));
-  const { history, health } = fixtures.stale_state;
+  const { history, health } = fixtures.scenarios.stale_state;
 
   const vm = deriveViewModel(config, input, history, health);
 
@@ -84,7 +84,7 @@ test("deriveViewModel - stale_state scenario", () => {
 
 test("deriveViewModel - panic_mode scenario", () => {
   const fixtures = JSON.parse(fs.readFileSync(FIXTURE_PATH, "utf8"));
-  const { history, health } = fixtures.panic_mode;
+  const { history, health } = fixtures.scenarios.panic_mode;
 
   const vm = deriveViewModel(config, input, history, health);
 
@@ -96,7 +96,7 @@ test("deriveViewModel - panic_mode scenario", () => {
 
 test("deriveViewModel - command_error scenario", () => {
   const fixtures = JSON.parse(fs.readFileSync(FIXTURE_PATH, "utf8"));
-  const { history, health } = fixtures.command_error;
+  const { history, health } = fixtures.scenarios.command_error;
 
   const vm = deriveViewModel(config, input, history, health);
 

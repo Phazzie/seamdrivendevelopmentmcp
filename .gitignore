@@ -7,3 +7,6 @@ tests/tmp/*.json
 contracts/**/*.js
 src/**/*.js
 *.tsbuildinfo
+
+.gemini/
+gha-creds-*.json
