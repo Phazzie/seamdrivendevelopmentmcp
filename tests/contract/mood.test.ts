@@ -56,7 +56,7 @@ describe("MockMoodLog", () => {
 describe("MoodAdapter", () => {
   runMoodContractTests(async () => {
     const fixture = loadFixtureEntries();
-    const store = new MockStore({ moods: fixture });
+    const store = new MockStore(undefined, { moods: fixture });
     return new MoodAdapter(store);
   });
 });

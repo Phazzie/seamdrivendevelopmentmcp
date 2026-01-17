@@ -27,12 +27,12 @@ export type AppErrorCode = z.infer<typeof AppErrorCodeSchema>;
 
 export class AppError extends Error {
   public code: AppErrorCode;
-  public details?: Record<string, any>;
+  public details?: Record<string, unknown>;
 
   constructor(
     code: AppErrorCode,
     message: string,
-    details?: Record<string, any>
+    details?: Record<string, unknown>
   ) {
     super(message);
     this.name = "AppError";
@@ -46,9 +46,6 @@ export class AppError extends Error {
 export const PersistedStoreSchema = z.object({
   schemaVersion: z.literal(1),
   revision: z.number().int().nonnegative(),
-  // We use 'unknown' here for the specific domains (tasks, locks) 
-  // because the Store shouldn't know their internal shape, just that they exist.
-  // The domain adapters will validate them.
   tasks: z.array(z.unknown()).default([]),
   ideas: z.array(IdeaSchema).default([]),
   messages: z.array(z.unknown()).default([]),
@@ -72,19 +69,11 @@ export type PersistedStore = z.infer<typeof PersistedStoreSchema>;
 export interface IStore {
   /**
    * Loads the current state from disk.
-   * If file is missing, returns a default initialized store.
    */
   load(): Promise<PersistedStore>;
 
   /**
-   * Performs an atomic update.
-   * 1. Loads current state.
-   * 2. Checks if current.revision == expectedRevision.
-   * 3. Runs the updater function.
-   * 4. Increments revision.
-   * 5. Saves to disk.
-   * 
-   * @throws AppError('STALE_REVISION') if race condition detected.
+   * Performs an atomic OCC update.
    */
   update(
     updater: (current: PersistedStore) => PersistedStore, 
@@ -92,8 +81,7 @@ export interface IStore {
   ): Promise<PersistedStore>;
 
   /**
-   * Subscribe to store changes.
+   * Pulse: Wait for a new revision.
    */
-  on(event: 'change', listener: (revision: number) => void): void;
-  off(event: 'change', listener: (revision: number) => void): void;
+  waitForRevision(sinceRevision: number, timeoutMs: number): Promise<number>;
 }

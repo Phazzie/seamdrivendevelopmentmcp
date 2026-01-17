@@ -58,11 +58,19 @@ export const TuiCommandHealthSchema = z.object({
 });
 export type TuiCommandHealth = z.infer<typeof TuiCommandHealthSchema>;
 
+export const TuiComplianceHealthSchema = z.object({
+  status: z.enum(["healthy", "failed", "error"]),
+  score: z.number().min(0).max(1),
+  error: z.string().optional(),
+});
+export type TuiComplianceHealth = z.infer<typeof TuiComplianceHealthSchema>;
+
 export const TuiHealthSnapshotSchema = z.object({
   persistence: TuiPersistenceHealthSchema,
   telemetry: TuiTelemetryHealthSchema,
   state: TuiStateHealthSchema,
   command: TuiCommandHealthSchema,
+  compliance: TuiComplianceHealthSchema,
 });
 export type TuiHealthSnapshot = z.infer<typeof TuiHealthSnapshotSchema>;
 

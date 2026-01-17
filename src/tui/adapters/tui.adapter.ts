@@ -2,6 +2,7 @@
 import type { IMessageBridge, Message } from "../../../contracts/messages.contract.js";
 import type { IStatusReader } from "../../../contracts/status.contract.js";
 import type { ITelemetryClient } from "../../../contracts/telemetry.contract.js";
+import type { ISddTracking } from "../../../contracts/sdd_tracking.contract.js";
 import type {
   ITuiDataClient,
   TuiChatMessage,
@@ -30,6 +31,7 @@ type HealthProvider = () => Promise<TuiHealthSnapshot>;
 
 export function createStatusHealthProvider(
   statusReader: IStatusReader,
+  sddTracking: ISddTracking,
   telemetryClient?: ITelemetryClient,
   telemetrySourceId: string = DEFAULT_TELEMETRY_SOURCE
 ): HealthProvider {
@@ -38,7 +40,26 @@ export function createStatusHealthProvider(
 
   return async () => {
     const startedAt = Date.now();
-    const status = await statusReader.getStatus();
+    const statusPromise = statusReader.getStatus();
+    const sddPromise = sddTracking.getReport();
+
+    const [status] = await Promise.all([statusPromise]);
+    let compliance: { status: "healthy" | "failed" | "error"; score: number; error?: string };
+
+    try {
+      const report = await sddPromise;
+      compliance = {
+        status: report.isHealthy ? "healthy" : "failed",
+        score: report.overallScore,
+      };
+    } catch (err: any) {
+      compliance = {
+        status: "error",
+        score: 0,
+        error: err.message || "Unknown error",
+      };
+    }
+
     const latencyMs = Date.now() - startedAt;
 
     if (status.revision !== lastRevision) {
@@ -73,6 +94,7 @@ export function createStatusHealthProvider(
       telemetry: { status: telemetryStatus, bufferUsage },
       state: { status: stateStatus, driftMs },
       command: commandStatus,
+      compliance,
     };
   };
 }

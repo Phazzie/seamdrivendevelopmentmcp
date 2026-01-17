@@ -23,7 +23,7 @@ function loadFixture(): IntegrationSnapshot | null {
 describe("Real IntegrationSnapshotAdapter (with MockStore)", () => {
   runIntegrationSnapshotContractTests(async () => {
     const fixture = loadFixture();
-    const store = new MockStore(fixture ? fixture.store : undefined);
+    const store = new MockStore(undefined, fixture ? fixture.store : undefined);
     const storePath = fixture ? fixture.store_path : "mock://store";
     return new IntegrationSnapshotAdapter(store, storePath);
   });

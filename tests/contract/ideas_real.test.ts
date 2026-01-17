@@ -22,7 +22,7 @@ function loadFixtureIdeas(): Idea[] {
 
 describe("Real IdeaAdapter (with MockStore)", () => {
   runIdeaContractTests(async () => {
-    const store = new MockStore({ ideas: loadFixtureIdeas() });
+    const store = new MockStore(undefined, { ideas: loadFixtureIdeas() });
     return new IdeaAdapter(store);
   });
 });

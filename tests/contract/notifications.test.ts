@@ -58,7 +58,7 @@ describe("MockNotificationCenter", () => {
 describe("NotificationAdapter", () => {
   runNotificationContractTests(async () => {
     const fixture = loadFixtureNotifications();
-    const store = new MockStore({ notifications: fixture });
+    const store = new MockStore(undefined, { notifications: fixture });
     return new NotificationAdapter(store);
   });
 });

@@ -1,0 +1,547 @@
+{
+  "captured_at": "2026-01-16T16:05:51.014Z",
+  "scenarios": {
+    "success": {
+      "description": "Real scan of current project",
+      "outputs": {
+        "getReport": {
+          "generatedAt": "2026-01-16T16:05:51.013Z",
+          "overallScore": 0.2222222222222222,
+          "isHealthy": false,
+          "seams": [
+            {
+              "name": "adr",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659559548611111,
+                "capturedAt": "2026-01-11T00:16:04.910Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "agents",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.6506835069444445,
+                "capturedAt": "2026-01-11T00:28:51.803Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "arbitration",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659467372685185,
+                "capturedAt": "2026-01-11T00:16:12.888Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "audit",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659450590277777,
+                "capturedAt": "2026-01-11T00:16:14.339Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "build_plan",
+              "isCompliant": true,
+              "components": {
+                "contract": true,
+                "probe": true,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 6.899479895833333,
+                "capturedAt": "2026-01-09T18:30:35.819Z"
+              },
+              "issues": []
+            },
+            {
+              "name": "confidence_auction",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659420266203703,
+                "capturedAt": "2026-01-11T00:16:16.988Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "dependency",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659383726851852,
+                "capturedAt": "2026-01-11T00:16:20.145Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "event_stream",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659348275462963,
+                "capturedAt": "2026-01-11T00:16:23.224Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "ideas",
+              "isCompliant": true,
+              "components": {
+                "contract": true,
+                "probe": true,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659291307870371,
+                "capturedAt": "2026-01-11T00:16:28.146Z"
+              },
+              "issues": []
+            },
+            {
+              "name": "integration_snapshot",
+              "isCompliant": true,
+              "components": {
+                "contract": true,
+                "probe": true,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659266168981482,
+                "capturedAt": "2026-01-11T00:16:30.353Z"
+              },
+              "issues": []
+            },
+            {
+              "name": "knowledge",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659229212962963,
+                "capturedAt": "2026-01-11T00:16:33.547Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "locker",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659111377314815,
+                "capturedAt": "2026-01-11T00:16:43.728Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "messages",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659177893518518,
+                "capturedAt": "2026-01-11T00:16:37.981Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "mood",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659152175925926,
+                "capturedAt": "2026-01-11T00:16:40.204Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "notifications",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.6591259375,
+                "capturedAt": "2026-01-11T00:16:42.471Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "plan_parser",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": true,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": false,
+                "ageDays": 8.552628020833334,
+                "capturedAt": "2026-01-08T02:50:03.903Z"
+              },
+              "issues": [
+                "Stale fixture (8.6 days)"
+              ]
+            },
+            {
+              "name": "probe_runner",
+              "isCompliant": true,
+              "components": {
+                "contract": true,
+                "probe": true,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 6.8992646759259255,
+                "capturedAt": "2026-01-09T18:30:54.517Z"
+              },
+              "issues": []
+            },
+            {
+              "name": "review_gate",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.6590546875,
+                "capturedAt": "2026-01-11T00:16:48.660Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "scaffolder",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.6593112847222224,
+                "capturedAt": "2026-01-11T00:16:26.501Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "scheduler",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659040115740741,
+                "capturedAt": "2026-01-11T00:16:49.930Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "sdd_tracking",
+              "isCompliant": true,
+              "components": {
+                "contract": true,
+                "probe": true,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 0.0008438773148148148,
+                "capturedAt": "2026-01-16T16:04:38.086Z"
+              },
+              "issues": []
+            },
+            {
+              "name": "status",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.6590208101851855,
+                "capturedAt": "2026-01-11T00:16:51.599Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "store",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": false,
+                "ageDays": 11.17072929398148,
+                "capturedAt": "2026-01-05T12:00:00.000Z"
+              },
+              "issues": [
+                "Missing probe",
+                "Stale fixture (11.2 days)"
+              ]
+            },
+            {
+              "name": "tasks",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.658974861111111,
+                "capturedAt": "2026-01-11T00:16:55.583Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "telemetry",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.659214398148148,
+                "capturedAt": "2026-01-11T00:16:34.888Z"
+              },
+              "issues": [
+                "Missing probe"
+              ]
+            },
+            {
+              "name": "test_seam",
+              "isCompliant": true,
+              "components": {
+                "contract": true,
+                "probe": true,
+                "fixture": true,
+                "mock": true,
+                "adapter": true,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 0.4729672916666667,
+                "capturedAt": "2026-01-16T04:44:46.638Z"
+              },
+              "issues": []
+            },
+            {
+              "name": "tui",
+              "isCompliant": false,
+              "components": {
+                "contract": true,
+                "probe": false,
+                "fixture": true,
+                "mock": true,
+                "adapter": false,
+                "test": true
+              },
+              "fixtureFreshness": {
+                "isFresh": true,
+                "ageDays": 5.658956574074074,
+                "capturedAt": "2026-01-11T00:16:57.165Z"
+              },
+              "issues": [
+                "Missing probe",
+                "Missing adapter"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

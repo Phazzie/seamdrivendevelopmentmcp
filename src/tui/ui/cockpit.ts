@@ -311,8 +311,27 @@ function formatLogSnippet(value: string): string {
 }
 
 function formatHealth(viewModel: TuiViewModel): string {
-  const { persistence, telemetry, state, command } = viewModel.health;
-  return `Persistence: ${formatStatus(persistence.status)}  Telemetry: ${formatStatus(
+  const { persistence, telemetry, state, command, compliance } = viewModel.health;
+  
+  let complianceIcon = "⚠️";
+  let complianceColor = "red-fg";
+  let complianceLabel = "0%";
+
+  if (compliance.status === "healthy") {
+    complianceIcon = "🛡️";
+    complianceColor = "green-fg";
+    complianceLabel = `${(compliance.score * 100).toFixed(0)}%`;
+  } else if (compliance.status === "error") {
+    complianceIcon = "🛑";
+    complianceColor = "red-fg";
+    complianceLabel = "ERR";
+  } else {
+    complianceLabel = `${(compliance.score * 100).toFixed(0)}%`;
+  }
+
+  const complianceText = `{${complianceColor}}[${complianceIcon} SDD ${complianceLabel}]{/${complianceColor}}`;
+
+  return `${complianceText}  Persistence: ${formatStatus(persistence.status)}  Telemetry: ${formatStatus(
     telemetry.status
   )}  State: ${formatStatus(state.status)}  Command: ${formatStatus(command.status)}`;
 }

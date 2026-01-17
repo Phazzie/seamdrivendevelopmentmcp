@@ -73,38 +73,16 @@ export class EventStreamAdapter implements IEventStream {
     const since = parsed.data.since ?? 0;
     const type = parsed.data.type;
     const limit = parsed.data.limit;
-    const timeoutMs = parsed.data.timeoutMs ?? 1000;
+    const timeoutMs = parsed.data.timeoutMs ?? 30000;
 
+    const current = await this.store.load();
     const immediate = await this.list({ since, type, limit });
     if (immediate.length) return immediate;
 
-    return new Promise((resolve) => {
-      let timer: NodeJS.Timeout;
-      let resolved = false;
-
-      const cleanup = () => {
-        this.store.off("change", listener);
-        clearTimeout(timer);
-      };
-
-      const listener = async () => {
-        if (resolved) return;
-        const fresh = await this.list({ since, type, limit });
-        if (fresh.length) {
-          resolved = true;
-          cleanup();
-          resolve(fresh);
-        }
-      };
-
-      timer = setTimeout(() => {
-        if (resolved) return;
-        resolved = true;
-        cleanup();
-        resolve(null);
-      }, timeoutMs);
-
-      this.store.on("change", listener);
-    });
+    const newRev = await this.store.waitForRevision(current.revision, timeoutMs);
+    if (newRev > current.revision) {
+      return this.list({ since, type, limit });
+    }
+    return null;
   }
 }

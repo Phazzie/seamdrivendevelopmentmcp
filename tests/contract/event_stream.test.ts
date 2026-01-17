@@ -66,7 +66,7 @@ describe("MockEventStream", () => {
 describe("EventStreamAdapter", () => {
   runEventStreamContractTests(async () => {
     const fixtureEvents = loadFixtureEvents();
-    const store = new MockStore({ events: fixtureEvents });
+    const store = new MockStore(undefined, { events: fixtureEvents });
     return new EventStreamAdapter(store);
   });
 });

@@ -41,6 +41,7 @@ interface TuiHealthSnapshot {
   telemetry: SeamHealth;
   state: SeamHealth;
   command: SeamHealth;
+  compliance: { status: 'healthy' | 'failed'; score: number };
 }
 
 interface TuiScenario {
@@ -80,7 +81,8 @@ const defaultHealth: TuiHealthSnapshot = {
   persistence: { status: 'healthy', latencyMs: 5 },
   telemetry: { status: 'healthy', bufferUsage: 12 },
   state: { status: 'synced', driftMs: 100 },
-  command: { status: 'healthy', lastResult: 'success' }
+  command: { status: 'healthy', lastResult: 'success' },
+  compliance: { status: 'healthy', score: 1.0 }
 };
 
 // --- Scenarios ---

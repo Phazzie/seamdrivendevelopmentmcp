@@ -67,36 +67,12 @@ export class MessageAdapter implements IMessageBridge {
     return filtered.slice(-limit);
   }
 
-  async waitForUpdate(sinceRevision: number, timeoutMs: number = 1000): Promise<UpdateEvent | null> {
-    // 1. Immediate check
-    const current = await this.store.load();
-    if (current.revision > sinceRevision) {
-      return { revision: current.revision };
+  async waitForUpdate(sinceRevision: number, timeoutMs: number = 30000): Promise<UpdateEvent | null> {
+    const newRevision = await this.store.waitForRevision(sinceRevision, timeoutMs);
+    if (newRevision > sinceRevision) {
+      return { revision: newRevision };
     }
-
-    // 2. Wait
-    return new Promise((resolve) => {
-      let timer: NodeJS.Timeout;
-
-      const listener = (rev: number) => {
-        if (rev > sinceRevision) {
-          cleanup();
-          resolve({ revision: rev });
-        }
-      };
-
-      const cleanup = () => {
-        this.store.off('change', listener);
-        clearTimeout(timer);
-      };
-
-      timer = setTimeout(() => {
-        cleanup();
-        resolve(null);
-      }, timeoutMs);
-
-      this.store.on('change', listener);
-    });
+    return null;
   }
 }
 

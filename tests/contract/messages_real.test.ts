@@ -33,7 +33,7 @@ function loadFixtureRevision(): number | null {
 describe("Real MessageAdapter (with MockStore)", () => {
   runMessageContractTests(async () => {
     const fixtureRevision = loadFixtureRevision();
-    const store = new MockStore({
+    const store = new MockStore(undefined, {
       messages: loadFixtureMessages(),
       revision: typeof fixtureRevision === "number" ? fixtureRevision : 1,
     });

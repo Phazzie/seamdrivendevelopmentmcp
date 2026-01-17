@@ -10,8 +10,18 @@ import { MockStore } from "../../src/lib/mocks/store.mock.js";
 import { MessageAdapter } from "../../src/lib/adapters/messages.adapter.js";
 import { StatusAdapter } from "../../src/lib/adapters/status.adapter.js";
 import { createStatusHealthProvider, TuiDataAdapter } from "../../src/tui/adapters/tui.adapter.js";
+import type { ISddTracking, SddReport } from "../../contracts/sdd_tracking.contract.js";
 
 const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "tui", "chat_simulation.json");
+
+const mockSddTracking: ISddTracking = {
+  getReport: async (): Promise<SddReport> => ({
+    generatedAt: new Date().toISOString(),
+    overallScore: 1.0,
+    isHealthy: true,
+    seams: [],
+  }),
+};
 
 function loadFixture(): TuiChatFixture {
   if (!fs.existsSync(FIXTURE_PATH)) return { scenarios: {} };
@@ -54,10 +64,10 @@ describe("Real TuiDataAdapter (with MockStore)", () => {
     const fixture = loadFixture();
     const idle = fixture.scenarios.idle;
     const seedMessages = idle ? toMessages(idle.history) : [];
-    const store = new MockStore({ messages: seedMessages });
+    const store = new MockStore(undefined, { messages: seedMessages });
     const messageBridge = new MessageAdapter(store);
     const statusReader = new StatusAdapter(store);
-    const healthProvider = createStatusHealthProvider(statusReader);
+    const healthProvider = createStatusHealthProvider(statusReader, mockSddTracking);
     return new TuiDataAdapter(config, messageBridge, async () => {
       if (idle) return idle.health;
       return healthProvider();

@@ -29,6 +29,7 @@ import { StatusAdapter } from "./lib/adapters/status.adapter.js";
 import { AuditAdapter } from "./lib/adapters/audit.adapter.js";
 import { ProbeRunnerAdapter } from "./lib/adapters/probe_runner.adapter.js";
 import { ScaffolderAdapter } from "./lib/adapters/scaffolder.adapter.js";
+import { SddTrackingAdapter } from "./lib/adapters/sdd_tracking.adapter.js";
 import { AppError } from "../contracts/store.contract.js";
 
 // Setup
@@ -64,6 +65,7 @@ const status = new StatusAdapter(store);
 const audit = new AuditAdapter(store);
 const probeRunner = new ProbeRunnerAdapter();
 const scaffolder = new ScaffolderAdapter();
+const sddTracking = new SddTrackingAdapter(process.cwd());
 
 // MCP Server
 const server = new Server(
@@ -104,6 +106,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             agentId: { type: "string" },
           },
           required: ["seamName", "agentId"],
+        },
+      },
+      {
+        name: "get_sdd_report",
+        description: "Get the project's Seam-Driven Development compliance report.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            agentId: { type: "string" },
+          },
+          required: ["agentId"],
         },
       },
       // --- Agents ---
@@ -843,6 +856,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const list = await audit.list({ agentId: filterAgentId, tool, limit });
       await recordAudit(agentId, name, summarize(args), summarize(list));
       return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
+    }
+
+    if (name === "get_sdd_report") {
+      const agentId = await requireAgentId();
+      const report = await sddTracking.getReport();
+      await recordAudit(agentId, name, summarize(args), summarize(report));
+      return { content: [{ type: "text", text: JSON.stringify(report, null, 2) }] };
     }
 
     // --- Locks ---

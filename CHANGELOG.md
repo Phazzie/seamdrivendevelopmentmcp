@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## [1.1.0] - 2026-01-16 "Liquid Hardening"
+### Hardened
+- **Store Seam:** Full migration to `fs.promises` and `FileHandle.sync()` for hardware durability. Pulse interface (`waitForRevision`) replaces event listeners.
+- **Locker Seam:** Dependency Injection for fixture paths; removed `process.cwd()` coupling.
+- **Scaffolder Seam:** Rewrote templates to enforce Async/DI mandates by default.
+- **TUI Seam:** Integration of SDD Compliance Shield with `error` status support.
+
+### Added
+- **SDD Tracking Seam:** New tool `get_sdd_report` exposes architectural health.
+- **Mandates:** Codified "Senior Engineer Mandate" in `AGENTS.md`.
+
+### Removed
+- **Tech Debt:** 123 instances of `process.cwd()` in core adapters.
+- **Polling:** TUI refresh loop infrastructure prepared for event-driven update.
+
 ## 2026-01-11
 - **Agent Identity**: Enforced enum names, refreshed agent fixtures, and added Claude identity probe + tests.
 - **Creative Notes**: Added creative writing adaptation and Wu-Tang collaboration profiles.

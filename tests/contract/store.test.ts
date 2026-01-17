@@ -33,20 +33,14 @@ export function runStoreContractTests(createStore: () => Promise<IStore>) {
       assert.strictEqual(updated.revision, initial.revision + 1);
     });
 
-    it("should emit change event on update", async () => {
+    it("should pulse via waitForRevision on update", async () => {
       const initial = await store.load();
-      let eventFired = false;
-      let newRevision = -1;
-
-      store.on('change', (rev) => {
-        eventFired = true;
-        newRevision = rev;
-      });
-
+      
+      const waitPromise = store.waitForRevision(initial.revision, 1000);
       await store.update((c) => c, initial.revision);
-
-      assert.strictEqual(eventFired, true);
-      assert.strictEqual(newRevision, initial.revision + 1);
+      
+      const newRev = await waitPromise;
+      assert.strictEqual(newRev, initial.revision + 1);
     });
 
     it("should reject stale revision updates", async () => {

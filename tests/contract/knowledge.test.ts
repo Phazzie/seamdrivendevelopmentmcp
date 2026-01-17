@@ -33,7 +33,7 @@ test("Knowledge Contract - Mock", async () => {
 
 test("Knowledge Contract - Adapter", async () => {
   const fixture = loadFixture();
-  const store = new MockStore({
+  const store = new MockStore(undefined, {
     knowledge: { nodes: fixture.nodes, edges: fixture.edges },
   });
   const adapter = new KnowledgeAdapter(store);

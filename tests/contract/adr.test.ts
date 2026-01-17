@@ -61,7 +61,7 @@ describe("MockAdrLog", () => {
 describe("AdrAdapter", () => {
   runAdrContractTests(async () => {
     const fixtureAdrs = loadFixtureAdrs();
-    const store = new MockStore({ adrs: fixtureAdrs });
+    const store = new MockStore(undefined, { adrs: fixtureAdrs });
     return new AdrAdapter(store);
   });
 });

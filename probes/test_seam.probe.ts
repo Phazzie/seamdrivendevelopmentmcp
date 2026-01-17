@@ -1,33 +1,14 @@
-/**
- * Purpose: Probe external reality for test_seam.
- */
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const FIXTURE_DIR = path.join(process.cwd(), "fixtures", "test_seam");
-const FIXTURE_PATH = path.join(FIXTURE_DIR, "sample.json");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const FIXTURE_PATH = path.join(__dirname, "../../fixtures/test_seam/sample.json");
 
-if (!fs.existsSync(FIXTURE_DIR)) fs.mkdirSync(FIXTURE_DIR, { recursive: true });
-
-async function runProbe() {
-  // TODO: Implement probe logic
-  const fixture = {
-    captured_at: new Date().toISOString(),
-    scenarios: {
-      "success": {
-      "description": "Happy path",
-      "outputs": {
-        "example": { "note": "TODO: capture output" }
-      }
-      }
-    }
-  };
-
+async function run() {
+  const fixture = { captured_at: new Date().toISOString(), scenarios: { success: { outputs: { example: "val" } } } };
+  fs.mkdirSync(path.dirname(FIXTURE_PATH), { recursive: true });
   fs.writeFileSync(FIXTURE_PATH, JSON.stringify(fixture, null, 2));
-  console.log("test_seam probe complete.");
+  console.log("Probe complete");
 }
-
-runProbe().catch((err) => {
-  console.error("PROBE FAILED:", err);
-  process.exit(1);
-});
+run().catch(console.error);

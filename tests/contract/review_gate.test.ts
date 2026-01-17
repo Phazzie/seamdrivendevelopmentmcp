@@ -52,7 +52,7 @@ describe("MockReviewGate", () => {
 describe("ReviewGateAdapter", () => {
   runReviewGateContractTests(async () => {
     const fixture = loadFixtureGates();
-    const store = new MockStore({ review_gates: fixture });
+    const store = new MockStore(undefined, { review_gates: fixture });
     return new ReviewGateAdapter(store);
   });
 });

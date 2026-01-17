@@ -17,9 +17,18 @@ Build and harden the MCP collaboration server for multi-agent coordination using
 6. One seam at a time. No refactors outside the seam.
 7. Contract tests must pass against the mock before implementing the adapter.
 
+## The Senior Engineer Mandate: Architectural Non-Negotiables
+These rules prevent "YOLO mode" and ensure the codebase remains production-grade.
+1.  **Dependency Injection (Paths):** Adapters MUST NOT use `process.cwd()`. All file paths must be injected via constructor arguments.
+2.  **Safety Enforcement:** Safety gates (like approvals) MUST be enforced at the Adapter/Store layer. Advisory-only UI gates are prohibited for critical actions (e.g., file writing).
+3.  **Concurrency Law:** Any UI rendering or state-sensitive IO MUST use a Serial Render Queue or Mutex to prevent race conditions and buffer corruption.
+4.  **No Silent Failures:** Error swallowing (empty catch blocks) is prohibited. All errors must be logged to stderr or returned via the contract's error envelope.
+5.  **Mandate Compliance Block:** Every planning phase MUST start with a "Mandate Compliance" checklist addressing the rules above.
+
 ## Planning Discipline
 - For low-risk or trivial tasks, keep plan/critique/revise to 1-2 bullets each before execution.
 - If a step feels redundant, keep it brief rather than skipping it.
+- **Mandate Check:** Every plan must explicitly check against the Architectural Non-Negotiables.
 
 ## SDD Workflow
 1. Define & contract: create `contracts/<seam>.contract.ts` (schema + types) and include failure modes.

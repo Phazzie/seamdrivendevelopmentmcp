@@ -7,6 +7,7 @@ import { StoreAdapter } from "../lib/adapters/store.adapter.js";
 import { MessageAdapter } from "../lib/adapters/messages.adapter.js";
 import { StatusAdapter } from "../lib/adapters/status.adapter.js";
 import { TelemetryAdapter } from "../lib/adapters/telemetry.adapter.js";
+import { SddTrackingAdapter } from "../lib/adapters/sdd_tracking.adapter.js";
 import { TuiConfigSchema, type TuiConfig } from "../../contracts/tui.contract.js";
 import { TuiDataAdapter, createStatusHealthProvider } from "./adapters/tui.adapter.js";
 import { startCockpitUi } from "./ui/cockpit.js";
@@ -167,7 +168,8 @@ async function main(): Promise<void> {
   const messageBridge = new MessageAdapter(store);
   const statusReader = new StatusAdapter(store);
   const telemetry = new TelemetryAdapter();
-  const healthProvider = createStatusHealthProvider(statusReader, telemetry);
+  const sddTracking = new SddTrackingAdapter(process.cwd());
+  const healthProvider = createStatusHealthProvider(statusReader, sddTracking, telemetry);
   const client = new TuiDataAdapter(tuiConfig, messageBridge, healthProvider);
 
   const telemetrySources = [

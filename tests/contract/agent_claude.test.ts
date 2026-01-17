@@ -44,7 +44,7 @@ describe("MockAgentRegistry", () => {
 
 describe("AgentAdapter (Real)", () => {
   runAgentContractTests(async () => {
-    const store = new MockStore({});
+    const store = new MockStore(undefined, {});
     return new AgentAdapter(store);
   });
 });

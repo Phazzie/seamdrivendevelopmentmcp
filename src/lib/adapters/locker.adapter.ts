@@ -1,29 +1,24 @@
+/**
+ * Purpose: Real file-locking implementation (locker seam).
+ */
 import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 import type { ILocker, Lock } from "../../../contracts/locker.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
-import type { IStore, PersistedStore } from "../../../contracts/store.contract.js";
+import type { IStore } from "../../../contracts/store.contract.js";
 import { runTransaction } from "../helpers/store.helper.js";
 
 type NormalizationStrategy = "lowercase" | "none";
-
-const NORMALIZATION_FIXTURE = path.join(process.cwd(), "fixtures", "locker", "capabilities.json");
-
-function loadNormalizationStrategy(): NormalizationStrategy {
-  if (!fs.existsSync(NORMALIZATION_FIXTURE)) return "none";
-  const raw = fs.readFileSync(NORMALIZATION_FIXTURE, "utf-8");
-  const data = JSON.parse(raw) as { normalization_strategy?: NormalizationStrategy };
-  return data.normalization_strategy === "lowercase" ? "lowercase" : "none";
-}
 
 export class LockerAdapter implements ILocker {
   private readonly store: IStore;
   private readonly normalization: NormalizationStrategy;
 
-  constructor(store: IStore) {
+  // Senior Mandate: Inject projectRoot and fixture paths
+  constructor(store: IStore, normalizationFixturePath?: string) {
     this.store = store;
-    this.normalization = loadNormalizationStrategy();
+    this.normalization = this.loadNormalizationStrategy(normalizationFixturePath);
   }
 
   async acquire(resources: string[], ownerId: string, ttlMs: number, reason?: string): Promise<Lock[]> {
@@ -36,7 +31,6 @@ export class LockerAdapter implements ILocker {
       const acquiredLocks: Lock[] = [];
       const normalizedResources = this.normalizeResources(resources);
 
-      // Check conflicts
       for (const res of normalizedResources) {
         const existing = activeLocks.find(l => l.resource === res);
         if (existing && existing.ownerId !== ownerId) {
@@ -44,11 +38,8 @@ export class LockerAdapter implements ILocker {
         }
       }
 
-      // Update locks
       const nextLocks = [...activeLocks];
-      
       for (const res of normalizedResources) {
-        // Remove self-owned existing lock (re-entrancy)
         const idx = nextLocks.findIndex(l => l.resource === res);
         if (idx !== -1) nextLocks.splice(idx, 1);
 
@@ -135,6 +126,17 @@ export class LockerAdapter implements ILocker {
          result: undefined
        };
     });
+  }
+
+  private loadNormalizationStrategy(fixturePath?: string): NormalizationStrategy {
+    if (!fixturePath || !fs.existsSync(fixturePath)) return "none";
+    try {
+      const raw = fs.readFileSync(fixturePath, "utf-8");
+      const data = JSON.parse(raw);
+      return data.normalization_strategy === "lowercase" ? "lowercase" : "none";
+    } catch {
+      return "none";
+    }
   }
 
   private normalizeResources(resources: string[]): string[] {

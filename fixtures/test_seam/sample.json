@@ -1,11 +1,10 @@
 {
-  "captured_at": "2026-01-16T04:44:46.638Z",
+  "captured_at": "2026-01-17T02:56:30.862Z",
   "scenarios": {
-      "success": {
-      "description": "Happy path",
+    "success": {
       "outputs": {
-        "example": { "note": "TODO: capture output" }
+        "example": "val"
       }
-      }
+    }
   }
 }

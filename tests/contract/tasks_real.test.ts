@@ -17,7 +17,7 @@ function loadFixtureTasks(): Task[] {
 
 describe("Real TaskAdapter (with MockStore)", () => {
   runTaskContractTests(async () => {
-    const store = new MockStore({ tasks: loadFixtureTasks() });
+    const store = new MockStore(undefined, { tasks: loadFixtureTasks() });
     return new TaskAdapter(store);
   });
 });
