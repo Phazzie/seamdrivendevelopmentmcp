@@ -55,7 +55,7 @@ export function runAdrContractTests(createLog: () => Promise<IAdrLog>) {
 }
 
 describe("MockAdrLog", () => {
-  runAdrContractTests(async () => new MockAdrLog());
+  runAdrContractTests(async () => new MockAdrLog(FIXTURE_PATH));
 });
 
 describe("AdrAdapter", () => {

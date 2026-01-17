@@ -1,9 +1,6 @@
 import fs from "fs";
-import path from "path";
 import type { IKnowledgeGraph, KnowledgeEdge, KnowledgeNode, KnowledgeQuery } from "../../../contracts/knowledge.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
-
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "knowledge", "sample.json");
 
 type KnowledgeFixture = {
   captured_at?: string;
@@ -11,24 +8,24 @@ type KnowledgeFixture = {
   edges?: KnowledgeEdge[];
 };
 
-function loadFixture(): { nodes: KnowledgeNode[]; edges: KnowledgeEdge[] } {
-  if (!fs.existsSync(FIXTURE_PATH)) return { nodes: [], edges: [] };
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const parsed = JSON.parse(raw) as KnowledgeFixture;
-  return {
-    nodes: Array.isArray(parsed.nodes) ? parsed.nodes : [],
-    edges: Array.isArray(parsed.edges) ? parsed.edges : [],
-  };
-}
-
 export class MockKnowledgeGraph implements IKnowledgeGraph {
   private nodes: KnowledgeNode[];
   private edges: KnowledgeEdge[];
 
-  constructor() {
-    const data = loadFixture();
+  constructor(private readonly fixturePath: string) {
+    const data = this.loadFixture(fixturePath);
     this.nodes = data.nodes;
     this.edges = data.edges;
+  }
+
+  private loadFixture(fixturePath: string): { nodes: KnowledgeNode[]; edges: KnowledgeEdge[] } {
+    if (!fs.existsSync(fixturePath)) return { nodes: [], edges: [] };
+    const raw = fs.readFileSync(fixturePath, "utf-8");
+    const parsed = JSON.parse(raw) as KnowledgeFixture;
+    return {
+      nodes: Array.isArray(parsed.nodes) ? parsed.nodes : [],
+      edges: Array.isArray(parsed.edges) ? parsed.edges : [],
+    };
   }
 
   async addNode(type: string, content: string): Promise<KnowledgeNode> {

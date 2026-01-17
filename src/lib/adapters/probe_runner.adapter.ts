@@ -2,18 +2,21 @@
  * Purpose: Real implementation of the Probe Runner (probe_runner seam).
  */
 import { spawn } from "child_process";
-import fs from "fs";
+import fs from "fs/promises";
+import { statSync } from "fs"; // Needed for legacy sync walk if we don't fully refactor walk to async generator, but I'll refactor walk.
 import path from "path";
 import { IProbeRunner, RunProbesInput, ProbeResult } from "../../../contracts/probe_runner.contract.js";
 
 export class ProbeRunnerAdapter implements IProbeRunner {
+  constructor(private readonly projectRoot: string) {}
+
   async run(input: RunProbesInput): Promise<ProbeResult[]> {
-    const rootProbesDir = path.resolve("probes");
-    const allFiles = this.walk(rootProbesDir);
+    const rootProbesDir = path.join(this.projectRoot, "probes");
+    const allFiles = await this.walk(rootProbesDir);
     const files = allFiles.filter(f => f.endsWith(".probe.ts") || f.endsWith(".ts"));
     
-    // Simple filter support (substring match) since we don't have a glob library
-    const pattern = input.pattern.replace("probes/", "").replace("**/*", "");
+    // Simple filter support
+    const pattern = (input.pattern || "").replace("probes/", "").replace("**/*", "");
     const filteredFiles = files.filter(f => f.includes(pattern));
 
     const results: ProbeResult[] = [];
@@ -23,13 +26,13 @@ export class ProbeRunnerAdapter implements IProbeRunner {
       const name = path.relative(rootProbesDir, file);
       
       try {
-        const outDir = path.resolve("dist/probes");
+        const outDir = path.join(this.projectRoot, "dist/probes");
         
-        // Compile (preserving directory structure flattened or relative - simplest is to just compile file-by-file)
+        // Compile
         const compile = await this.exec("npx", [
           "tsc", file,
           "--outDir", outDir,
-          "--rootDir", process.cwd(),
+          "--rootDir", this.projectRoot,
           "--module", "esnext",
           "--target", "es2022",
           "--moduleResolution", "node",
@@ -49,17 +52,12 @@ export class ProbeRunnerAdapter implements IProbeRunner {
           continue;
         }
 
-        // TSC output path calculation is tricky when compiling single files to an outDir.
-        // It typically mirrors the relative path from the root.
-        // E.g. tsc probes/tui/chat.ts --outDir dist/probes -> dist/probes/probes/tui/chat.js
-        // We need to find where it actually landed.
-        
-        // With --rootDir ., tsc mirrors the full structure relative to CWD.
-        const relPath = path.relative(process.cwd(), file);
+        const relPath = path.relative(this.projectRoot, file);
         const jsFile = path.join(outDir, relPath.replace(".ts", ".js"));
 
-        if (!fs.existsSync(jsFile)) {
-             // Fallback: checks if tsc flattened it (unlikely with recent tsc) or put it elsewhere
+        try {
+          await fs.stat(jsFile);
+        } catch {
              throw new Error(`Compiled file not found at ${jsFile}`);
         }
 
@@ -74,13 +72,14 @@ export class ProbeRunnerAdapter implements IProbeRunner {
           durationMs: Date.now() - start
         });
 
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
         results.push({
           name,
           success: false,
           code: null,
           stdout: "",
-          stderr: err.message,
+          stderr: msg,
           durationMs: Date.now() - start
         });
       }
@@ -89,24 +88,28 @@ export class ProbeRunnerAdapter implements IProbeRunner {
     return results;
   }
 
-  private walk(dir: string): string[] {
+  private async walk(dir: string): Promise<string[]> {
     let results: string[] = [];
-    const list = fs.readdirSync(dir);
-    list.forEach(file => {
-      const filePath = path.join(dir, file);
-      const stat = fs.statSync(filePath);
-      if (stat && stat.isDirectory()) {
-        results = results.concat(this.walk(filePath));
-      } else {
-        results.push(filePath);
+    try {
+      const list = await fs.readdir(dir);
+      for (const file of list) {
+        const filePath = path.join(dir, file);
+        const stat = await fs.stat(filePath);
+        if (stat.isDirectory()) {
+          results = results.concat(await this.walk(filePath));
+        } else {
+          results.push(filePath);
+        }
       }
-    });
+    } catch {
+      // Ignore errors if dir doesn't exist
+    }
     return results;
   }
 
   private exec(cmd: string, args: string[]): Promise<{ code: number | null, stdout: string, stderr: string }> {
     return new Promise((resolve) => {
-      const proc = spawn(cmd, args, { shell: true });
+      const proc = spawn(cmd, args, { shell: true, cwd: this.projectRoot });
       let stdout = "";
       let stderr = "";
 

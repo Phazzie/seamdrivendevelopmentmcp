@@ -5,7 +5,7 @@
 import { ProbeRunnerAdapter } from "../lib/adapters/probe_runner.adapter.js";
 
 async function main() {
-  const runner = new ProbeRunnerAdapter();
+  const runner = new ProbeRunnerAdapter(process.cwd());
   const pattern = process.argv[2] || "probes/**/*.probe.ts";
   
   console.log(`Running probes matching: ${pattern}...`);

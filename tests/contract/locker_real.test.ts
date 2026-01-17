@@ -23,4 +23,25 @@ describe("Real LockerAdapter (with MockStore)", () => {
       await locker.acquire(["res1"], "owner1", 1000);
     }, (err: any) => err.code === "PANIC_MODE");
   });
+
+  it("should block acquisition when a review gate is pending", async () => {
+    const store = new MockStore();
+    const locker = new LockerAdapter(store);
+
+    await store.update((c) => { 
+      c.review_gates = [{
+        id: "gate-1",
+        planId: "plan-1",
+        status: "pending",
+        plan: "Destroy world",
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }]; 
+      return c; 
+    }, 1);
+
+    await assert.rejects(async () => {
+      await locker.acquire(["res1"], "owner1", 1000);
+    }, (err: any) => err.code === "LOCKED" && err.message.includes("Review Mode"));
+  });
 });

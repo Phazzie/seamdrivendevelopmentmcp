@@ -2,7 +2,7 @@
  * Purpose: Real file-locking implementation (locker seam).
  */
 import { randomUUID } from "crypto";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import type { ILocker, Lock } from "../../../contracts/locker.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
@@ -13,23 +13,31 @@ type NormalizationStrategy = "lowercase" | "none";
 
 export class LockerAdapter implements ILocker {
   private readonly store: IStore;
-  private readonly normalization: NormalizationStrategy;
+  private readonly normalizationPromise: Promise<NormalizationStrategy>;
 
-  // Senior Mandate: Inject projectRoot and fixture paths
   constructor(store: IStore, normalizationFixturePath?: string) {
     this.store = store;
-    this.normalization = this.loadNormalizationStrategy(normalizationFixturePath);
+    this.normalizationPromise = this.loadNormalizationStrategy(normalizationFixturePath);
   }
 
   async acquire(resources: string[], ownerId: string, ttlMs: number, reason?: string): Promise<Lock[]> {
+    const normalization = await this.normalizationPromise;
     return runTransaction(this.store, (current) => {
       if (current.panic_mode) {
         throw new AppError("PANIC_MODE", "System is in panic mode. All locks are frozen.");
       }
+
+      const pendingGates = (current.review_gates || []).filter((g: any) => g.status !== "approved");
+      if (pendingGates.length > 0) {
+        throw new AppError("LOCKED", "System is in Review Mode. Resolve pending gates before acquiring locks.", {
+          pendingGates: pendingGates.map((g: any) => g.id)
+        });
+      }
+
       const now = Date.now();
       const activeLocks = (current.locks as Lock[] || []).filter(l => l.expiresAt > now);
       const acquiredLocks: Lock[] = [];
-      const normalizedResources = this.normalizeResources(resources);
+      const normalizedResources = this.normalizeResources(resources, normalization);
 
       for (const res of normalizedResources) {
         const existing = activeLocks.find(l => l.resource === res);
@@ -63,8 +71,9 @@ export class LockerAdapter implements ILocker {
   }
 
   async release(resources: string[], ownerId: string): Promise<void> {
+    const normalization = await this.normalizationPromise;
     return runTransaction(this.store, (current) => {
-      const normalizedResources = this.normalizeResources(resources);
+      const normalizedResources = this.normalizeResources(resources, normalization);
       const nextLocks = (current.locks as Lock[] || []).filter(l => {
         const isTarget = normalizedResources.includes(l.resource);
         const isOwner = l.ownerId === ownerId;
@@ -79,10 +88,11 @@ export class LockerAdapter implements ILocker {
   }
 
   async renew(resources: string[], ownerId: string, ttlMs: number): Promise<Lock[]> {
+    const normalization = await this.normalizationPromise;
     return runTransaction(this.store, (current) => {
       const now = Date.now();
       const activeLocks = (current.locks as Lock[] || []).filter(l => l.expiresAt > now);
-      const normalizedResources = this.normalizeResources(resources);
+      const normalizedResources = this.normalizeResources(resources, normalization);
       const updatedLocks: Lock[] = [];
 
       for (const res of normalizedResources) {
@@ -118,8 +128,9 @@ export class LockerAdapter implements ILocker {
   }
 
   async forceRelease(resources: string[]): Promise<void> {
+    const normalization = await this.normalizationPromise;
     return runTransaction(this.store, (current) => {
-       const normalizedResources = this.normalizeResources(resources);
+       const normalizedResources = this.normalizeResources(resources, normalization);
        const nextLocks = (current.locks as Lock[] || []).filter(l => !normalizedResources.includes(l.resource));
        return {
          nextState: { ...current, locks: nextLocks },
@@ -128,10 +139,11 @@ export class LockerAdapter implements ILocker {
     });
   }
 
-  private loadNormalizationStrategy(fixturePath?: string): NormalizationStrategy {
-    if (!fixturePath || !fs.existsSync(fixturePath)) return "none";
+  private async loadNormalizationStrategy(fixturePath?: string): Promise<NormalizationStrategy> {
+    if (!fixturePath) return "none";
     try {
-      const raw = fs.readFileSync(fixturePath, "utf-8");
+      await fs.access(fixturePath);
+      const raw = await fs.readFile(fixturePath, "utf-8");
       const data = JSON.parse(raw);
       return data.normalization_strategy === "lowercase" ? "lowercase" : "none";
     } catch {
@@ -139,13 +151,13 @@ export class LockerAdapter implements ILocker {
     }
   }
 
-  private normalizeResources(resources: string[]): string[] {
-    const normalized = resources.map((res) => this.normalizeResource(res));
+  private normalizeResources(resources: string[], strategy: NormalizationStrategy): string[] {
+    const normalized = resources.map((res) => this.normalizeResource(res, strategy));
     return Array.from(new Set(normalized));
   }
 
-  private normalizeResource(resource: string): string {
+  private normalizeResource(resource: string, strategy: NormalizationStrategy): string {
     const resolved = path.resolve(resource);
-    return this.normalization === "lowercase" ? resolved.toLowerCase() : resolved;
+    return strategy === "lowercase" ? resolved.toLowerCase() : resolved;
   }
 }

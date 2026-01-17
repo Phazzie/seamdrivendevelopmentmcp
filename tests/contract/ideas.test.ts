@@ -98,5 +98,5 @@ export function runIdeaContractTests(createRegistry: () => Promise<IIdeaRegistry
 }
 
 describe("MockIdeaRegistry", () => {
-  runIdeaContractTests(async () => new MockIdeaRegistry());
+  runIdeaContractTests(async () => new MockIdeaRegistry(FIXTURE_PATH));
 });

@@ -19,7 +19,7 @@ function loadFixture() {
 
 test("Knowledge Contract - Mock", async () => {
   const fixture = loadFixture();
-  const mock = new MockKnowledgeGraph();
+  const mock = new MockKnowledgeGraph(FIXTURE_PATH);
 
   const resultAll = await mock.query({});
   assert.strictEqual(resultAll.nodes.length, fixture.nodes.length);

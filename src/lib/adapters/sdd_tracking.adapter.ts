@@ -1,9 +1,8 @@
 /**
- * Purpose: Real implementation for sdd_tracking.
+ * Purpose: Real implementation for sdd_tracking (Async/Mandate Compliant).
  */
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
-import { AppError } from "../../../contracts/store.contract.js";
 import type { ISddTracking, SddReport, SddSeamStatus } from "../../../contracts/sdd_tracking.contract.js";
 
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -21,12 +20,9 @@ export class SddTrackingAdapter implements ISddTracking {
       if (Date.now() - this.cache.timestamp < CACHE_TTL_MS) {
         return this.cache.report;
       }
-      // Stale: trigger background refresh
       this.refreshCache().catch((err) => console.error("[SddTracking] Background refresh failed", err));
       return this.cache.report;
     }
-
-    // No cache: forced await
     return this.refreshCache();
   }
 
@@ -38,7 +34,7 @@ export class SddTrackingAdapter implements ISddTracking {
 
   private async scanProject(): Promise<SddReport> {
     const contractsDir = path.join(this.rootDir, "contracts");
-    if (!fs.existsSync(contractsDir)) {
+    if (!(await this.exists(contractsDir))) {
       return {
         generatedAt: new Date().toISOString(),
         overallScore: 0,
@@ -47,17 +43,18 @@ export class SddTrackingAdapter implements ISddTracking {
       };
     }
 
-    const contractFiles = fs.readdirSync(contractsDir).filter(f => f.endsWith(".contract.ts"));
+    const files = await fs.readdir(contractsDir);
+    const contractFiles = files.filter(f => f.endsWith(".contract.ts"));
     const seams = contractFiles.map(f => f.replace(".contract.ts", ""));
 
-    const seamReports: SddSeamStatus[] = seams.map(seam => {
+    const seamReports: SddSeamStatus[] = await Promise.all(seams.map(async (seam) => {
       const components = {
-        contract: fs.existsSync(path.join(this.rootDir, "contracts", `${seam}.contract.ts`)),
-        probe: fs.existsSync(path.join(this.rootDir, "probes", `${seam}.probe.ts`)),
-        fixture: fs.existsSync(path.join(this.rootDir, "fixtures", seam)),
-        mock: fs.existsSync(path.join(this.rootDir, "src", "lib", "mocks", `${seam}.mock.ts`)),
-        adapter: fs.existsSync(path.join(this.rootDir, "src", "lib", "adapters", `${seam}.adapter.ts`)),
-        test: fs.existsSync(path.join(this.rootDir, "tests", "contract", `${seam}.test.ts`))
+        contract: await this.exists(path.join(this.rootDir, "contracts", `${seam}.contract.ts`)),
+        probe: await this.exists(path.join(this.rootDir, "probes", `${seam}.probe.ts`)),
+        fixture: await this.exists(path.join(this.rootDir, "fixtures", seam)),
+        mock: await this.exists(path.join(this.rootDir, "src", "lib", "mocks", `${seam}.mock.ts`)),
+        adapter: await this.exists(path.join(this.rootDir, "src", "lib", "adapters", `${seam}.adapter.ts`)),
+        test: await this.exists(path.join(this.rootDir, "tests", "contract", `${seam}.test.ts`))
       };
 
       // Check fixture freshness
@@ -67,12 +64,13 @@ export class SddTrackingAdapter implements ISddTracking {
 
       if (components.fixture) {
         let targetFixture = fixtureSample;
-        if (!fs.existsSync(targetFixture)) {
-           const files = fs.readdirSync(fixtureDir).filter(f => f.endsWith(".json"));
-           if (files.length > 0) targetFixture = path.join(fixtureDir, files[0]);
+        if (!(await this.exists(targetFixture))) {
+           const dirFiles = await fs.readdir(fixtureDir).catch(() => []);
+           const jsonFiles = dirFiles.filter(f => f.endsWith(".json"));
+           if (jsonFiles.length > 0) targetFixture = path.join(fixtureDir, jsonFiles[0]);
         }
         
-        const { capturedAt, ageDays } = this.parseCapturedAt(targetFixture);
+        const { capturedAt, ageDays } = await this.parseCapturedAt(targetFixture);
         fixtureFreshness.capturedAt = capturedAt;
         fixtureFreshness.ageDays = ageDays;
         if (ageDays !== null && ageDays <= 7) {
@@ -98,7 +96,7 @@ export class SddTrackingAdapter implements ISddTracking {
         fixtureFreshness,
         issues
       };
-    });
+    }));
 
     const compliantCount = seamReports.filter(s => s.isCompliant).length;
     const overallScore = seamReports.length > 0 ? compliantCount / seamReports.length : 0;
@@ -112,10 +110,10 @@ export class SddTrackingAdapter implements ISddTracking {
     };
   }
 
-  private parseCapturedAt(fixturePath: string): { capturedAt: string | null; ageDays: number | null } {
+  private async parseCapturedAt(fixturePath: string): Promise<{ capturedAt: string | null; ageDays: number | null }> {
     try {
-      if (!fs.existsSync(fixturePath)) return { capturedAt: null, ageDays: null };
-      const raw = fs.readFileSync(fixturePath, "utf-8");
+      if (!(await this.exists(fixturePath))) return { capturedAt: null, ageDays: null };
+      const raw = await fs.readFile(fixturePath, "utf-8");
       const data = JSON.parse(raw);
       const capturedAt = data.captured_at;
       if (typeof capturedAt !== "string") return { capturedAt: null, ageDays: null };
@@ -127,6 +125,15 @@ export class SddTrackingAdapter implements ISddTracking {
       return { capturedAt, ageDays };
     } catch {
       return { capturedAt: null, ageDays: null };
+    }
+  }
+
+  private async exists(p: string): Promise<boolean> {
+    try {
+      await fs.stat(p);
+      return true;
+    } catch {
+      return false;
     }
   }
 }

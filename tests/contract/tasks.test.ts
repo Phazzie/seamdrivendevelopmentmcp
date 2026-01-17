@@ -27,7 +27,7 @@ export function runTaskContractTests(createRegistry: () => Promise<ITaskRegistry
       const list = await tasks.list();
       assert.strictEqual(list.length, fixtureTasks.length);
       if (fixtureTasks.length) {
-        assert.strictEqual(list[0].id, fixtureTasks[0].id);
+        assert.strictEqual(list.find(t => t.id === fixtureTasks[0].id)?.title, fixtureTasks[0].title);
         assert.ok(Array.isArray(list[0].blockedBy));
       }
     });
@@ -64,9 +64,21 @@ export function runTaskContractTests(createRegistry: () => Promise<ITaskRegistry
         await tasks.updateStatus("fake-id", "done");
       }, (err: any) => err.code === "VALIDATION_FAILED");
     });
+
+    it("should sort tasks by updated_at descending (newest first)", async () => {
+      const t1 = await tasks.create("Old", "Old");
+      await new Promise(r => setTimeout(r, 10));
+      const t2 = await tasks.create("New", "New"); // Mock ensures t2 has later timestamp
+      
+      const list = await tasks.list();
+      const idx1 = list.findIndex(t => t.id === t1.id);
+      const idx2 = list.findIndex(t => t.id === t2.id);
+      
+      assert.ok(idx2 < idx1, `New task (${t2.id}) should appear before old task (${t1.id})`);
+    });
   });
 }
 
 describe("MockTaskRegistry", () => {
-  runTaskContractTests(async () => new MockTaskRegistry());
+  runTaskContractTests(async () => new MockTaskRegistry(FIXTURE_PATH));
 });

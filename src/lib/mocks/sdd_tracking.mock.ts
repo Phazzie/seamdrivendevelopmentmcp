@@ -2,11 +2,8 @@
  * Purpose: Mock implementation for sdd_tracking using fixtures.
  */
 import fs from "fs";
-import path from "path";
-import { AppError } from "../../../contracts/store.contract.js";
-import type { ISddTracking } from "../../../contracts/sdd_tracking.contract.js";
-
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "sdd_tracking", "sample.json");
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
+import type { ISddTracking, SddReport } from "../../../contracts/sdd_tracking.contract.js";
 
 type ScenarioFixture = {
   outputs?: Record<string, unknown>;
@@ -18,17 +15,16 @@ type FixtureFile = {
   scenarios?: Record<string, ScenarioFixture>;
 };
 
-function loadFixture(): FixtureFile {
-  if (!fs.existsSync(FIXTURE_PATH)) return {};
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  return JSON.parse(raw) as FixtureFile;
-}
-
 export class MockSddTracking implements ISddTracking {
   private readonly fixture: FixtureFile;
 
-  constructor(private scenario = "success") {
-    this.fixture = loadFixture();
+  constructor(private readonly fixturePath: string, private scenario = "success") {
+    if (!fs.existsSync(fixturePath)) {
+      this.fixture = {};
+    } else {
+      const raw = fs.readFileSync(fixturePath, "utf-8");
+      this.fixture = JSON.parse(raw) as FixtureFile;
+    }
   }
 
   private getScenario(): ScenarioFixture {
@@ -38,8 +34,9 @@ export class MockSddTracking implements ISddTracking {
       throw new AppError("VALIDATION_FAILED", `Unknown scenario: ${this.scenario}`);
     }
     if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
       throw new AppError(
-        scenario.error.code as any,
+        code,
         scenario.error.message,
         scenario.error.details
       );
@@ -55,7 +52,7 @@ export class MockSddTracking implements ISddTracking {
     return scenario.outputs[method];
   }
 
-  async getReport(): Promise<import("../../../contracts/sdd_tracking.contract.js").SddReport> {
-    return this.getOutput("getReport") as import("../../../contracts/sdd_tracking.contract.js").SddReport;
+  async getReport(): Promise<SddReport> {
+    return this.getOutput("getReport") as SddReport;
   }
 }

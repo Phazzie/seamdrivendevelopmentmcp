@@ -3,10 +3,12 @@
  */
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
+import path from "path";
 import type { ISddTracking } from "../../contracts/sdd_tracking.contract.js";
 import { MockSddTracking } from "../../src/lib/mocks/sdd_tracking.mock.js";
-
 import { SddTrackingAdapter } from "../../src/lib/adapters/sdd_tracking.adapter.js";
+
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "sdd_tracking", "sample.json");
 
 export function runSddTrackingContractTests(createAdapter: () => Promise<ISddTracking>) {
   describe("SddTracking Contract", () => {
@@ -27,7 +29,7 @@ export function runSddTrackingContractTests(createAdapter: () => Promise<ISddTra
 }
 
 describe("MockSddTracking", () => {
-  runSddTrackingContractTests(async () => new MockSddTracking());
+  runSddTrackingContractTests(async () => new MockSddTracking(FIXTURE_PATH));
 });
 
 describe("SddTrackingAdapter", () => {

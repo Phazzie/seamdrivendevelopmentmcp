@@ -46,7 +46,7 @@ if (!fs.existsSync(storeDir)) {
 console.error(`[MCP] Using Store: ${STORE_PATH}`);
 
 const store = new StoreAdapter(STORE_PATH);
-const locker = new LockerAdapter(store);
+const locker = new LockerAdapter(store, path.join(process.cwd(), "fixtures/locker/capabilities.json"));
 const tasks = new TaskAdapter(store);
 const ideas = new IdeaAdapter(store);
 const dependencies = new DependencyAdapter(store);
@@ -63,7 +63,7 @@ const messages = new MessageAdapter(store);
 const agents = new AgentAdapter(store);
 const status = new StatusAdapter(store);
 const audit = new AuditAdapter(store);
-const probeRunner = new ProbeRunnerAdapter();
+const probeRunner = new ProbeRunnerAdapter(process.cwd());
 const scaffolder = new ScaffolderAdapter();
 const sddTracking = new SddTrackingAdapter(process.cwd());
 
@@ -80,10 +80,13 @@ const server = new Server(
   }
 );
 
+// Tool Input Schemas
+const AgentIdSchema = z.object({ agentId: z.string() });
+const OptionalAgentIdSchema = z.object({ agentId: z.string().optional() });
+
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
-      // --- Meta-Tools ---
       {
         name: "run_probe",
         description: "Run executable probes to verify environment and refresh fixtures.",
@@ -119,7 +122,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"],
         },
       },
-      // --- Agents ---
       {
         name: "register_agent",
         description: "Register a new agent identity.",
@@ -178,7 +180,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"],
         },
       },
-      // --- Locks ---
       {
         name: "request_file_locks",
         description: "Acquire exclusive locks for files. Prevents others from editing them.",
@@ -241,7 +242,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["paths", "agentId"],
         },
       },
-      // --- Tasks ---
       {
         name: "create_task",
         description: "Create a new task in the shared board.",
@@ -281,7 +281,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               required: ["agentId"]
           }
       },
-      // --- Ideas ---
       {
         name: "create_idea",
         description: "Create a new idea.",
@@ -358,7 +357,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["ideaId", "body", "agentId"]
         }
       },
-      // --- Dependencies ---
       {
         name: "add_dependency",
         description: "Add a prerequisite relationship between tasks.",
@@ -409,7 +407,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- Scheduler ---
       {
         name: "divvy_work",
         description: "Assign unassigned tasks to agents based on role and availability.",
@@ -423,7 +420,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["tasks", "agents", "agentId"]
         }
       },
-      // --- Knowledge ---
       {
         name: "knowledge_add_node",
         description: "Add a node to the shared knowledge graph.",
@@ -466,7 +462,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- ADRs ---
       {
         name: "create_adr",
         description: "Create a new ADR entry.",
@@ -494,7 +489,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- Event Stream ---
       {
         name: "publish_event",
         description: "Publish an event to the event stream.",
@@ -537,7 +531,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- Notifications ---
       {
         name: "send_notification",
         description: "Send a priority notification.",
@@ -565,7 +558,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- Confidence Auction ---
       {
         name: "resolve_confidence_auction",
         description: "Resolve confidence bids and select a winner.",
@@ -578,7 +570,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["bids", "agentId"]
         }
       },
-      // --- Mood Log ---
       {
         name: "log_mood",
         description: "Log a mood entry for an agent.",
@@ -606,7 +597,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- Arbitration ---
       {
         name: "get_gavel_state",
         description: "Get the current gavel state.",
@@ -652,7 +642,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- Review Gate ---
       {
         name: "submit_plan",
         description: "Submit a plan for critique.",
@@ -715,7 +704,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agentId"]
         }
       },
-      // --- Messages ---
       {
           name: "post_message",
           description: "Post a message to the shared log.",
@@ -759,7 +747,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               required: ["sinceRevision", "agentId"]
           }
       },
-      // --- Panic ---
       {
           name: "trigger_panic",
           description: "EMERGENCY: Freeze all locks.",
@@ -778,6 +765,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "object",
               properties: {}
           }
+      },
+      {
+        name: "get_sdd_report",
+        description: "Get the project's Seam-Driven Development compliance report.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            agentId: { type: "string" },
+          },
+          required: ["agentId"],
+        },
+      },
+      {
+        name: "scaffold_seam",
+        description: "Scaffold a new SDD seam (Contract, Probe, Mock, Test, Adapter).",
+        inputSchema: {
+          type: "object",
+          properties: {
+            seamName: { type: "string" },
+            agentId: { type: "string" },
+          },
+          required: ["seamName", "agentId"],
+        },
+      },
+      {
+        name: "run_probe",
+        description: "Run executable probes to verify environment and refresh fixtures.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            pattern: { type: "string", description: "Glob or substring pattern for probe files." },
+            agentId: { type: "string" },
+          },
+          required: ["agentId"],
+        },
       }
     ],
   };
@@ -786,20 +808,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
-  const requireAgentId = async (): Promise<string> => {
-    const agentId = (args as any).agentId as string;
-    if (!agentId) {
+  const requireAgentId = async (input: unknown): Promise<string> => {
+    const parsed = AgentIdSchema.safeParse(input);
+    if (!parsed.success) {
       throw new AppError("VALIDATION_FAILED", "agentId is required");
     }
-    await agents.touch(agentId);
-    return agentId;
+    await agents.touch(parsed.data.agentId);
+    return parsed.data.agentId;
   };
 
   const summarize = (value: unknown): string => {
     try {
       return JSON.stringify(value ?? null);
     } catch (err) {
-      return "\"[unserializable]\"";
+      return "\[unserializable]";
     }
   };
 
@@ -820,358 +842,450 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     // --- Agents ---
     if (name === "register_agent") {
-      const agentName = (args as any).name as string;
-      const agent = await agents.register(agentName);
-      await recordAudit(agent.id, name, summarize({ name: agentName }), summarize(agent));
+      const input = z.object({ name: z.string() }).parse(args);
+      const agent = await agents.register(input.name);
+      await recordAudit(agent.id, name, summarize(input), summarize(agent));
       return { content: [{ type: "text", text: JSON.stringify(agent, null, 2) }] };
     }
 
     if (name === "whoami") {
-      const agentId = (args as any).agentId as string;
-      const agent = await agents.resolve(agentId);
-      await agents.touch(agentId);
-      await recordAudit(agentId, name, summarize({ agentId }), summarize(agent));
+      const input = AgentIdSchema.parse(args);
+      const agent = await agents.resolve(input.agentId);
+      await agents.touch(input.agentId);
+      await recordAudit(input.agentId, name, summarize(input), summarize(agent));
       return { content: [{ type: "text", text: JSON.stringify(agent, null, 2) }] };
     }
 
     if (name === "list_agents") {
-      const agentId = await requireAgentId();
+      const agentId = await requireAgentId(args);
       const list = await agents.list();
       await recordAudit(agentId, name, summarize(args), summarize(list));
       return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     if (name === "get_status") {
-      const agentId = await requireAgentId();
+      const agentId = await requireAgentId(args);
       const snapshot = await status.getStatus();
       await recordAudit(agentId, name, summarize(args), summarize(snapshot));
       return { content: [{ type: "text", text: JSON.stringify(snapshot, null, 2) }] };
     }
 
     if (name === "list_audit") {
-      const agentId = await requireAgentId();
-      const filterAgentId = (args as any).filterAgentId as string | undefined;
-      const tool = (args as any).tool as string | undefined;
-      const limit = (args as any).limit as number | undefined;
-      const list = await audit.list({ agentId: filterAgentId, tool, limit });
+      const agentId = await requireAgentId(args);
+      const input = z.object({
+        filterAgentId: z.string().optional(),
+        tool: z.string().optional(),
+        limit: z.number().optional()
+      }).parse(args);
+      const list = await audit.list({ agentId: input.filterAgentId, tool: input.tool, limit: input.limit });
       await recordAudit(agentId, name, summarize(args), summarize(list));
       return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
-    if (name === "get_sdd_report") {
-      const agentId = await requireAgentId();
-      const report = await sddTracking.getReport();
-      await recordAudit(agentId, name, summarize(args), summarize(report));
-      return { content: [{ type: "text", text: JSON.stringify(report, null, 2) }] };
-    }
-
     // --- Locks ---
     if (name === "request_file_locks") {
-      const paths = (args as any).paths as string[];
-      const reason = (args as any).reason as string;
-      const ttlMs = (args as any).ttlMs || 60000;
-      const ownerId = await requireAgentId();
-      const locks = await locker.acquire(paths, ownerId, ttlMs, reason);
+      const input = z.object({
+        paths: z.array(z.string()),
+        reason: z.string(),
+        ttlMs: z.number().default(60000),
+        agentId: z.string()
+      }).parse(args);
+      
+      const ownerId = await requireAgentId(input);
+      const locks = await locker.acquire(input.paths, ownerId, input.ttlMs, input.reason);
       await recordAudit(ownerId, name, summarize(args), summarize({ success: true, locks }));
       return { content: [{ type: "text", text: JSON.stringify({ success: true, locks }, null, 2) }] };
     }
 
     if (name === "release_file_locks") {
-      const paths = (args as any).paths as string[];
-      const ownerId = await requireAgentId();
-      await locker.release(paths, ownerId);
+      const input = z.object({
+        paths: z.array(z.string()),
+        agentId: z.string()
+      }).parse(args);
+      
+      const ownerId = await requireAgentId(input);
+      await locker.release(input.paths, ownerId);
       await recordAudit(ownerId, name, summarize(args), summarize({ success: true }));
       return { content: [{ type: "text", text: JSON.stringify({ success: true }, null, 2) }] };
     }
 
     if (name === "renew_file_locks") {
-      const paths = (args as any).paths as string[];
-      const ttlMs = (args as any).ttlMs || 60000;
-      const ownerId = await requireAgentId();
-      const locks = await locker.renew(paths, ownerId, ttlMs);
+      const input = z.object({
+        paths: z.array(z.string()),
+        ttlMs: z.number().default(60000),
+        agentId: z.string()
+      }).parse(args);
+
+      const ownerId = await requireAgentId(input);
+      const locks = await locker.renew(input.paths, ownerId, input.ttlMs);
       await recordAudit(ownerId, name, summarize(args), summarize({ success: true, locks }));
       return { content: [{ type: "text", text: JSON.stringify({ success: true, locks }, null, 2) }] };
     }
 
     if (name === "list_locks") {
-      const agentId = await requireAgentId();
+      const agentId = await requireAgentId(args);
       const list = await locker.list();
       await recordAudit(agentId, name, summarize(args), summarize(list));
       return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     if (name === "force_release_locks") {
-      const paths = (args as any).paths as string[];
-      const agentId = await requireAgentId();
-      await locker.forceRelease(paths);
+      const input = z.object({
+        paths: z.array(z.string()),
+        agentId: z.string()
+      }).parse(args);
+
+      const agentId = await requireAgentId(input);
+      await locker.forceRelease(input.paths);
       await recordAudit(agentId, name, summarize(args), summarize({ success: true }));
       return { content: [{ type: "text", text: JSON.stringify({ success: true }, null, 2) }] };
     }
 
     // --- Tasks ---
     if (name === "create_task") {
-        const title = (args as any).title as string;
-        const description = (args as any).description as string;
-        const assignee = (args as any).assignee as string;
-        const agentId = await requireAgentId();
-        const task = await tasks.create(title, description, assignee);
+        const input = z.object({
+            title: z.string(),
+            description: z.string(),
+            assignee: z.string().optional(),
+            agentId: z.string()
+        }).parse(args);
+
+        const agentId = await requireAgentId(input);
+        const task = await tasks.create(input.title, input.description, input.assignee);
         await recordAudit(agentId, name, summarize(args), summarize(task));
         return { content: [{ type: "text", text: JSON.stringify(task, null, 2) }] };
     }
 
     if (name === "update_task_status") {
-        const taskId = (args as any).taskId as string;
-        const status = (args as any).status as any;
-        const agentId = await requireAgentId();
-        const task = await tasks.updateStatus(taskId, status);
+        const input = z.object({
+            taskId: z.string(),
+            status: z.enum(["todo", "in_progress", "review_pending", "done"]),
+            agentId: z.string()
+        }).parse(args);
+
+        const agentId = await requireAgentId(input);
+        const task = await tasks.updateStatus(input.taskId, input.status);
         await recordAudit(agentId, name, summarize(args), summarize(task));
         return { content: [{ type: "text", text: JSON.stringify(task, null, 2) }] };
     }
 
     if (name === "list_tasks") {
-        const status = (args as any).status as any;
-        const agentId = await requireAgentId();
-        const list = await tasks.list(status);
+        const input = z.object({
+            status: z.enum(["todo", "in_progress", "review_pending", "done"]).optional(),
+            agentId: z.string()
+        }).parse(args);
+
+        const agentId = await requireAgentId(input);
+        const list = await tasks.list(input.status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Ideas ---
     if (name === "create_idea") {
-        const { title, summary, status, tags, relatedTaskIds, relatedIdeaIds } = args as any;
-        const agentId = await requireAgentId();
-        const idea = await ideas.create({ title, summary, status, tags, relatedTaskIds, relatedIdeaIds });
+        const input = z.object({
+            title: z.string(),
+            summary: z.string().optional(),
+            status: z.enum(["draft", "active", "parked", "archived"]).optional(),
+            tags: z.array(z.string()).optional(),
+            relatedTaskIds: z.array(z.string()).optional(),
+            relatedIdeaIds: z.array(z.string()).optional(),
+            agentId: z.string()
+        }).parse(args);
+
+        const agentId = await requireAgentId(input);
+        const idea = await ideas.create(input); 
         await recordAudit(agentId, name, summarize(args), summarize(idea));
         return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
     }
 
     if (name === "update_idea") {
-        const { id, title, summary, status, tags, relatedTaskIds, relatedIdeaIds } = args as any;
-        const agentId = await requireAgentId();
-        const idea = await ideas.update({ id, title, summary, status, tags, relatedTaskIds, relatedIdeaIds });
+        const input = z.object({
+            id: z.string(),
+            title: z.string().optional(),
+            summary: z.string().optional(),
+            status: z.enum(["draft", "active", "parked", "archived"]).optional(),
+            tags: z.array(z.string()).optional(),
+            relatedTaskIds: z.array(z.string()).optional(),
+            relatedIdeaIds: z.array(z.string()).optional(),
+            agentId: z.string()
+        }).parse(args);
+
+        const agentId = await requireAgentId(input);
+        const idea = await ideas.update(input);
         await recordAudit(agentId, name, summarize(args), summarize(idea));
         return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
     }
 
     if (name === "list_ideas") {
-        const { status, tag, query, limit } = args as any;
-        const agentId = await requireAgentId();
-        const filter = status || tag || query || limit
-          ? { status, tag, query, limit }
-          : undefined;
-        const list = await ideas.list(filter);
+        const input = z.object({
+            status: z.enum(["draft", "active", "parked", "archived"]).optional(),
+            tag: z.string().optional(),
+            query: z.string().optional(),
+            limit: z.number().optional(),
+            agentId: z.string()
+        }).parse(args);
+
+        const agentId = await requireAgentId(input);
+        const list = await ideas.list(input);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     if (name === "get_idea") {
-        const id = (args as any).id as string;
-        const agentId = await requireAgentId();
-        const idea = await ideas.get({ id });
+        const input = z.object({ id: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const idea = await ideas.get({ id: input.id });
         await recordAudit(agentId, name, summarize(args), summarize(idea));
         return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
     }
 
     if (name === "add_idea_note") {
-        const { ideaId, author, body } = args as any;
-        const agentId = await requireAgentId();
-        const idea = await ideas.addNote({ ideaId, author, body });
+        const input = z.object({
+            ideaId: z.string(),
+            author: z.string(),
+            body: z.string(),
+            agentId: z.string()
+        }).parse(args);
+
+        const agentId = await requireAgentId(input);
+        const idea = await ideas.addNote(input);
         await recordAudit(agentId, name, summarize(args), summarize(idea));
         return { content: [{ type: "text", text: JSON.stringify(idea, null, 2) }] };
     }
 
     // --- Dependencies ---
     if (name === "add_dependency") {
-        const childId = (args as any).childId as string;
-        const parentId = (args as any).parentId as string;
-        const agentId = await requireAgentId();
-        const task = await dependencies.addDependency(childId, parentId);
+        const input = z.object({ childId: z.string(), parentId: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const task = await dependencies.addDependency(input.childId, input.parentId);
         await recordAudit(agentId, name, summarize(args), summarize(task));
         return { content: [{ type: "text", text: JSON.stringify(task, null, 2) }] };
     }
 
     if (name === "remove_dependency") {
-        const childId = (args as any).childId as string;
-        const parentId = (args as any).parentId as string;
-        const agentId = await requireAgentId();
-        const task = await dependencies.removeDependency(childId, parentId);
+        const input = z.object({ childId: z.string(), parentId: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const task = await dependencies.removeDependency(input.childId, input.parentId);
         await recordAudit(agentId, name, summarize(args), summarize(task));
         return { content: [{ type: "text", text: JSON.stringify(task, null, 2) }] };
     }
 
     if (name === "get_dependencies") {
-        const taskId = (args as any).taskId as string;
-        const agentId = await requireAgentId();
-        const info = await dependencies.getDependencies(taskId);
+        const input = z.object({ taskId: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const info = await dependencies.getDependencies(input.taskId);
         await recordAudit(agentId, name, summarize(args), summarize(info));
         return { content: [{ type: "text", text: JSON.stringify(info, null, 2) }] };
     }
 
     if (name === "list_actionable_tasks") {
-        const status = (args as any).status as any;
-        const agentId = await requireAgentId();
-        const list = await dependencies.listActionable(status);
+        const input = z.object({
+            status: z.enum(["todo", "in_progress", "review_pending", "done"]).optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const list = await dependencies.listActionable(input.status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Scheduler ---
     if (name === "divvy_work") {
-        const tasksInput = (args as any).tasks as any;
-        const agentsInput = (args as any).agents as any;
-        const agentId = await requireAgentId();
-        const result = await scheduler.schedule({ tasks: tasksInput, agents: agentsInput });
+        const input = z.object({
+            tasks: z.array(z.any()),
+            agents: z.array(z.any()),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const result = await scheduler.schedule({ tasks: input.tasks, agents: input.agents });
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
 
     // --- Knowledge ---
     if (name === "knowledge_add_node") {
-        const type = (args as any).type as string;
-        const content = (args as any).content as string;
-        const agentId = await requireAgentId();
-        const node = await knowledge.addNode(type, content);
+        const input = z.object({ type: z.string(), content: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const node = await knowledge.addNode(input.type, input.content);
         await recordAudit(agentId, name, summarize(args), summarize(node));
         return { content: [{ type: "text", text: JSON.stringify(node, null, 2) }] };
     }
 
     if (name === "knowledge_link_nodes") {
-        const fromId = (args as any).fromId as string;
-        const toId = (args as any).toId as string;
-        const relation = (args as any).relation as string;
-        const agentId = await requireAgentId();
-        const edge = await knowledge.linkNodes(fromId, toId, relation);
+        const input = z.object({ fromId: z.string(), toId: z.string(), relation: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const edge = await knowledge.linkNodes(input.fromId, input.toId, input.relation);
         await recordAudit(agentId, name, summarize(args), summarize(edge));
         return { content: [{ type: "text", text: JSON.stringify(edge, null, 2) }] };
     }
 
     if (name === "knowledge_query") {
-        const agentId = await requireAgentId();
-        const { type, text, relation, limit } = args as any;
-        const result = await knowledge.query({ type, text, relation, limit });
+        const input = z.object({
+            type: z.string().optional(),
+            text: z.string().optional(),
+            relation: z.string().optional(),
+            limit: z.number().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const result = await knowledge.query(input);
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
 
     // --- ADRs ---
     if (name === "create_adr") {
-        const title = (args as any).title as string;
-        const status = (args as any).status as any;
-        const context = (args as any).context as string;
-        const decision = (args as any).decision as string;
-        const agentId = await requireAgentId();
-        const entry = await adrs.create({ title, status, context, decision });
+        const input = z.object({
+            title: z.string(),
+            status: z.enum(["proposed", "accepted"]).optional(),
+            context: z.string(),
+            decision: z.string(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const entry = await adrs.create(input);
         await recordAudit(agentId, name, summarize(args), summarize(entry));
         return { content: [{ type: "text", text: JSON.stringify(entry, null, 2) }] };
     }
 
     if (name === "list_adrs") {
-        const status = (args as any).status as any;
-        const agentId = await requireAgentId();
-        const list = await adrs.list(status);
+        const input = z.object({
+            status: z.enum(["proposed", "accepted"]).optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const list = await adrs.list(input.status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Event Stream ---
     if (name === "publish_event") {
-        const type = (args as any).type as string;
-        const data = (args as any).data as any;
-        const agentId = await requireAgentId();
-        const event = await eventStream.publish({ type, data });
+        const input = z.object({
+            type: z.string(),
+            data: z.record(z.string(), z.any()),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const event = await eventStream.publish(input);
         await recordAudit(agentId, name, summarize(args), summarize(event));
         return { content: [{ type: "text", text: JSON.stringify(event, null, 2) }] };
     }
 
     if (name === "get_recent_events") {
-        const agentId = await requireAgentId();
-        const { limit, type, since } = args as any;
-        const list = await eventStream.list({ limit, type, since });
+        const input = z.object({
+            limit: z.number().optional(),
+            type: z.string().optional(),
+            since: z.number().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const list = await eventStream.list(input);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     if (name === "subscribe_to_events") {
-        const agentId = await requireAgentId();
-        const { limit, type, since, timeoutMs } = args as any;
-        const result = await eventStream.waitForEvents({ limit, type, since, timeoutMs });
+        const input = z.object({
+            limit: z.number().optional(),
+            type: z.string().optional(),
+            since: z.number().optional(),
+            timeoutMs: z.number().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const result = await eventStream.waitForEvents(input);
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
 
     // --- Notifications ---
     if (name === "send_notification") {
-        const title = (args as any).title as string;
-        const message = (args as any).message as string;
-        const priority = (args as any).priority as any;
-        const agentId = await requireAgentId();
-        const notification = await notifications.send({ title, message, priority });
+        const input = z.object({
+            title: z.string(),
+            message: z.string(),
+            priority: z.enum(["low", "normal", "high", "urgent"]).optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const notification = await notifications.send(input);
         await recordAudit(agentId, name, summarize(args), summarize(notification));
         return { content: [{ type: "text", text: JSON.stringify(notification, null, 2) }] };
     }
 
     if (name === "list_notifications") {
-        const agentId = await requireAgentId();
-        const { limit, minPriority } = args as any;
-        const list = await notifications.list({ limit, minPriority });
+        const input = z.object({
+            limit: z.number().optional(),
+            minPriority: z.enum(["low", "normal", "high", "urgent"]).optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const list = await notifications.list(input);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Confidence Auction ---
     if (name === "resolve_confidence_auction") {
-        const bids = (args as any).bids as any;
-        const agentId = await requireAgentId();
-        const result = await confidenceAuction.resolve({ bids });
+        const input = z.object({ bids: z.array(z.any()), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const result = await confidenceAuction.resolve({ bids: input.bids });
         await recordAudit(agentId, name, summarize(args), summarize(result));
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
 
     // --- Mood Log ---
     if (name === "log_mood") {
-        const mood = (args as any).mood as string;
-        const note = (args as any).note as string | undefined;
-        const subjectAgentId = (args as any).subjectAgentId as string | undefined;
-        const agentId = await requireAgentId();
-        const entry = await moods.log({ agentId: subjectAgentId ?? agentId, mood, note });
+        const input = z.object({
+            mood: z.string(),
+            note: z.string().optional(),
+            subjectAgentId: z.string().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const entry = await moods.log({ agentId: input.subjectAgentId ?? agentId, mood: input.mood, note: input.note });
         await recordAudit(agentId, name, summarize(args), summarize(entry));
         return { content: [{ type: "text", text: JSON.stringify(entry, null, 2) }] };
     }
 
     if (name === "list_moods") {
-        const limit = (args as any).limit as number | undefined;
-        const filterAgentId = (args as any).filterAgentId as string | undefined;
-        const agentId = await requireAgentId();
-        const list = await moods.list({ agentId: filterAgentId, limit });
+        const input = z.object({
+            limit: z.number().optional(),
+            filterAgentId: z.string().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const list = await moods.list({ agentId: input.filterAgentId, limit: input.limit });
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Arbitration ---
     if (name === "get_gavel_state") {
-        const agentId = await requireAgentId();
+        const agentId = await requireAgentId(args);
         const state = await arbitration.getState();
         await recordAudit(agentId, name, summarize(args), summarize(state));
         return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
     }
 
     if (name === "request_gavel") {
-        const agentId = await requireAgentId();
+        const agentId = await requireAgentId(args);
         const state = await arbitration.request(agentId);
         await recordAudit(agentId, name, summarize(args), summarize(state));
         return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
     }
 
     if (name === "grant_gavel") {
-        const targetAgentId = (args as any).targetAgentId as string;
-        const agentId = await requireAgentId();
-        const state = await arbitration.grant(targetAgentId);
+        const input = z.object({ targetAgentId: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const state = await arbitration.grant(input.targetAgentId);
         await recordAudit(agentId, name, summarize(args), summarize(state));
         return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
     }
 
     if (name === "release_gavel") {
-        const agentId = await requireAgentId();
+        const agentId = await requireAgentId(args);
         const state = await arbitration.release();
         await recordAudit(agentId, name, summarize(args), summarize(state));
         return { content: [{ type: "text", text: JSON.stringify(state, null, 2) }] };
@@ -1179,75 +1293,89 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     // --- Review Gate ---
     if (name === "submit_plan") {
-        const planId = (args as any).planId as string;
-        const plan = (args as any).plan as string;
-        const agentId = await requireAgentId();
-        const gate = await reviewGates.submitPlan(planId, plan);
+        const input = z.object({ planId: z.string(), plan: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const gate = await reviewGates.submitPlan(input.planId, input.plan);
         await recordAudit(agentId, name, summarize(args), summarize(gate));
         return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
     }
 
     if (name === "submit_critique") {
-        const planId = (args as any).planId as string;
-        const critique = (args as any).critique as string;
-        const agentId = await requireAgentId();
-        const gate = await reviewGates.submitCritique(planId, critique);
+        const input = z.object({ planId: z.string(), critique: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const gate = await reviewGates.submitCritique(input.planId, input.critique);
         await recordAudit(agentId, name, summarize(args), summarize(gate));
         return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
     }
 
     if (name === "approve_plan") {
-        const planId = (args as any).planId as string;
-        const agentId = await requireAgentId();
-        const gate = await reviewGates.approvePlan(planId);
+        const input = z.object({ planId: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const gate = await reviewGates.approvePlan(input.planId);
         await recordAudit(agentId, name, summarize(args), summarize(gate));
         return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
     }
 
     if (name === "get_review_gate") {
-        const planId = (args as any).planId as string;
-        const agentId = await requireAgentId();
-        const gate = await reviewGates.getGate(planId);
+        const input = z.object({ planId: z.string(), agentId: z.string() }).parse(args);
+        const agentId = await requireAgentId(input);
+        const gate = await reviewGates.getGate(input.planId);
         await recordAudit(agentId, name, summarize(args), summarize(gate));
         return { content: [{ type: "text", text: JSON.stringify(gate, null, 2) }] };
     }
 
     if (name === "list_review_gates") {
-        const status = (args as any).status as any;
-        const agentId = await requireAgentId();
-        const list = await reviewGates.list(status);
+        const input = z.object({
+            status: z.enum(["pending", "critique_submitted", "approved"]).optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const list = await reviewGates.list(input.status);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     // --- Messages ---
     if (name === "post_message") {
-        const content = (args as any).content as string;
-        const sender = (args as any).sender as string;
-        const metadata = (args as any).metadata as any;
-        const channelId = (args as any).channelId as string | undefined;
-        const threadId = (args as any).threadId as string | undefined;
-        const agentId = await requireAgentId();
-        const msg = await messages.post(sender, content, { metadata, channelId, threadId });
+        const input = z.object({
+            content: z.string(),
+            sender: z.string(),
+            metadata: z.record(z.string(), z.any()).optional(),
+            channelId: z.string().optional(),
+            threadId: z.string().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const msg = await messages.post(input.sender, input.content, { 
+            metadata: input.metadata, 
+            channelId: input.channelId, 
+            threadId: input.threadId 
+        });
         await recordAudit(agentId, name, summarize(args), summarize(msg));
         return { content: [{ type: "text", text: JSON.stringify(msg, null, 2) }] };
     }
 
     if (name === "list_messages") {
-        const limit = (args as any).limit || 50;
-        const channelId = (args as any).channelId as string | undefined;
-        const threadId = (args as any).threadId as string | undefined;
-        const agentId = await requireAgentId();
-        const list = await messages.list({ limit, channelId, threadId });
+        const input = z.object({
+            limit: z.number().default(50),
+            channelId: z.string().optional(),
+            threadId: z.string().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const list = await messages.list(input);
         await recordAudit(agentId, name, summarize(args), summarize(list));
         return { content: [{ type: "text", text: JSON.stringify(list, null, 2) }] };
     }
 
     if (name === "wait_for_update") {
-        const sinceRevision = (args as any).sinceRevision as number;
-        const timeoutMs = (args as any).timeoutMs || 30000;
-        const agentId = await requireAgentId();
-        const event = await messages.waitForUpdate(sinceRevision, timeoutMs);
+        const input = z.object({
+            sinceRevision: z.number(),
+            timeoutMs: z.number().default(30000),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const event = await messages.waitForUpdate(input.sinceRevision, input.timeoutMs);
         await recordAudit(agentId, name, summarize(args), summarize(event));
         return { content: [{ type: "text", text: JSON.stringify(event, null, 2) }] };
     }
@@ -1265,13 +1393,45 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return { content: [{ type: "text", text: "Panic mode resolved" }] };
     }
 
+    if (name === "get_sdd_report") {
+        const agentId = await requireAgentId(args);
+        const report = await sddTracking.getReport();
+        await recordAudit(agentId, name, summarize(args), summarize(report));
+        return { content: [{ type: "text", text: JSON.stringify(report, null, 2) }] };
+    }
+
+    if (name === "scaffold_seam") {
+        const input = z.object({
+            seamName: z.string(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        // Note: scaffold_seam does not return a value in the current contract, but prints to stdout.
+        // We'll return success if it doesn't throw.
+        const result = await scaffolder.scaffold({ seamName: input.seamName, baseDir: process.cwd() });
+        await recordAudit(agentId, name, summarize(args), summarize(result));
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+
+    if (name === "run_probe") {
+        const input = z.object({
+            pattern: z.string().optional(),
+            agentId: z.string()
+        }).parse(args);
+        const agentId = await requireAgentId(input);
+        const result = await probeRunner.run({ pattern: input.pattern ?? "" });
+        await recordAudit(agentId, name, summarize(args), summarize(result));
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+
     throw new Error(`Unknown tool: ${name}`);
-  } catch (err: any) {
-    const code = err.code || "UNKNOWN";
-    const agentId = (args as any)?.agentId || "system";
-    await recordAudit(agentId, name, summarize(args), summarize({ error: err.message }), code);
+  } catch (err: unknown) {
+    const error = err as any; // allowed-any
+    const code = error.code || "UNKNOWN";
+    const agentId = (args as any)?.agentId || "system"; // allowed-any
+    await recordAudit(agentId, name, summarize(args), summarize({ error: error.message }), code);
     return {
-      content: [{ type: "text", text: `ERROR [${code}]: ${err.message}` }],
+      content: [{ type: "text", text: `ERROR [${code}]: ${error.message}` }],
       isError: true,
     };
   }

@@ -58,10 +58,10 @@ export class TaskAdapter implements ITaskRegistry {
   async list(status?: TaskStatus): Promise<Task[]> {
     const current = await this.store.load();
     const tasks = normalizeTasks((current.tasks as TaskRecord[]) || []);
-    if (status) {
-      return tasks.filter(t => t.status === status);
-    }
-    return tasks;
+    const filtered = status ? tasks.filter(t => t.status === status) : tasks;
+    
+    // Sort by updated_at desc (newest first)
+    return filtered.sort((a, b) => b.updated_at - a.updated_at);
   }
 }
 

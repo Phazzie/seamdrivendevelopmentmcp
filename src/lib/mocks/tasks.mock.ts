@@ -1,38 +1,34 @@
 import fs from "fs";
-import path from "path";
 import type { ITaskRegistry, Task, TaskStatus } from "../../../contracts/tasks.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
-
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "tasks", "sample.json");
-const BASE_TIME = 1700000002000;
 
 type TaskFixture = {
   captured_at?: string;
   tasks?: Task[];
 };
 
-function loadFixtureTasks(): Task[] {
-  if (!fs.existsSync(FIXTURE_PATH)) return [];
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const parsed = JSON.parse(raw) as TaskFixture;
-  const tasks = Array.isArray(parsed.tasks) ? parsed.tasks : [];
-  return tasks.map((task) => ({
-    ...task,
-    blockedBy: Array.isArray(task.blockedBy) ? task.blockedBy : [],
-  }));
-}
-
 export class MockTaskRegistry implements ITaskRegistry {
   private tasks: Task[];
   private clock: number;
   private idIndex: number;
 
-  constructor() {
-    this.tasks = loadFixtureTasks();
+  constructor(private readonly fixturePath: string) {
+    this.tasks = this.loadFixtureTasks(fixturePath);
     const times = this.tasks.flatMap((task) => [task.created_at, task.updated_at]);
-    const maxTime = times.length ? Math.max(...times) : BASE_TIME;
-    this.clock = Math.max(BASE_TIME, maxTime + 1);
+    const maxTime = times.length ? Math.max(...times) : 1700000002000;
+    this.clock = Math.max(1700000002000, maxTime + 1);
     this.idIndex = 1;
+  }
+
+  private loadFixtureTasks(fixturePath: string): Task[] {
+    if (!fs.existsSync(fixturePath)) return [];
+    const raw = fs.readFileSync(fixturePath, "utf-8");
+    const parsed = JSON.parse(raw) as TaskFixture;
+    const tasks = Array.isArray(parsed.tasks) ? parsed.tasks : [];
+    return tasks.map((task) => ({
+      ...task,
+      blockedBy: Array.isArray(task.blockedBy) ? task.blockedBy : [],
+    }));
   }
 
   async create(title: string, description: string, assignee?: string): Promise<Task> {
@@ -61,10 +57,8 @@ export class MockTaskRegistry implements ITaskRegistry {
   }
 
   async list(status?: TaskStatus): Promise<Task[]> {
-    if (status) {
-      return this.tasks.filter(t => t.status === status);
-    }
-    return [...this.tasks];
+    const tasks = status ? this.tasks.filter(t => t.status === status) : [...this.tasks];
+    return tasks.sort((a, b) => b.updated_at - a.updated_at);
   }
 
   private nextTime(): number {
@@ -74,7 +68,6 @@ export class MockTaskRegistry implements ITaskRegistry {
   }
 
   private nextId(): string {
-    // Deterministic, collision-free IDs for tests.
     const value = this.idIndex.toString(16).padStart(12, "0");
     this.idIndex += 1;
     return `00000000-0000-0000-0000-${value}`;

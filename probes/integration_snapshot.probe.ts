@@ -1,20 +1,22 @@
 // Purpose: capture an integration snapshot fixture from the live store.
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import os from "os";
+import { fileURLToPath } from "url";
 import { StoreAdapter } from "../src/lib/adapters/store.adapter.js";
 import { IntegrationSnapshotSchema } from "../contracts/integration_snapshot.contract.js";
 
-const FIXTURE_DIR = path.join(process.cwd(), "fixtures", "integration_snapshot");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const FIXTURE_DIR = path.join(__dirname, "../fixtures/integration_snapshot");
+
 const STORE_PATH =
   process.env.MCP_STORE_PATH ||
   path.join(os.homedir(), ".mcp-collaboration", "store.json");
 
-if (!fs.existsSync(FIXTURE_DIR)) {
-  fs.mkdirSync(FIXTURE_DIR, { recursive: true });
-}
-
 async function main() {
+  await fs.mkdir(FIXTURE_DIR, { recursive: true });
+
   const store = new StoreAdapter(STORE_PATH);
   const data = await store.load();
 
@@ -30,7 +32,7 @@ async function main() {
     process.exit(1);
   }
 
-  fs.writeFileSync(
+  await fs.writeFile(
     path.join(FIXTURE_DIR, "snapshot.json"),
     JSON.stringify(parsed.data, null, 2)
   );
