@@ -1,45 +1,36 @@
-/**
- * Purpose: Verify that 'Claude' is a valid, registerable agent identity (agent_identity seam).
- */
-import fs from 'fs';
-import path from 'path';
-import { AgentAdapter } from '../src/lib/adapters/agents.adapter.js';
-import { StoreAdapter } from '../src/lib/adapters/store.adapter.js';
+import path from "path";
+import os from "os";
+import { StoreAdapter } from "../src/lib/adapters/store.adapter.js";
+import { AgentAdapter } from "../src/lib/adapters/agents.adapter.js";
+import { JailedFs } from "../src/lib/helpers/jailed_fs.js";
+import fs from "fs";
 
-const FIXTURE_DIR = path.join(process.cwd(), 'fixtures/agents');
-const FIXTURE_FILE = path.join(FIXTURE_DIR, 'claude_identity.json');
-const STORE_FILE = path.join(process.cwd(), 'probes/tmp_claude_store.json');
+const ROOT_DIR = process.cwd();
+const FIXTURE_PATH = path.join(ROOT_DIR, "fixtures/agents/claude_identity.json");
+const STORE_PATH = path.join(os.tmpdir(), "mcp_agent_probe_store.json");
 
-// Ensure fixture dir
-if (!fs.existsSync(FIXTURE_DIR)) {
-  fs.mkdirSync(FIXTURE_DIR, { recursive: true });
-}
-
-async function main() {
-  // Use a temporary store to avoid polluting the real one
-  const store = new StoreAdapter(STORE_FILE);
+async function run() {
+  const jailedFs = new JailedFs(path.dirname(STORE_PATH));
+  const store = new StoreAdapter(STORE_PATH, jailedFs);
   const agents = new AgentAdapter(store);
 
-  try {
-    console.log("Attempting to register 'Claude'...");
-    const agent = await agents.register("Claude");
-    
-    console.log(`Success! Registered Agent: ${agent.name} (${agent.id})`);
+  const agent = await agents.register("Claude");
+  
+  const fixture = {
+    captured_at: new Date().toISOString(),
+    scenarios: {
+      success: {
+        outputs: {
+          agent
+        }
+      }
+    }
+  };
 
-    const fixture = {
-      ...agent,
-      captured_at: new Date().toISOString()
-    };
-
-    fs.writeFileSync(FIXTURE_FILE, JSON.stringify(fixture, null, 2));
-    console.log(`Fixture written to ${FIXTURE_FILE}`);
-
-  } catch (err) {
-    console.error("Probe Failed:", err);
-    process.exit(1);
-  } finally {
-    if (fs.existsSync(STORE_FILE)) fs.unlinkSync(STORE_FILE);
-  }
+  const dir = path.dirname(FIXTURE_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(FIXTURE_PATH, JSON.stringify(fixture, null, 2));
+  console.log("Agent fixture written.");
 }
 
-main();
+run().catch(console.error);

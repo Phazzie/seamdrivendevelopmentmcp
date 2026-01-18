@@ -198,6 +198,13 @@ You are correct that direct writes are risky.
 *   Fixed README `decompose-plan` usage and updated `docs/OVERVIEW.md` spec reference.
 *   Verified via `rg` scans (MCP_STORE_PATH, decompose-plan usage, sdd-check default).
 
+## Codex Update (2026-01-19)
+### Web HUD (web_cockpit seam)
+*   Updated `src/tui/web/index.html` layout/theme; added `src/tui/web/client.js` SSE client with reconnect/backoff and `src/tui/web/renderer.js` with rAF render guard.
+*   Rendered system stats + lists (locks, review gates, agents) and added disabled footer input.
+*   Verification: not run yet (will run `npm run verify` and `npm test` after Tasks A/B/C).
+*   Fixtures: unchanged; `fixtures/web_cockpit/*` not refreshed.
+
 ## Codex Update (2026-01-10)
 
 ### Ideas Seam + Scaffolder Spec

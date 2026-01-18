@@ -10,6 +10,7 @@ import { StatusAdapter } from "../lib/adapters/status.adapter.js";
 import { TelemetryAdapter } from "../lib/adapters/telemetry.adapter.js";
 import { SddTrackingAdapter } from "../lib/adapters/sdd_tracking.adapter.js";
 import { PathGuard } from "../lib/helpers/path_guard.js";
+import { JailedFs } from "../lib/helpers/jailed_fs.js";
 import { createRevisionStream } from "../lib/helpers/revision_stream.js";
 import { TuiConfigSchema } from "../../contracts/tui.contract.js";
 import { TuiDataAdapter, createStatusHealthProvider } from "./adapters/tui.adapter.js";
@@ -21,9 +22,10 @@ async function main(): Promise<void> {
   const storePath = process.env.MCP_STORE_PATH || DEFAULT_STORE_PATH;
   const rootDir = process.cwd();
   const pathGuard = new PathGuard(rootDir);
+  const jailedFs = new JailedFs(rootDir);
 
   // Core Pulse
-  const store = new StoreAdapter(storePath, pathGuard);
+  const store = new StoreAdapter(storePath, jailedFs);
   const revisionStream = createRevisionStream(store);
 
   // Adapters

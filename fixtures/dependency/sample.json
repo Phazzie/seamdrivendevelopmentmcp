@@ -1,36 +1,38 @@
 {
-  "captured_at": "2026-01-11T00:16:20.145Z",
-  "tasks": [
-    {
-      "id": "75ec6cfb-45d8-4167-b73b-c340a0f2f402",
-      "title": "Dependency root",
-      "description": "Root task with no dependencies.",
-      "status": "done",
-      "blockedBy": [],
-      "created_at": 1768090579082,
-      "updated_at": 1768090579266
-    },
-    {
-      "id": "d2bd6703-4568-47d8-b008-607e995f7e7b",
-      "title": "Dependent task",
-      "description": "Blocked until root is done.",
-      "status": "todo",
-      "blockedBy": [
-        "75ec6cfb-45d8-4167-b73b-c340a0f2f402"
-      ],
-      "created_at": 1768090579467,
-      "updated_at": 1768090579633
-    },
-    {
-      "id": "e0a4f158-0fab-435b-803b-83c65224c7d6",
-      "title": "Blocked chain",
-      "description": "Blocked until dependent task is done.",
-      "status": "todo",
-      "blockedBy": [
-        "d2bd6703-4568-47d8-b008-607e995f7e7b"
-      ],
-      "created_at": 1768090579800,
-      "updated_at": 1768090579989
+  "captured_at": "2026-01-18T17:59:20.569Z",
+  "scenarios": {
+    "success": {
+      "outputs": {
+        "tasks": [
+          {
+            "id": "b5c333d0-a860-4c1d-85ad-28a085d19191",
+            "title": "Parent",
+            "description": "P",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1768753937549,
+            "updated_at": 1768753937549
+          },
+          {
+            "id": "d24e1b06-25b2-4b0d-af62-4aafb4f9aa58",
+            "title": "Parent",
+            "description": "P",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1768759139114,
+            "updated_at": 1768759139114
+          },
+          {
+            "id": "fd7f3acc-e2e1-4082-ac9f-10f19e55e124",
+            "title": "Parent",
+            "description": "P",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1768759160278,
+            "updated_at": 1768759160278
+          }
+        ]
+      }
     }
-  ]
+  }
 }

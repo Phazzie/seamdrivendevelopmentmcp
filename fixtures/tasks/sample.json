@@ -1,23 +1,38 @@
 {
-  "captured_at": "2026-01-11T00:16:55.583Z",
-  "tasks": [
-    {
-      "id": "21bba279-a66a-4df7-9e75-21aef1a658a9",
-      "title": "Sample Task",
-      "description": "Captured from probe",
-      "status": "todo",
-      "blockedBy": [],
-      "created_at": 1768090615009,
-      "updated_at": 1768090615009
-    },
-    {
-      "id": "aa173e9d-1da1-4572-a9eb-64f92b10193e",
-      "title": "Second Task",
-      "description": "Probe status change",
-      "status": "done",
-      "blockedBy": [],
-      "created_at": 1768090615194,
-      "updated_at": 1768090615383
+  "captured_at": "2026-01-18T17:59:24.825Z",
+  "scenarios": {
+    "success": {
+      "outputs": {
+        "tasks": [
+          {
+            "id": "4b4cf855-4fa9-4dea-8809-feed3525ae44",
+            "title": "Test Task",
+            "description": "Desc",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1768759164734,
+            "updated_at": 1768759164734
+          },
+          {
+            "id": "77a4a4be-c5ec-48df-9653-ed035e9080a5",
+            "title": "Test Task",
+            "description": "Desc",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1768759142555,
+            "updated_at": 1768759142555
+          },
+          {
+            "id": "d57d2cdc-979e-47b8-857c-1cf5f80785d7",
+            "title": "Test Task",
+            "description": "Desc",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1768753971304,
+            "updated_at": 1768753971304
+          }
+        ]
+      }
     }
-  ]
+  }
 }

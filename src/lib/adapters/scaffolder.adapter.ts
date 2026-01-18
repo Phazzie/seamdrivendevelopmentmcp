@@ -1,8 +1,7 @@
 /**
  * Purpose: Real file-system implementation of the Scaffolder (scaffolder seam).
- * Hardened: Path Jailing enforced for all generations.
+ * Hardened: Uses JailedFs for physical path security.
  */
-import fs from "fs/promises";
 import path from "path";
 import {
   IScaffolder,
@@ -11,10 +10,10 @@ import {
   GeneratedFile,
   ScaffoldSpec
 } from "../../../contracts/scaffolder.contract.js";
-import { PathGuard } from "../helpers/path_guard.js";
+import { JailedFs } from "../helpers/jailed_fs.js";
 
 export class ScaffolderAdapter implements IScaffolder {
-  constructor(private readonly pathGuard: PathGuard) {}
+  constructor(private readonly jfs: JailedFs) {}
 
   async scaffold(input: ScaffoldInput): Promise<ScaffoldResult> {
     const { seamName, baseDir: requestedBase, spec: rawSpec } = input;
@@ -22,16 +21,11 @@ export class ScaffolderAdapter implements IScaffolder {
     const spec = this.resolveSpec(seamName, rawSpec);
 
     // Senior Mandate: Jail the base directory
-    const baseDir = await this.pathGuard.validate(requestedBase || ".");
+    const baseDir = requestedBase || ".";
 
     const writeFile = async (relPath: string, content: string, type: GeneratedFile["type"]) => {
       const fullPath = path.join(baseDir, relPath);
-      // Senior Mandate: Jail every specific file write
-      await this.pathGuard.validate(fullPath);
-      
-      const dir = path.dirname(fullPath);
-      await fs.mkdir(dir, { recursive: true });
-      await fs.writeFile(fullPath, content.trim() + "\n", "utf-8");
+      await this.jfs.writeFile(fullPath, content.trim() + "\n");
       generated.push({ path: fullPath, type });
     };
 

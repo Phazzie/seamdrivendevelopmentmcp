@@ -1,10 +1,16 @@
 {
-  "revision": 1,
-  "panicMode": false,
-  "lockCount": 0,
-  "taskCount": 0,
-  "messageCount": 0,
-  "agentCount": 0,
-  "uptimeMs": 103,
-  "captured_at": "2026-01-11T00:16:51.599Z"
+  "captured_at": "2026-01-18T17:59:23.240Z",
+  "scenarios": {
+    "success": {
+      "outputs": {
+        "revision": 1,
+        "panicMode": false,
+        "lockCount": 0,
+        "taskCount": 0,
+        "messageCount": 0,
+        "agentCount": 0,
+        "uptimeMs": 0
+      }
+    }
+  }
 }

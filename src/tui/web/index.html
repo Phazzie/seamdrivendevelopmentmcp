@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<!-- Purpose: Web HUD layout skeleton (seam: web_cockpit). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP Mission Control</title>
+  <style>
+    :root {
+      --bg-0: #0b0f14;
+      --bg-1: #0f1622;
+      --panel: #101926;
+      --panel-2: #121d2b;
+      --border: #223041;
+      --fg: #d8e2ee;
+      --muted: #8ea4b8;
+      --accent: #41b3ff;
+      --accent-2: #33d19f;
+      --warn: #f0b429;
+      --error: #ff6b6b;
+      --success: #2adf9f;
+      --font-sans: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+      --font-mono: "IBM Plex Mono", "SF Mono", "Menlo", monospace;
+      --shadow: 0 10px 30px rgba(5, 10, 20, 0.5);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(65, 179, 255, 0.12), transparent),
+        radial-gradient(900px 500px at 90% -20%, rgba(51, 209, 159, 0.1), transparent),
+        var(--bg-0);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px 1fr 56px;
+      overflow: hidden;
+    }
+    header {
+      background: linear-gradient(120deg, #0f1826, #0c1420);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    #status-pulse {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--muted);
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    #status-pulse.is-live {
+      background: var(--success);
+      box-shadow: 0 0 12px rgba(42, 223, 159, 0.55);
+    }
+    #status-pulse.is-error { background: var(--error); }
+    #status-pulse.is-connecting {
+      background: var(--warn);
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(240, 180, 41, 0.45);
+    }
+    .title {
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      font-size: 15px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge {
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .badge.warn {
+      border-color: rgba(240, 180, 41, 0.6);
+      color: var(--warn);
+    }
+    .badge.ok {
+      border-color: rgba(42, 223, 159, 0.6);
+      color: var(--accent-2);
+    }
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .panel {
+      background: var(--bg-1);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+    }
+    .panel-header {
+      padding: 10px 14px;
+      background: var(--panel-2);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+    }
+    .log-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .log-entry {
+      margin-bottom: 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .log-entry .ts {
+      color: var(--muted);
+      margin-right: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    .state-view {
+      padding: 16px 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .card h3 {
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-family: var(--font-mono);
+    }
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    .list-item {
+      padding: 8px;
+      background: rgba(18, 28, 43, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .list-item .label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 4px;
+      display: block;
+    }
+    footer {
+      background: var(--panel-2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .footer-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 160px;
+    }
+    #command-input {
+      flex: 1;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(9, 14, 21, 0.8);
+      color: var(--muted);
+      padding: 0 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    #command-input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    @media (max-width: 980px) {
+      body {
+        grid-template-rows: 72px auto auto;
+      }
+      main {
+        grid-template-columns: 1fr;
+        grid-auto-rows: minmax(260px, auto);
+      }
+      footer {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px 16px;
+        gap: 10px;
+      }
+      .footer-status {
+        min-width: unset;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div id="status-pulse" class="is-connecting"></div>
+      <div>
+        <div class="title">MCP Mission Control</div>
+        <div class="subtitle" id="connection-status">Connecting...</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="badge ok" id="panic-status">panic: off</div>
+      <div>rev <span id="revision-display">0</span></div>
+      <div id="last-update">--:--:--</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="panel">
+      <div class="panel-header">Agent Log</div>
+      <div class="log-container" id="left-log"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">System State</div>
+      <div class="state-view" id="center-state">
+        <div class="card">
+          <h3>System Snapshot</h3>
+          <div class="stat-row"><span>Agents</span><span id="stat-agents">0</span></div>
+          <div class="stat-row"><span>Tasks</span><span id="stat-tasks">0</span></div>
+          <div class="stat-row"><span>Messages</span><span id="stat-messages">0</span></div>
+          <div class="stat-row"><span>Events</span><span id="stat-events">0</span></div>
+          <div class="stat-row"><span>Review Gates</span><span id="stat-gates">0</span></div>
+          <div class="stat-row"><span>Locks</span><span id="stat-locks">0</span></div>
+          <div class="stat-row"><span>Ideas</span><span id="stat-ideas">0</span></div>
+          <div class="stat-row"><span>ADRs</span><span id="stat-adrs">0</span></div>
+          <div class="stat-row"><span>Notifications</span><span id="stat-notifications">0</span></div>
+        </div>
+        <div class="card">
+          <h3>Active Locks</h3>
+          <div class="list" id="locks-list"></div>
+        </div>
+        <div class="card">
+          <h3>Review Gates</h3>
+          <div class="list" id="gates-list"></div>
+        </div>
+        <div class="card">
+          <h3>Agents</h3>
+          <div class="list" id="agents-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Audit Trail</div>
+      <div class="log-container" id="right-log"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-status">
+      <span id="footer-status">Awaiting state...</span>
+    </div>
+    <input id="command-input" type="text" placeholder="Input disabled: Web HUD is read-only." disabled>
+  </footer>
+
+  <script type="module" src="client.js"></script>
+</body>
+</html>

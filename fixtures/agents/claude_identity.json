@@ -1,7 +1,15 @@
 {
-  "id": "8456d9a6-eabc-428c-aef8-346ef14883b9",
-  "name": "Claude",
-  "createdAt": 1768091331474,
-  "lastSeenAt": 1768091331474,
-  "captured_at": "2026-01-11T00:28:51.803Z"
+  "captured_at": "2026-01-18T17:59:21.402Z",
+  "scenarios": {
+    "success": {
+      "outputs": {
+        "agent": {
+          "id": "77b6e5c5-f51c-4103-9778-f436132ecb36",
+          "name": "Claude",
+          "createdAt": 1768759161310,
+          "lastSeenAt": 1768759161310
+        }
+      }
+    }
+  }
 }

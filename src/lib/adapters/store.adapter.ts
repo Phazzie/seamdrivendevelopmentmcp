@@ -1,10 +1,7 @@
 /**
  * Purpose: Asynchronous, Mandate-compliant Store implementation (store seam).
- * Hardened: Path Jailing enforced via PathGuard.
+ * Hardened: Uses JailedFs for physical path security.
  */
-import fs from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
 import { randomUUID } from "crypto";
 import EventEmitter from "events";
 import { 
@@ -13,28 +10,25 @@ import {
   AppError,
   IStore
 } from "../../../contracts/store.contract.js";
-import { PathGuard } from "../helpers/path_guard.js";
+import { JailedFs } from "../helpers/jailed_fs.js";
 
 export class StoreAdapter implements IStore {
   private readonly events = new EventEmitter();
-  private readonly filePath: string;
 
-  constructor(filePath: string, private readonly pathGuard: PathGuard) {
+  constructor(
+    private readonly filePath: string, 
+    private readonly jfs: JailedFs
+  ) {
     this.events.setMaxListeners(100);
-    // Senior Mandate: Validate path on construction
-    this.filePath = path.resolve(filePath);
   }
 
   async load(): Promise<PersistedStore> {
-    // Senior Mandate: Jail every read
-    await this.pathGuard.validate(this.filePath);
-
-    if (!existsSync(this.filePath)) {
+    if (!this.jfs.exists(this.filePath)) {
       return this.getDefaultState();
     }
 
     try {
-      const content = await fs.readFile(this.filePath, "utf-8");
+      const content = await this.jfs.readFile(this.filePath);
       const data = JSON.parse(content);
       const result = PersistedStoreSchema.safeParse(data);
       if (!result.success) {
@@ -99,33 +93,20 @@ export class StoreAdapter implements IStore {
   }
 
   private async atomicWrite(data: PersistedStore): Promise<void> {
-    const dir = path.dirname(this.filePath);
-    // Senior Mandate: Jail every write
-    await this.pathGuard.validate(dir);
-    
-    const tempFile = path.join(dir, `.store_temp_${randomUUID()}.json`);
+    const tempFile = `.store_temp_${randomUUID()}.json`;
     const serialized = JSON.stringify(data, null, 2);
 
     let handle;
     try {
-      await fs.writeFile(tempFile, serialized, "utf-8");
+      await this.jfs.writeFile(tempFile, serialized);
       
-      handle = await fs.open(tempFile, "r+");
+      handle = await this.jfs.open(tempFile, "r+");
       await handle.sync();
       await handle.close();
 
-      await fs.rename(tempFile, this.filePath);
-
-      if (process.platform !== "win32") {
-        let dirHandle;
-        try {
-          dirHandle = await fs.open(dir, "r");
-          await dirHandle.sync();
-          await dirHandle.close();
-        } catch { /* Ignore directory sync errors */ }
-      }
+      await this.jfs.rename(tempFile, this.filePath);
     } catch (err: unknown) {
-      try { await fs.unlink(tempFile); } catch { /* Ignore cleanup errors */ }
+      try { await this.jfs.unlink(tempFile); } catch { /* Ignore cleanup errors */ }
       const message = err instanceof Error ? err.message : String(err);
       throw new AppError("INTERNAL_ERROR", `Atomic write failed: ${message}`);
     }

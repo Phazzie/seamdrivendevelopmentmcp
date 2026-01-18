@@ -1,24 +1,56 @@
 {
-  "captured_at": "2026-01-11T00:16:04.910Z",
+  "captured_at": "2026-01-18T17:59:25.292Z",
   "scenarios": {
     "success": {
       "outputs": {
         "adrs": [
           {
-            "id": "adr-1",
+            "id": "c3c1a2ba-835e-430e-80e5-3013879a73ac",
             "title": "Use Zod for validation",
             "status": "accepted",
             "context": "Need type safety",
             "decision": "Use Zod",
-            "created_at": 1768090564910
+            "created_at": 1768753925414
           },
           {
-            "id": "adr-2",
+            "id": "cb2a6884-5ea1-4a99-8006-2e9eb01c1ab0",
             "title": "Async Store",
             "status": "proposed",
             "context": "Sync is slow",
             "decision": "Move to promises",
-            "created_at": 1768090564911
+            "created_at": 1768753925588
+          },
+          {
+            "id": "d030612e-cb76-44fb-b8d7-1f694a5f26c2",
+            "title": "Use Zod for validation",
+            "status": "accepted",
+            "context": "Need type safety",
+            "decision": "Use Zod",
+            "created_at": 1768759142998
+          },
+          {
+            "id": "bb22de23-a6ac-45ae-9791-75ff53208c0a",
+            "title": "Async Store",
+            "status": "proposed",
+            "context": "Sync is slow",
+            "decision": "Move to promises",
+            "created_at": 1768759143104
+          },
+          {
+            "id": "b1640fac-4e52-4ef6-85d5-5102eb9964e2",
+            "title": "Use Zod for validation",
+            "status": "accepted",
+            "context": "Need type safety",
+            "decision": "Use Zod",
+            "created_at": 1768759165117
+          },
+          {
+            "id": "be4c7d92-844d-4889-986c-8acf15742e25",
+            "title": "Async Store",
+            "status": "proposed",
+            "context": "Sync is slow",
+            "decision": "Move to promises",
+            "created_at": 1768759165203
           }
         ]
       }

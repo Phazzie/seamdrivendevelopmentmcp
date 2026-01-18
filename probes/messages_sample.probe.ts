@@ -1,45 +1,37 @@
-// Purpose: capture a messages fixture from the real message adapter.
-import fs from "fs";
 import path from "path";
+import os from "os";
 import { StoreAdapter } from "../src/lib/adapters/store.adapter.js";
 import { MessageAdapter } from "../src/lib/adapters/messages.adapter.js";
+import { JailedFs } from "../src/lib/helpers/jailed_fs.js";
+import fs from "fs";
 
-const FIXTURE_DIR = path.join(process.cwd(), "fixtures", "messages");
-const TEMP_STORE = path.join(FIXTURE_DIR, "messages_probe_store.json");
+const ROOT_DIR = process.cwd();
+const FIXTURE_PATH = path.join(ROOT_DIR, "fixtures/messages/sample.json");
+const STORE_PATH = path.join(os.tmpdir(), "mcp_msg_probe_store.json");
 
-if (!fs.existsSync(FIXTURE_DIR)) {
-  fs.mkdirSync(FIXTURE_DIR, { recursive: true });
+async function run() {
+  const jailedFs = new JailedFs(path.dirname(STORE_PATH));
+  const store = new StoreAdapter(STORE_PATH, jailedFs);
+  const msgs = new MessageAdapter(store);
+
+  await msgs.post("User", "Hello");
+  const list = await msgs.list();
+  
+  const fixture = {
+    captured_at: new Date().toISOString(),
+    scenarios: {
+      success: {
+        outputs: {
+          messages: list
+        }
+      }
+    }
+  };
+
+  const dir = path.dirname(FIXTURE_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(FIXTURE_PATH, JSON.stringify(fixture, null, 2));
+  console.log("Messages fixture written.");
 }
 
-async function main() {
-  const store = new StoreAdapter(TEMP_STORE);
-  try {
-    const messages = new MessageAdapter(store);
-
-    await messages.post("codex", "Probe hello");
-    await messages.post("gemini", "Probe response", { channelId: "probe" });
-
-    const list = await messages.list();
-    const current = await store.load();
-
-    const fixture = {
-      captured_at: new Date().toISOString(),
-      revision: current.revision,
-      messages: list,
-    };
-
-    fs.writeFileSync(
-      path.join(FIXTURE_DIR, "sample.json"),
-      JSON.stringify(fixture, null, 2)
-    );
-
-    console.log(`Messages fixture written (${list.length} messages).`);
-  } finally {
-    if (fs.existsSync(TEMP_STORE)) fs.unlinkSync(TEMP_STORE);
-  }
-}
-
-main().catch((err) => {
-  console.error("PROBE FAILED:", err);
-  process.exit(1);
-});
+run().catch(console.error);

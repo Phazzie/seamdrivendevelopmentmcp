@@ -1,0 +1,11 @@
+{
+  "captured_at": "2026-01-18T16:36:29.822Z",
+  "scenarios": {
+    "error_case": {
+      "error": {
+        "code": "INTERNAL_ERROR",
+        "message": "Port 3000 is already in use"
+      }
+    }
+  }
+}

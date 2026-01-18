@@ -3,6 +3,9 @@
   "scenarios": {
     "plan_rejected": {
       "error": { "code": "VALIDATION_FAILED", "message": "Plan critique failed validation" }
+    },
+    "lying_agent": {
+      "error": { "code": "VALIDATION_FAILED", "message": "Plan intent mismatch: store resource not acknowledged" }
     }
   }
 }

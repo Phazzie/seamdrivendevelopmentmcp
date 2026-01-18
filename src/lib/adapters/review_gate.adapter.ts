@@ -1,13 +1,27 @@
 import { randomUUID } from "crypto";
 import type { IReviewGate, ReviewGate, ReviewGateStatus } from "../../../contracts/review_gate.contract.js";
+import type { IIntentVerifier } from "../../../contracts/intent_verifier.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
 import type { IStore } from "../../../contracts/store.contract.js";
 import { runTransaction } from "../helpers/store.helper.js";
 
 export class ReviewGateAdapter implements IReviewGate {
-  constructor(private readonly store: IStore) {}
+  constructor(
+    private readonly store: IStore,
+    private readonly verifier?: IIntentVerifier
+  ) {}
 
   async submitPlan(planId: string, plan: string, affectedResources: string[] = []): Promise<ReviewGate> {
+    this.validateIntent(plan, affectedResources);
+
+    // Senior Mandate: Surgical Safety (AI Sentinel)
+    if (this.verifier && affectedResources.length > 0) {
+      const verification = await this.verifier.verify(plan, affectedResources);
+      if (!verification.approved) {
+        throw new AppError("VALIDATION_FAILED", `Plan Intent Mismatch: ${verification.reason}`);
+      }
+    }
+
     return runTransaction(this.store, (current) => {
       const now = Date.now();
       const gate: ReviewGate = {
@@ -80,5 +94,17 @@ export class ReviewGateAdapter implements IReviewGate {
     const current = await this.store.load();
     const gates = Array.isArray(current.review_gates) ? (current.review_gates as ReviewGate[]) : [];
     return status ? gates.filter((g) => g.status === status) : gates;
+  }
+
+  private validateIntent(plan: string, resources: string[]): void {
+    if (!resources.length) return;
+    const text = plan.toLowerCase();
+    const mentionsStore = /\bstore\b/.test(text);
+    const mentionsPersistence = /\bpersistence\b/.test(text);
+    const touchesStore = resources.some((res) => /(^|[\\/])store\.ts$/i.test(res));
+
+    if (touchesStore && !(mentionsStore || mentionsPersistence)) {
+      throw new AppError("VALIDATION_FAILED", "Plan intent mismatch: store resource not acknowledged");
+    }
   }
 }

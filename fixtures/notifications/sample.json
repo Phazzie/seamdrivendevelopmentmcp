@@ -1,26 +1,32 @@
 {
-  "captured_at": "2026-01-11T00:16:42.471Z",
-  "notifications": [
-    {
-      "id": "5086e66c-ee09-4a5e-91bf-e4ec4952b002",
-      "title": "Urgent review",
-      "message": "Please review the latest plan.",
-      "priority": "urgent",
-      "created_at": 1768090601984
-    },
-    {
-      "id": "d722bcf7-018a-4db2-bd23-d4f48965e579",
-      "title": "Heads up",
-      "message": "New task assigned.",
-      "priority": "high",
-      "created_at": 1768090602293
-    },
-    {
-      "id": "edde9703-b484-480a-92b1-09c0faf10f17",
-      "title": "Build status",
-      "message": "CI passed.",
-      "priority": "normal",
-      "created_at": 1768090602126
+  "captured_at": "2026-01-18T17:59:19.813Z",
+  "scenarios": {
+    "success": {
+      "outputs": {
+        "notifications": [
+          {
+            "id": "fe77a2b8-1349-425a-ae29-a6036266648a",
+            "title": "Alert",
+            "message": "Test",
+            "priority": "normal",
+            "created_at": 1768759159709
+          },
+          {
+            "id": "0f440604-eb95-4db0-835c-f3704ad5764e",
+            "title": "Alert",
+            "message": "Test",
+            "priority": "normal",
+            "created_at": 1768759138524
+          },
+          {
+            "id": "7c80cf79-62a7-476e-9015-01b8d0ce946d",
+            "title": "Alert",
+            "message": "Test",
+            "priority": "normal",
+            "created_at": 1768753956729
+          }
+        ]
+      }
     }
-  ]
+  }
 }

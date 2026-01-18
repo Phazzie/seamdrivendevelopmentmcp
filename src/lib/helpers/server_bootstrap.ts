@@ -8,6 +8,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprot
 // Helpers
 import { ToolRegistry, ToolExecutor } from "./tool_registry.js";
 import { PathGuard } from "./path_guard.js";
+import { JailedFs } from "./jailed_fs.js";
 
 // Adapters
 import { StoreAdapter } from "../adapters/store.adapter.js";
@@ -31,6 +32,7 @@ import { AuditAdapter } from "../adapters/audit.adapter.js";
 import { ProbeRunnerAdapter } from "../adapters/probe_runner.adapter.js";
 import { ScaffolderAdapter } from "../adapters/scaffolder.adapter.js";
 import { SddTrackingAdapter } from "../adapters/sdd_tracking.adapter.js";
+import { WebCockpitAdapter } from "../adapters/web_cockpit.adapter.js";
 
 // Providers
 import { ManagementProvider } from "../providers/management.provider.js";
@@ -40,15 +42,14 @@ import { CommunicationProvider } from "../providers/communication.provider.js";
 import { MetaProvider } from "../providers/meta.provider.js";
 import { DevInfraProvider } from "../providers/dev_infra.provider.js";
 
-/**
- * Purpose: Centralized wiring harness for the MCP Server (infrastructure seam).
- * Hardened: Encapsulates all DI, environment resolution, and signal handling.
- */
+import { MockIntentVerifier } from "../mocks/intent_verifier.mock.js";
+
 export class ServerBootstrap {
   private readonly rootDir: string;
   private readonly storePath: string;
   private readonly server: Server;
   private readonly registry: ToolRegistry;
+  private webHud?: WebCockpitAdapter;
 
   constructor() {
     this.rootDir = process.cwd();
@@ -64,7 +65,8 @@ export class ServerBootstrap {
   }
 
   async start(): Promise<void> {
-    const { executor, registry } = this.wire();
+    const { executor, registry, webHud } = this.wire();
+    this.webHud = webHud;
 
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: registry.getTools()
@@ -89,26 +91,34 @@ export class ServerBootstrap {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
     console.error(`[MCP] Server Live. Store: ${this.storePath}`);
+
+    if (process.env.MCP_WEB_PORT) {
+      await this.webHud.start();
+    }
     
     this.setupSignalHandlers();
   }
 
   private wire() {
     const pathGuard = new PathGuard(this.rootDir);
-    const store = new StoreAdapter(this.storePath, pathGuard);
+    const jailedFs = new JailedFs(this.rootDir);
+    const store = new StoreAdapter(this.storePath, jailedFs);
     const agents = new AgentAdapter(store);
     const audit = new AuditAdapter(store);
     const executor = new ToolExecutor(agents, audit);
+    const webHud = new WebCockpitAdapter(store, pathGuard, Number(process.env.MCP_WEB_PORT || 3000));
+    
+    const intentVerifier = new MockIntentVerifier(true);
 
     // Register Suites
     this.registry.register(new ManagementProvider(new TaskAdapter(store), new DependencyAdapter(store), new SchedulerAdapter()));
     this.registry.register(new IntelligenceProvider(new KnowledgeAdapter(store), new AdrAdapter(store), new IdeaAdapter(store)));
     this.registry.register(new InfrastructureProvider(new LockerAdapter(store, path.join(this.rootDir, "fixtures/locker/capabilities.json")), agents, new StatusAdapter(store), audit, pathGuard));
     this.registry.register(new CommunicationProvider(new MessageAdapter(store), new EventStreamAdapter(store), new NotificationAdapter(store)));
-    this.registry.register(new MetaProvider(new ReviewGateAdapter(store), new ArbitrationAdapter(store), new MoodAdapter(store), new ConfidenceAuctionAdapter()));
-    this.registry.register(new DevInfraProvider(new SddTrackingAdapter(this.rootDir), new ScaffolderAdapter(pathGuard), new ProbeRunnerAdapter(this.rootDir), pathGuard));
+    this.registry.register(new MetaProvider(new ReviewGateAdapter(store, intentVerifier), new ArbitrationAdapter(store), new MoodAdapter(store), new ConfidenceAuctionAdapter()));
+    this.registry.register(new DevInfraProvider(new SddTrackingAdapter(this.rootDir), new ScaffolderAdapter(jailedFs), new ProbeRunnerAdapter(this.rootDir), pathGuard));
 
-    return { executor, registry: this.registry };
+    return { executor, registry: this.registry, webHud };
   }
 
   private ensureEnvironment() {
@@ -117,8 +127,9 @@ export class ServerBootstrap {
   }
 
   private setupSignalHandlers() {
-    const shutdown = () => {
+    const shutdown = async () => {
       console.error("[MCP] Shutting down cleanly...");
+      if (this.webHud) await this.webHud.stop();
       process.exit(0);
     };
     process.on("SIGTERM", shutdown);

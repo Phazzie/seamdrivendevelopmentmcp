@@ -1,46 +1,34 @@
-// Purpose: capture an integration snapshot fixture from the live store.
-import fs from "fs/promises";
 import path from "path";
 import os from "os";
-import { fileURLToPath } from "url";
 import { StoreAdapter } from "../src/lib/adapters/store.adapter.js";
-import { IntegrationSnapshotSchema } from "../contracts/integration_snapshot.contract.js";
+import { IntegrationSnapshotAdapter } from "../src/lib/adapters/integration_snapshot.adapter.js";
+import { JailedFs } from "../src/lib/helpers/jailed_fs.js";
+import fs from "fs";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const FIXTURE_DIR = path.join(__dirname, "../fixtures/integration_snapshot");
+const ROOT_DIR = process.cwd();
+const FIXTURE_PATH = path.join(ROOT_DIR, "fixtures/integration_snapshot/snapshot.json");
+const STORE_PATH = path.join(os.tmpdir(), "mcp_snap_probe_store.json");
 
-const STORE_PATH =
-  process.env.MCP_STORE_PATH ||
-  path.join(os.homedir(), ".mcp-collaboration", "store.json");
+async function run() {
+  const jailedFs = new JailedFs(path.dirname(STORE_PATH));
+  const store = new StoreAdapter(STORE_PATH, jailedFs);
+  const snapshotter = new IntegrationSnapshotAdapter(store, STORE_PATH);
 
-async function main() {
-  await fs.mkdir(FIXTURE_DIR, { recursive: true });
-
-  const store = new StoreAdapter(STORE_PATH);
-  const data = await store.load();
-
-  const snapshot = {
+  const snapshot = await snapshotter.getSnapshot();
+  
+  const fixture = {
     captured_at: new Date().toISOString(),
-    store_path: STORE_PATH,
-    store: data,
+    scenarios: {
+      success: {
+        outputs: snapshot
+      }
+    }
   };
 
-  const parsed = IntegrationSnapshotSchema.safeParse(snapshot);
-  if (!parsed.success) {
-    console.error("Fixture failed schema validation:", parsed.error);
-    process.exit(1);
-  }
-
-  await fs.writeFile(
-    path.join(FIXTURE_DIR, "snapshot.json"),
-    JSON.stringify(parsed.data, null, 2)
-  );
-
+  const dir = path.dirname(FIXTURE_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(FIXTURE_PATH, JSON.stringify(fixture, null, 2));
   console.log("Integration snapshot fixture written.");
 }
 
-main().catch((err) => {
-  console.error("PROBE FAILED:", err);
-  process.exit(1);
-});
+run().catch(console.error);

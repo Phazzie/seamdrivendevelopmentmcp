@@ -1,0 +1,18 @@
+{
+  "seamName": "web_cockpit",
+  "description": "Web HUD Adapter for browser-based observability",
+  "models": [
+    { "name": "WebState", "fields": [ { "name": "revision", "type": "number" } ] }
+  ],
+  "methods": [
+    { "name": "start", "inputType": "void", "outputType": "void" },
+    { "name": "stop", "inputType": "void", "outputType": "void" }
+  ],
+  "scenarios": [
+    { "name": "success", "type": "success" },
+    { "name": "port_conflict", "type": "error" }
+  ],
+  "errors": [
+    { "code": "INTERNAL_ERROR", "message": "Port 3000 is already in use" }
+  ]
+}

@@ -1,20 +1,32 @@
 {
-  "captured_at": "2026-01-11T00:16:37.981Z",
-  "revision": 3,
-  "messages": [
-    {
-      "id": "124657bc-6d28-4ec8-b092-2baa669a476a",
-      "sender": "codex",
-      "content": "Probe hello",
-      "timestamp": 1768090597661,
-      "channelId": "general"
-    },
-    {
-      "id": "cde67c9c-701b-492b-97c1-019c3382c6c8",
-      "sender": "gemini",
-      "content": "Probe response",
-      "timestamp": 1768090597803,
-      "channelId": "probe"
+  "captured_at": "2026-01-18T17:59:26.239Z",
+  "scenarios": {
+    "success": {
+      "outputs": {
+        "messages": [
+          {
+            "id": "ce242a5f-15e2-4ecc-bc6d-ff033439fd8f",
+            "sender": "User",
+            "content": "Hello",
+            "timestamp": 1768753952828,
+            "channelId": "general"
+          },
+          {
+            "id": "4d815a9b-af0e-441e-96fb-e159200d6f3a",
+            "sender": "User",
+            "content": "Hello",
+            "timestamp": 1768759143850,
+            "channelId": "general"
+          },
+          {
+            "id": "f6cd7acf-e444-410e-a8a1-1f4ac66c272b",
+            "sender": "User",
+            "content": "Hello",
+            "timestamp": 1768759166123,
+            "channelId": "general"
+          }
+        ]
+      }
     }
-  ]
+  }
 }
