@@ -2,10 +2,6 @@
 import { z } from "zod";
 import { AppErrorCodeSchema } from "./store.contract.js";
 
-// Mapping notes (tool boundary):
-// - Data: chat history + seam health sourced from TUI chat/health seams.
-// - Commands: send_message -> MCP message tools; set_target/set_leader_pane update local config.
-
 export const TuiPaneSchema = z.enum(["left", "right"]);
 export type TuiPane = z.infer<typeof TuiPaneSchema>;
 
@@ -80,12 +76,6 @@ export const TuiChatScenarioSchema = z.object({
 });
 export type TuiChatScenario = z.infer<typeof TuiChatScenarioSchema>;
 
-export const TuiChatFixtureSchema = z.object({
-  captured_at: z.string().optional(),
-  scenarios: z.record(z.string(), TuiChatScenarioSchema),
-});
-export type TuiChatFixture = z.infer<typeof TuiChatFixtureSchema>;
-
 export const TuiConfigSchema = z.object({
   paneAgents: z
     .object({
@@ -124,36 +114,11 @@ export const TuiViewModelSchema = z.object({
 });
 export type TuiViewModel = z.infer<typeof TuiViewModelSchema>;
 
-export const TuiSendMessageSchema = z.object({
-  target: TuiTargetSchema,
-  content: z.string().min(1),
-  role: TuiRoleSchema.optional(),
-  metadata: TuiChatMetadataSchema.optional(),
-});
-export type TuiSendMessage = z.infer<typeof TuiSendMessageSchema>;
-
-export const TuiCommandSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("send_message"), message: TuiSendMessageSchema }),
-  z.object({ type: z.literal("set_target"), target: TuiTargetSchema }),
-  z.object({ type: z.literal("set_leader_pane"), leaderPane: TuiPaneSchema }),
-]);
-export type TuiCommand = z.infer<typeof TuiCommandSchema>;
-
-export const TuiErrorSchema = z.object({
-  code: AppErrorCodeSchema,
-  message: z.string(),
-  details: z.record(z.string(), z.any()).optional(),
-});
-export type TuiError = z.infer<typeof TuiErrorSchema>;
-
-export const TuiCommandResultSchema = z.object({
-  ok: z.boolean(),
-  error: TuiErrorSchema.optional(),
-});
-export type TuiCommandResult = z.infer<typeof TuiCommandResultSchema>;
-
+/**
+ * Purpose: Read-only data client for the TUI (tui seam).
+ * Hardened: Headless, non-interactive.
+ */
 export interface ITuiDataClient {
   getChatHistory(): Promise<TuiChatMessage[]>;
   getHealth(): Promise<TuiHealthSnapshot>;
-  execute(command: TuiCommand): Promise<TuiCommandResult>;
 }

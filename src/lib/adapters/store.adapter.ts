@@ -1,5 +1,6 @@
 /**
  * Purpose: Asynchronous, Mandate-compliant Store implementation (store seam).
+ * Hardened: Path Jailing enforced via PathGuard.
  */
 import fs from "fs/promises";
 import { existsSync } from "fs";
@@ -12,15 +13,22 @@ import {
   AppError,
   IStore
 } from "../../../contracts/store.contract.js";
+import { PathGuard } from "../helpers/path_guard.js";
 
 export class StoreAdapter implements IStore {
   private readonly events = new EventEmitter();
+  private readonly filePath: string;
 
-  constructor(private readonly filePath: string) {
+  constructor(filePath: string, private readonly pathGuard: PathGuard) {
     this.events.setMaxListeners(100);
+    // Senior Mandate: Validate path on construction
+    this.filePath = path.resolve(filePath);
   }
 
   async load(): Promise<PersistedStore> {
+    // Senior Mandate: Jail every read
+    await this.pathGuard.validate(this.filePath);
+
     if (!existsSync(this.filePath)) {
       return this.getDefaultState();
     }
@@ -92,6 +100,9 @@ export class StoreAdapter implements IStore {
 
   private async atomicWrite(data: PersistedStore): Promise<void> {
     const dir = path.dirname(this.filePath);
+    // Senior Mandate: Jail every write
+    await this.pathGuard.validate(dir);
+    
     const tempFile = path.join(dir, `.store_temp_${randomUUID()}.json`);
     const serialized = JSON.stringify(data, null, 2);
 
@@ -99,15 +110,12 @@ export class StoreAdapter implements IStore {
     try {
       await fs.writeFile(tempFile, serialized, "utf-8");
       
-      // Hardware Durability: Fsync handle
       handle = await fs.open(tempFile, "r+");
       await handle.sync();
       await handle.close();
 
-      // Atomic Switch
       await fs.rename(tempFile, this.filePath);
 
-      // Directory Sync (Platform Dependent)
       if (process.platform !== "win32") {
         let dirHandle;
         try {

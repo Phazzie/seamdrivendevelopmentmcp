@@ -1,0 +1,16 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "note": "Deliberately corrupt/invalid state for testing failure modes",
+  "scenarios": {
+    "corrupt_schema": {
+      "error": {
+        "code": "VALIDATION_FAILED",
+        "message": "Store corrupted on disk: invalid schemaVersion"
+      },
+      "data": {
+        "schemaVersion": 999,
+        "revision": -1
+      }
+    }
+  }
+}

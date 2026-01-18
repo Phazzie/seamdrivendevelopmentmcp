@@ -8,10 +8,11 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ROOT = path.resolve(__dirname, "../../"); // Assuming dist/scripts/ -> root
+const ROOT = path.resolve(__dirname, "../../"); 
 
 const ADAPTERS_DIR = path.join(ROOT, "src", "lib", "adapters");
 const SRC_DIR = path.join(ROOT, "src");
+const FIXTURES_DIR = path.join(ROOT, "fixtures");
 
 let failureCount = 0;
 
@@ -38,12 +39,36 @@ function scanFile(filePath: string) {
       fail(filePath, "Async Sovereignty Violation: usage of fs.*Sync()", line);
     }
 
-    // Rule 3: No 'as any' anywhere in src (StrictMode)
-    // Excluding tsconfig, d.ts, and this script itself
+    // Rule 3: Forbidden Handshakes (Adapters must not import other adapters)
+    if (isAdapter && text.includes("import") && text.includes("../adapters/")) {
+      fail(filePath, "Forbidden Handshake: Adapter importing another Adapter detected.", line);
+    }
+
+    // Rule 4: No 'as any' anywhere in src (StrictMode)
     if (text.includes("as any") && !text.includes("// allowed-any")) {
       fail(filePath, "Type Safety Violation: usage of 'as any'", line);
     }
+
+    // Rule 5: No Magic Globals (Mutable state at top level)
+    if (text.startsWith("let ") && !filePath.includes("test")) {
+      fail(filePath, "Architecture Violation: Mutable global variable ('let') detected.", line);
+    }
   });
+}
+
+function scanFaultFixtures() {
+  if (!fs.existsSync(FIXTURES_DIR)) return;
+  const seams = fs.readdirSync(FIXTURES_DIR);
+  for (const seam of seams) {
+    const seamDir = path.join(FIXTURES_DIR, seam);
+    if (!fs.statSync(seamDir).isDirectory()) continue;
+    
+    const files = fs.readdirSync(seamDir);
+    const hasFault = files.some(f => f.includes("fault") || f.includes("error"));
+    if (!hasFault) {
+      fail(seamDir, "Fault Fixture Mandate Violation: missing fault.json", 0);
+    }
+  }
 }
 
 function walk(dir: string) {
@@ -62,6 +87,7 @@ function walk(dir: string) {
 
 console.log("🔍 Scanning for Mandate Violations...");
 walk(SRC_DIR);
+scanFaultFixtures();
 
 if (failureCount > 0) {
   console.error(`\n💥 FAILED: Found ${failureCount} mandate violations.`);

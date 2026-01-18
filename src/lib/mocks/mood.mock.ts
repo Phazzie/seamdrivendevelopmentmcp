@@ -1,65 +1,45 @@
 import fs from "fs";
-import path from "path";
 import type { IMoodLog, MoodEntry, MoodInput, MoodListOptions } from "../../../contracts/mood.contract.js";
-
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "mood", "sample.json");
-const BASE_TIME = 1700000700000;
-
-type MoodFixture = {
-  captured_at?: string;
-  entries?: MoodEntry[];
-};
-
-function loadFixtureEntries(): MoodEntry[] {
-  if (!fs.existsSync(FIXTURE_PATH)) return [];
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const parsed = JSON.parse(raw) as MoodFixture;
-  return Array.isArray(parsed.entries) ? parsed.entries : [];
-}
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 
 export class MockMoodLog implements IMoodLog {
-  private entries: MoodEntry[];
-  private clock: number;
-  private idIndex: number;
+  private entries: MoodEntry[] = [];
+  private fixture: any = {};
 
-  constructor() {
-    this.entries = loadFixtureEntries();
-    const times = this.entries.map((entry) => entry.timestamp);
-    const maxTime = times.length ? Math.max(...times) : BASE_TIME;
-    this.clock = Math.max(BASE_TIME, maxTime + 1);
-    this.idIndex = 1;
+  constructor(private readonly fixturePath: string, private readonly scenario = "success") {
+    if (fs.existsSync(fixturePath)) {
+      this.fixture = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
+      const s = this.fixture.scenarios?.[this.scenario] || this.fixture.scenarios?.["success"];
+      if (s?.outputs?.entries) {
+        this.entries = s.outputs.entries;
+      }
+    }
+  }
+
+  private getScenario(): any {
+    const scenarios = this.fixture.scenarios ?? {};
+    const scenario = scenarios[this.scenario] || scenarios["success"] || {};
+    if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
+      throw new AppError(code, scenario.error.message);
+    }
+    return scenario;
   }
 
   async log(input: MoodInput): Promise<MoodEntry> {
+    this.getScenario();
     const entry: MoodEntry = {
-      id: this.nextId(),
+      id: "mood-1",
       agentId: input.agentId,
       mood: input.mood,
-      note: input.note,
-      timestamp: this.nextTime(),
+      timestamp: Date.now(),
     };
     this.entries.push(entry);
     return entry;
   }
 
   async list(options: MoodListOptions = {}): Promise<MoodEntry[]> {
-    let list = [...this.entries];
-    if (options.agentId) {
-      list = list.filter((entry) => entry.agentId === options.agentId);
-    }
-    const limit = options.limit ?? 50;
-    return list.slice(-limit);
-  }
-
-  private nextTime(): number {
-    const value = this.clock;
-    this.clock += 1;
-    return value;
-  }
-
-  private nextId(): string {
-    const value = this.idIndex.toString().padStart(12, "0");
-    this.idIndex += 1;
-    return `00000000-0000-0000-0000-${value}`;
+    this.getScenario();
+    return this.entries;
   }
 }

@@ -1,8 +1,8 @@
 /**
  * Purpose: Real file-system implementation of the Scaffolder (scaffolder seam).
+ * Hardened: Path Jailing enforced for all generations.
  */
 import fs from "fs/promises";
-import { existsSync, mkdirSync } from "fs";
 import path from "path";
 import {
   IScaffolder,
@@ -11,19 +11,25 @@ import {
   GeneratedFile,
   ScaffoldSpec
 } from "../../../contracts/scaffolder.contract.js";
+import { PathGuard } from "../helpers/path_guard.js";
 
 export class ScaffolderAdapter implements IScaffolder {
+  constructor(private readonly pathGuard: PathGuard) {}
+
   async scaffold(input: ScaffoldInput): Promise<ScaffoldResult> {
-    const { seamName, baseDir, spec: rawSpec } = input;
+    const { seamName, baseDir: requestedBase, spec: rawSpec } = input;
     const generated: GeneratedFile[] = [];
     const spec = this.resolveSpec(seamName, rawSpec);
 
-    // Helper to write file (Async)
+    // Senior Mandate: Jail the base directory
+    const baseDir = await this.pathGuard.validate(requestedBase || ".");
+
     const writeFile = async (relPath: string, content: string, type: GeneratedFile["type"]) => {
       const fullPath = path.join(baseDir, relPath);
+      // Senior Mandate: Jail every specific file write
+      await this.pathGuard.validate(fullPath);
+      
       const dir = path.dirname(fullPath);
-      // We can use sync mkdir for simplicity in this helper since it's just scaffolding,
-      // or move to async. Let's stick to async for mandate compliance.
       await fs.mkdir(dir, { recursive: true });
       await fs.writeFile(fullPath, content.trim() + "\n", "utf-8");
       generated.push({ path: fullPath, type });
@@ -33,9 +39,11 @@ export class ScaffolderAdapter implements IScaffolder {
       await writeFile(`contracts/${seamName}.contract.ts`, this.renderContract(spec), "contract");
       await writeFile(`probes/${seamName}.probe.ts`, this.renderProbe(spec), "probe");
       await writeFile(`fixtures/${seamName}/sample.json`, this.renderFixture(spec), "fixture");
+      await writeFile(`fixtures/${seamName}/fault.json`, this.renderFaultFixture(spec), "fixture");
       await writeFile(`src/lib/mocks/${seamName}.mock.ts`, this.renderMock(spec), "mock");
       await writeFile(`tests/contract/${seamName}.test.ts`, this.renderContractTest(spec), "test");
       await writeFile(`src/lib/adapters/${seamName}.adapter.ts`, this.renderAdapter(spec), "adapter");
+      
       return { success: true, files: generated };
     } catch (err: any) {
       return { success: false, files: generated, message: err.message };
@@ -49,7 +57,7 @@ export class ScaffolderAdapter implements IScaffolder {
       models: spec?.models || [],
       methods: spec?.methods || [{ name: "example", inputType: "void", outputType: "string" }],
       scenarios: spec?.scenarios || [{ name: "success", type: "success" }],
-      errors: spec?.errors || []
+      errors: spec?.errors || [{ code: "INTERNAL_ERROR", message: "Unexpected failure" }]
     };
   }
 
@@ -85,11 +93,27 @@ export class ScaffolderAdapter implements IScaffolder {
   }
 
   private renderFixture(spec: ScaffoldSpec): string {
-    return JSON.stringify({ captured_at: new Date().toISOString(), scenarios: { success: { outputs: { example: "val" } } } }, null, 2);
+    return JSON.stringify({ captured_at: new Date().toISOString(), scenarios: { success: { outputs: {} } } }, null, 2);
+  }
+
+  private renderFaultFixture(spec: ScaffoldSpec): string {
+    return JSON.stringify({
+      captured_at: new Date().toISOString(), 
+      scenarios: { 
+        error_case: { 
+          error: { 
+            code: spec.errors[0]?.code || "INTERNAL_ERROR", 
+            message: spec.errors[0]?.message || "Simulated failure" 
+          } 
+        } 
+      } 
+    }, null, 2);
   }
 
   private renderMock(spec: ScaffoldSpec): string {
     const pascal = this.toPascal(spec.seamName);
+    const methods = spec.methods.map(m => `  async ${m.name}(): Promise<any> { return this.getOutput("${m.name}"); }`).join("\n\n");
+
     return [
       'import fs from "fs";',
       'import { AppError } from "../../../contracts/store.contract.js";',
@@ -100,7 +124,13 @@ export class ScaffolderAdapter implements IScaffolder {
       '  constructor(private fixturePath: string, private scenario = "success") {',
       '    this.fixture = JSON.parse(fs["readFileSync"](fixturePath, "utf-8"));',
       '  }',
-      ...spec.methods.map(m => `  async ${m.name}(): Promise<any> { return this.fixture.scenarios[this.scenario].outputs.${m.name}; }`),
+      '  private getOutput(method: string) {',
+      '    const s = this.fixture.scenarios[this.scenario];',
+      '    if (!s) throw new AppError("VALIDATION_FAILED", "Unknown scenario");',
+      '    if (s.error) throw new AppError(s.error.code, s.error.message);',
+      '    return s.outputs[method];',
+      '  }',
+      methods,
       '}'
     ].join('\n');
   }
@@ -120,13 +150,15 @@ export class ScaffolderAdapter implements IScaffolder {
 
   private renderAdapter(spec: ScaffoldSpec): string {
     const pascal = this.toPascal(spec.seamName);
+    const methods = spec.methods.map(m => `  async ${m.name}(): Promise<any> { throw new Error("NYI"); }`).join("\n\n");
+
     return [
       'import { AppError } from "../../../contracts/store.contract.js";',
       `import type { I${pascal} } from "../../../contracts/${spec.seamName}.contract.js";`,
       '',
       `export class ${pascal}Adapter implements I${pascal} {`,
       '  constructor(private rootDir: string) {}',
-      ...spec.methods.map(m => `  async ${m.name}(): Promise<any> { throw new Error("NYI"); }`),
+      methods,
       '}'
     ].join('\n');
   }

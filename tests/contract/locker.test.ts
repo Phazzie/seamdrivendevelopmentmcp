@@ -8,6 +8,7 @@ import { MockLocker } from "../../src/lib/mocks/locker.mock.js";
 type NormalizationStrategy = "lowercase" | "none";
 
 const NORMALIZATION_FIXTURE = path.join(process.cwd(), "fixtures", "locker", "capabilities.json");
+const FAULT_FIXTURE = path.join(process.cwd(), "fixtures", "locker", "fault.json");
 
 function loadNormalizationStrategy(): NormalizationStrategy {
   if (!fs.existsSync(NORMALIZATION_FIXTURE)) return "none";
@@ -101,5 +102,12 @@ export function runLockerContractTests(createLocker: () => Promise<ILocker>) {
 }
 
 describe("MockLocker Implementation", () => {
-  runLockerContractTests(async () => new MockLocker());
+  runLockerContractTests(async () => new MockLocker(NORMALIZATION_FIXTURE));
+
+  it("should fail when loading fault fixture", async () => {
+    const locker = new MockLocker(FAULT_FIXTURE, "resource_conflict");
+    await assert.rejects(async () => {
+      await locker.acquire(["any"], "agent", 1000);
+    }, (err: any) => err.code === "LOCKED");
+  });
 });

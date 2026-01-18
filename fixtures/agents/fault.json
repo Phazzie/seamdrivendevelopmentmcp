@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "name_conflict": {
+      "error": { "code": "VALIDATION_FAILED", "message": "Agent name already registered" }
+    }
+  }
+}

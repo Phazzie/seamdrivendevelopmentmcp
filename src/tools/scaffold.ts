@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 import { pathToFileURL } from "url";
 import { ScaffolderAdapter } from "../lib/adapters/scaffolder.adapter.js";
+import { PathGuard } from "../lib/helpers/path_guard.js";
 import { ScaffoldInputSchema, ScaffoldSpecSchema } from "../../contracts/scaffolder.contract.js";
 
 async function main() {
@@ -57,7 +58,8 @@ async function main() {
     process.exit(1);
   }
 
-  const scaffolder = new ScaffolderAdapter();
+  const pathGuard = new PathGuard(process.cwd());
+  const scaffolder = new ScaffolderAdapter(pathGuard);
   const result = await scaffolder.scaffold(inputResult.data);
 
   if (result.success) {

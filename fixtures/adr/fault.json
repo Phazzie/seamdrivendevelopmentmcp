@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "invalid_status": {
+      "error": { "code": "VALIDATION_FAILED", "message": "Invalid ADR status" }
+    }
+  }
+}

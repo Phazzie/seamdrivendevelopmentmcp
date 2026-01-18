@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "plan_rejected": {
+      "error": { "code": "VALIDATION_FAILED", "message": "Plan critique failed validation" }
+    }
+  }
+}

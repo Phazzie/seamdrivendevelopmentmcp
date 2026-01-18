@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "fs_permission_denied": {
+      "error": { "code": "INTERNAL_ERROR", "message": "EACCES: permission denied" }
+    }
+  }
+}

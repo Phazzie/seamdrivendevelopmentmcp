@@ -1,7 +1,11 @@
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
+import path from "path";
 import type { IAuditLog } from "../../contracts/audit.contract.js";
 import { MockAuditLog } from "../../src/lib/mocks/audit.mock.js";
+
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "audit", "sample.json");
+const FAULT_PATH = path.join(process.cwd(), "fixtures", "audit", "fault.json");
 
 export function runAuditContractTests(createLog: () => Promise<IAuditLog>) {
   describe("Audit Log Contract", () => {
@@ -32,5 +36,12 @@ export function runAuditContractTests(createLog: () => Promise<IAuditLog>) {
 }
 
 describe("MockAuditLog", () => {
-  runAuditContractTests(async () => new MockAuditLog());
+  runAuditContractTests(async () => new MockAuditLog(FIXTURE_PATH));
+
+  it("should fail when loading fault fixture (read_denied)", async () => {
+    const mock = new MockAuditLog(FAULT_PATH, "read_denied");
+    await assert.rejects(async () => {
+      await mock.list();
+    }, (err: any) => err.code === "INTERNAL_ERROR" && err.message.includes("Permission denied"));
+  });
 });

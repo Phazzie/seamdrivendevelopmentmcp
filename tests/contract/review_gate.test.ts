@@ -46,7 +46,17 @@ export function runReviewGateContractTests(createGate: () => Promise<IReviewGate
 }
 
 describe("MockReviewGate", () => {
-  runReviewGateContractTests(async () => new MockReviewGate());
+  const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "review_gate", "sample.json");
+  const FAULT_PATH = path.join(process.cwd(), "fixtures", "review_gate", "fault.json");
+
+  runReviewGateContractTests(async () => new MockReviewGate(FIXTURE_PATH));
+
+  it("should fail when loading fault fixture", async () => {
+    const mock = new MockReviewGate(FAULT_PATH, "plan_rejected");
+    await assert.rejects(async () => {
+      await mock.submitPlan("id", "plan");
+    }, (err: any) => err.code === "VALIDATION_FAILED");
+  });
 });
 
 describe("ReviewGateAdapter", () => {

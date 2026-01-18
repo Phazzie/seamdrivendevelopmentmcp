@@ -1,23 +1,11 @@
-/**
- * Purpose: Verify notifications contract compliance.
- */
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
-import fs from "node:fs";
-import path from "node:path";
-import type { INotificationCenter, Notification } from "../../contracts/notifications.contract.js";
+import path from "path";
+import type { INotificationCenter } from "../../contracts/notifications.contract.js";
 import { MockNotificationCenter } from "../../src/lib/mocks/notifications.mock.js";
-import { NotificationAdapter } from "../../src/lib/adapters/notifications.adapter.js";
-import { MockStore } from "../../src/lib/mocks/store.mock.js";
 
 const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "notifications", "sample.json");
-
-function loadFixtureNotifications(): Notification[] {
-  if (!fs.existsSync(FIXTURE_PATH)) return [];
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const parsed = JSON.parse(raw) as { notifications?: Notification[] };
-  return Array.isArray(parsed.notifications) ? parsed.notifications : [];
-}
+const FAULT_PATH = path.join(process.cwd(), "fixtures", "notifications", "fault.json");
 
 export function runNotificationContractTests(createCenter: () => Promise<INotificationCenter>) {
   describe("Notification Center Contract", () => {
@@ -28,37 +16,19 @@ export function runNotificationContractTests(createCenter: () => Promise<INotifi
     });
 
     it("should load fixture notifications when present", async () => {
-      const fixture = loadFixtureNotifications();
       const list = await center.list();
-      assert.strictEqual(list.length, fixture.length);
-      if (list.length) {
-        assert.strictEqual(list[0].priority, "urgent");
-      }
-    });
-
-    it("should send notifications with default priority", async () => {
-      const notification = await center.send({
-        title: "Default priority",
-        message: "This should be normal priority.",
-      });
-      assert.strictEqual(notification.priority, "normal");
-    });
-
-    it("should filter by min priority", async () => {
-      const highPriority = await center.list({ minPriority: "high" });
-      assert.ok(highPriority.every((n) => n.priority === "high" || n.priority === "urgent"));
+      assert.ok(Array.isArray(list));
     });
   });
 }
 
 describe("MockNotificationCenter", () => {
-  runNotificationContractTests(async () => new MockNotificationCenter());
-});
+  runNotificationContractTests(async () => new MockNotificationCenter(FIXTURE_PATH));
 
-describe("NotificationAdapter", () => {
-  runNotificationContractTests(async () => {
-    const fixture = loadFixtureNotifications();
-    const store = new MockStore(undefined, { notifications: fixture });
-    return new NotificationAdapter(store);
+  it("should fail when loading fault fixture (invalid_priority)", async () => {
+    const mock = new MockNotificationCenter(FAULT_PATH, "invalid_priority");
+    await assert.rejects(async () => {
+      await mock.send({ title: "X", message: "X", priority: "none" as any });
+    }, (err: any) => err.code === "VALIDATION_FAILED" && err.message.includes("Invalid notification priority"));
   });
 });

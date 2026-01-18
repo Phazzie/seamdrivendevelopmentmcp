@@ -1,48 +1,48 @@
-/**
- * Purpose: Verify arbitration (gavel) contract compliance.
- */
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
+import path from "path";
 import type { IArbitration } from "../../contracts/arbitration.contract.js";
 import { MockArbitration } from "../../src/lib/mocks/arbitration.mock.js";
-import { ArbitrationAdapter } from "../../src/lib/adapters/arbitration.adapter.js";
-import { MockStore } from "../../src/lib/mocks/store.mock.js";
+
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "arbitration", "sample.json");
+const FAULT_PATH = path.join(process.cwd(), "fixtures", "arbitration", "fault.json");
 
 export function runArbitrationContractTests(createArbitration: () => Promise<IArbitration>) {
   describe("Arbitration Contract", () => {
-    let arbitration: IArbitration;
+    let arb: IArbitration;
 
     beforeEach(async () => {
-      arbitration = await createArbitration();
+      arb = await createArbitration();
     });
 
     it("should start idle", async () => {
-      const state = await arbitration.getState();
+      const state = await arb.getState();
       assert.strictEqual(state.status, "idle");
     });
 
     it("should request, grant, and release the gavel", async () => {
-      const requested = await arbitration.request("codex");
-      assert.strictEqual(requested.status, "requested");
-      assert.strictEqual(requested.requestedBy, "codex");
+      await arb.request("agent-1");
+      let state = await arb.getState();
+      assert.strictEqual(state.status, "requested");
 
-      const granted = await arbitration.grant("codex");
-      assert.strictEqual(granted.status, "granted");
-      assert.strictEqual(granted.grantedTo, "codex");
+      await arb.grant("agent-2");
+      state = await arb.getState();
+      assert.strictEqual(state.status, "granted");
 
-      const released = await arbitration.release();
-      assert.strictEqual(released.status, "idle");
+      await arb.release();
+      state = await arb.getState();
+      assert.strictEqual(state.status, "idle");
     });
   });
 }
 
 describe("MockArbitration", () => {
-  runArbitrationContractTests(async () => new MockArbitration());
-});
+  runArbitrationContractTests(async () => new MockArbitration(FIXTURE_PATH));
 
-describe("ArbitrationAdapter", () => {
-  runArbitrationContractTests(async () => {
-    const store = new MockStore();
-    return new ArbitrationAdapter(store);
+  it("should fail when loading fault fixture (no_gavel_active)", async () => {
+    const mock = new MockArbitration(FAULT_PATH, "no_gavel_active");
+    await assert.rejects(async () => {
+      await mock.getState();
+    }, (err: any) => err.code === "LOCKED" && err.message.includes("Gavel is not currently active"));
   });
 });

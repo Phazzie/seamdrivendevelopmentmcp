@@ -1,0 +1,11 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "not_found": {
+      "error": {
+        "code": "VALIDATION_FAILED",
+        "message": "Task not found"
+      }
+    }
+  }
+}

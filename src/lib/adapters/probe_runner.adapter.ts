@@ -1,9 +1,9 @@
 /**
  * Purpose: Real implementation of the Probe Runner (probe_runner seam).
+ * Hardened: No shell execution, strict path validation.
  */
 import { spawn } from "child_process";
 import fs from "fs/promises";
-import { statSync } from "fs"; // Needed for legacy sync walk if we don't fully refactor walk to async generator, but I'll refactor walk.
 import path from "path";
 import { IProbeRunner, RunProbesInput, ProbeResult } from "../../../contracts/probe_runner.contract.js";
 
@@ -13,10 +13,12 @@ export class ProbeRunnerAdapter implements IProbeRunner {
   async run(input: RunProbesInput): Promise<ProbeResult[]> {
     const rootProbesDir = path.join(this.projectRoot, "probes");
     const allFiles = await this.walk(rootProbesDir);
-    const files = allFiles.filter(f => f.endsWith(".probe.ts") || f.endsWith(".ts"));
     
-    // Simple filter support
-    const pattern = (input.pattern || "").replace("probes/", "").replace("**/*", "");
+    // Strict pattern validation: only alphanumeric, glob stars, and path separators
+    const safePattern = (input.pattern || "").replace(/[^\w\s\*\/\-\.]/g, "");
+    const pattern = safePattern.replace("probes/", "").replace("**/*", "");
+    
+    const files = allFiles.filter(f => f.endsWith(".probe.ts") || f.endsWith(".ts"));
     const filteredFiles = files.filter(f => f.includes(pattern));
 
     const results: ProbeResult[] = [];
@@ -28,7 +30,7 @@ export class ProbeRunnerAdapter implements IProbeRunner {
       try {
         const outDir = path.join(this.projectRoot, "dist/probes");
         
-        // Compile
+        // Compile (Using direct command, no shell)
         const compile = await this.exec("npx", [
           "tsc", file,
           "--outDir", outDir,
@@ -61,6 +63,7 @@ export class ProbeRunnerAdapter implements IProbeRunner {
              throw new Error(`Compiled file not found at ${jsFile}`);
         }
 
+        // Run (Using direct command, no shell)
         const run = await this.exec("node", [jsFile]);
 
         results.push({
@@ -109,7 +112,13 @@ export class ProbeRunnerAdapter implements IProbeRunner {
 
   private exec(cmd: string, args: string[]): Promise<{ code: number | null, stdout: string, stderr: string }> {
     return new Promise((resolve) => {
-      const proc = spawn(cmd, args, { shell: true, cwd: this.projectRoot });
+      // Senior Mandate: No shell: true. Explicit arg arrays only.
+      const proc = spawn(cmd, args, { 
+        shell: false, 
+        cwd: this.projectRoot,
+        env: { ...process.env, NODE_OPTIONS: "" } // Sanitize environment
+      });
+      
       let stdout = "";
       let stderr = "";
 
@@ -118,6 +127,10 @@ export class ProbeRunnerAdapter implements IProbeRunner {
 
       proc.on("close", (code) => {
         resolve({ code, stdout: stdout.trim(), stderr: stderr.trim() });
+      });
+
+      proc.on("error", (err) => {
+        resolve({ code: -1, stdout: "", stderr: err.message });
       });
     });
   }

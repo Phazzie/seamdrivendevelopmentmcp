@@ -1,21 +1,27 @@
 {
   "captured_at": "2026-01-11T00:16:04.910Z",
-  "adrs": [
-    {
-      "id": "0d8c48d2-9ace-41c4-82c4-45ec7ad445f1",
-      "title": "Adopt SDD",
-      "status": "accepted",
-      "context": "We need a predictable development process.",
-      "decision": "Use seam-driven development for new features.",
-      "created_at": 1768090564490
-    },
-    {
-      "id": "019b25cf-cbef-4565-baf2-26565b0a45e8",
-      "title": "Persist knowledge in store",
-      "status": "proposed",
-      "context": "Knowledge should survive restarts.",
-      "decision": "Store knowledge graph in store.json for v1.",
-      "created_at": 1768090564741
+  "scenarios": {
+    "success": {
+      "outputs": {
+        "adrs": [
+          {
+            "id": "adr-1",
+            "title": "Use Zod for validation",
+            "status": "accepted",
+            "context": "Need type safety",
+            "decision": "Use Zod",
+            "created_at": 1768090564910
+          },
+          {
+            "id": "adr-2",
+            "title": "Async Store",
+            "status": "proposed",
+            "context": "Sync is slow",
+            "decision": "Move to promises",
+            "created_at": 1768090564911
+          }
+        ]
+      }
     }
-  ]
+  }
 }

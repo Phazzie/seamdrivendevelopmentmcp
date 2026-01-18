@@ -1,0 +1,11 @@
+{
+  "captured_at": "2026-01-18T06:17:11.463Z",
+  "scenarios": {
+    "error_case": {
+      "error": {
+        "code": "INTERNAL_ERROR",
+        "message": "Unexpected failure"
+      }
+    }
+  }
+}

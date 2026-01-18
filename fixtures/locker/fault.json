@@ -1,0 +1,19 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "resource_conflict": {
+      "error": {
+        "code": "LOCKED",
+        "message": "Resource is already locked"
+      },
+      "existing_locks": [
+        {
+          "id": "existing-lock-id",
+          "resource": "/absolute/path/to/protected/file.ts",
+          "ownerId": "other-agent",
+          "expiresAt": 9999999999999
+        }
+      ]
+    }
+  }
+}

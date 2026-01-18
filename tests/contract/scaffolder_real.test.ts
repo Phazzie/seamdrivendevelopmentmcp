@@ -4,10 +4,13 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { ScaffolderAdapter } from "../../src/lib/adapters/scaffolder.adapter.js";
+import { PathGuard } from "../../src/lib/helpers/path_guard.js";
 import { runScaffolderContractTests } from "./scaffolder.test.js";
 
 describe("Real ScaffolderAdapter", () => {
   let tempDir = "";
+  // Jail to temp for tests
+  const pathGuard = new PathGuard(os.tmpdir());
 
   before(() => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "scaffold-"));
@@ -19,7 +22,5 @@ describe("Real ScaffolderAdapter", () => {
     }
   });
 
-  runScaffolderContractTests(async () => new ScaffolderAdapter(), {
-    baseDir: tempDir,
-  });
+  runScaffolderContractTests(async () => new ScaffolderAdapter(pathGuard));
 });

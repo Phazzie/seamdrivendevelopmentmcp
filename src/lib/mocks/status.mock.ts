@@ -1,18 +1,30 @@
 import fs from "fs";
-import path from "path";
 import type { IStatusReader, StatusSnapshot } from "../../../contracts/status.contract.js";
-
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "status", "snapshot.json");
-
-function loadFixture(): StatusSnapshot {
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const parsed = JSON.parse(raw) as StatusSnapshot & { captured_at?: string };
-  const { captured_at, ...rest } = parsed;
-  return rest as StatusSnapshot;
-}
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 
 export class MockStatusReader implements IStatusReader {
+  private fixture: any = {};
+
+  constructor(private readonly fixturePath: string, private readonly scenario = "success") {
+    if (fs.existsSync(fixturePath)) {
+      this.fixture = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
+    }
+  }
+
+  private getScenario(): any {
+    const scenarios = this.fixture.scenarios ?? {};
+    const scenario = scenarios[this.scenario] || scenarios["success"] || { outputs: this.fixture };
+    if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
+      throw new AppError(code, scenario.error.message);
+    }
+    return scenario;
+  }
+
   async getStatus(): Promise<StatusSnapshot> {
-    return loadFixture();
+    const s = this.getScenario();
+    const data = s.data || s.outputs || this.fixture;
+    const { captured_at, ...rest } = data;
+    return rest as StatusSnapshot;
   }
 }

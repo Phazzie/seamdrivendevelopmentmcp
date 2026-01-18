@@ -1,87 +1,71 @@
 import fs from "fs";
-import path from "path";
-import type { Agent, IAgentRegistry } from "../../../contracts/agents.contract.js";
+import { randomUUID } from "crypto";
+import type { IAgentRegistry, Agent } from "../../../contracts/agents.contract.js";
 import { AgentNameSchema } from "../../../contracts/agents.contract.js";
-import { AppError } from "../../../contracts/store.contract.js";
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "agents", "local_user.json");
-const DETERMINISTIC_IDS = [
-  "00000000-0000-0000-0000-000000000001",
-  "00000000-0000-0000-0000-000000000002",
-];
-const BASE_TIME = 1700000000000;
+type ScenarioFixture = {
+  outputs?: any;
+  error?: { code: string; message: string; details?: Record<string, unknown> };
+};
 
-type AgentScenario = "new_agent" | "existing_agent";
-
-function loadFixtureAgent(): Agent | null {
-  if (!fs.existsSync(FIXTURE_PATH)) return null;
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const parsed = JSON.parse(raw) as Agent & { captured_at?: string };
-  const { captured_at, ...rest } = parsed;
-  return rest as Agent;
-}
+type FixtureFile = {
+  captured_at: string;
+  scenarios: Record<string, ScenarioFixture>;
+};
 
 export class MockAgentRegistry implements IAgentRegistry {
-  private agents: Agent[];
-  private clock: number;
-  private idIndex: number;
+  private agents: Map<string, Agent> = new Map();
+  private fixture: FixtureFile | null = null;
 
-  constructor(scenario: AgentScenario = "new_agent") {
-    const fixture = loadFixtureAgent();
-    this.agents = [];
-    this.clock = BASE_TIME;
-    this.idIndex = 0;
-
-    if (fixture && scenario === "existing_agent") {
-      this.agents.push(fixture);
-      this.clock = Math.max(this.clock, fixture.lastSeenAt + 1);
+  constructor(private readonly fixturePath?: string, private readonly scenario = "success") {
+    if (fixturePath && fs.existsSync(fixturePath)) {
+      const raw = fs.readFileSync(fixturePath, "utf-8");
+      this.fixture = JSON.parse(raw);
     }
   }
 
+  private getScenario(): ScenarioFixture {
+    if (!this.fixture) return {};
+    const scenarios = this.fixture.scenarios ?? {};
+    const scenario = scenarios[this.scenario] || scenarios["success"] || {};
+    if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
+      throw new AppError(code, scenario.error.message, scenario.error.details);
+    }
+    return scenario;
+  }
+
   async register(name: string): Promise<Agent> {
-    const validatedName = AgentNameSchema.parse(name);
-    const existing = this.agents.find((agent) => agent.name === validatedName);
-    if (existing) return existing;
-
-    const now = this.nextTime();
+    this.getScenario();
+    const parsedName = AgentNameSchema.parse(name);
     const agent: Agent = {
-      id: this.nextId(),
-      name: validatedName,
-      createdAt: now,
-      lastSeenAt: now,
+      id: randomUUID(),
+      name: parsedName,
+      lastSeenAt: Date.now(),
+      createdAt: Date.now()
     };
-
-    this.agents.push(agent);
+    this.agents.set(agent.id, agent);
     return agent;
   }
 
   async resolve(id: string): Promise<Agent> {
-    const agent = this.agents.find((entry) => entry.id === id);
-    if (!agent) {
-      throw new AppError("VALIDATION_FAILED", `Agent ${id} not found`);
-    }
+    this.getScenario();
+    const agent = this.agents.get(id);
+    if (!agent) throw new AppError("VALIDATION_FAILED", `Agent ${id} not found`);
     return agent;
   }
 
   async list(): Promise<Agent[]> {
-    return [...this.agents];
+    this.getScenario();
+    return Array.from(this.agents.values());
   }
 
   async touch(id: string): Promise<Agent> {
-    const agent = await this.resolve(id);
-    agent.lastSeenAt = this.nextTime();
+    this.getScenario();
+    const agent = this.agents.get(id);
+    if (!agent) throw new AppError("VALIDATION_FAILED", `Agent ${id} not found`);
+    agent.lastSeenAt = Date.now();
     return agent;
-  }
-
-  private nextTime(): number {
-    const value = this.clock;
-    this.clock += 1;
-    return value;
-  }
-
-  private nextId(): string {
-    const value = DETERMINISTIC_IDS[Math.min(this.idIndex, DETERMINISTIC_IDS.length - 1)];
-    this.idIndex += 1;
-    return value;
   }
 }

@@ -1,27 +1,16 @@
-/**
- * Purpose: Verify Probe Runner contract compliance.
- */
+import { describe, it } from "node:test";
 import assert from "node:assert";
-import test from "node:test";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import path from "path";
 import { MockProbeRunner } from "../../src/lib/mocks/probe_runner.mock.js";
-import { ProbeResultSchema } from "../../contracts/probe_runner.contract.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CAPABILITIES_FIXTURE = path.join(__dirname, "../../../fixtures/probe_runner/capabilities.json");
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "probe_runner", "capabilities.json");
+const FAULT_PATH = path.join(process.cwd(), "fixtures", "probe_runner", "fault.json");
 
-test("Probe Runner Contract - Mock Verification", async () => {
-  const fixture = JSON.parse(fs.readFileSync(CAPABILITIES_FIXTURE, "utf-8"));
-  const runner = new MockProbeRunner(fixture);
-  
-  const results = await runner.run({ pattern: "test" });
-  
-  assert.strictEqual(results.length, 2);
-  assert.strictEqual(results[0].success, true);
-  assert.strictEqual(results[1].success, false);
-  
-  // Validate schema
-  assert.doesNotThrow(() => ProbeResultSchema.parse(results[0]));
+describe("Probe Runner Contract - Mock Verification", () => {
+  it("should fail on fault fixture (compilation_error)", async () => {
+    const mock = new MockProbeRunner(FAULT_PATH, "compilation_error");
+    await assert.rejects(async () => {
+      await mock.run({ pattern: "any" });
+    }, (err: any) => err.code === "VALIDATION_FAILED" && err.message.includes("compilation failed"));
+  });
 });

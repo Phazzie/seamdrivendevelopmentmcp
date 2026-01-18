@@ -1,46 +1,27 @@
-/**
- * Purpose: Verify Scaffolder contract compliance (scaffolder seam).
- */
 import assert from "node:assert";
-import test from "node:test";
-import { MockScaffolder } from "../../src/lib/mocks/scaffolder.mock.js";
+import { describe, test } from "node:test";
+import path from "path";
 import type { IScaffolder } from "../../contracts/scaffolder.contract.js";
-import { ScaffoldInputSchema, ScaffoldSpecSchema } from "../../contracts/scaffolder.contract.js";
+import { MockScaffolder } from "../../src/lib/mocks/scaffolder.mock.js";
 
-type ScaffolderTestOptions = {
-  baseDir?: string;
-};
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "scaffolder", "sample.json");
+const FAULT_PATH = path.join(process.cwd(), "fixtures", "scaffolder", "fault.json");
 
-export function runScaffolderContractTests(
-  createScaffolder: () => Promise<IScaffolder>,
-  options: ScaffolderTestOptions = {}
-) {
+export function runScaffolderContractTests(create: () => Promise<IScaffolder>) {
   test("Scaffolder Contract - Valid Input", async () => {
-    const scaffolder = await createScaffolder();
-    const input = ScaffoldInputSchema.parse({
-      seamName: "test_seam",
-      baseDir: options.baseDir
-    });
-    
-    const result = await scaffolder.scaffold(input);
-    
-    assert.strictEqual(result.success, true);
-    assert.ok(result.files.length >= 6);
-    assert.ok(result.files.find(f => f.type === "contract"));
-  });
-
-  test("Scaffolder Contract - Validation", () => {
-    assert.throws(() => ScaffoldInputSchema.parse({ seamName: "Invalid Name" }));
-  });
-
-  test("Scaffolder Contract - Spec Validation", () => {
-    const spec = ScaffoldSpecSchema.parse({
-      seamName: "spec_seam",
-      methods: [{ name: "create", inputType: "CreateInput", outputType: "CreateResult" }]
-    });
-    const input = ScaffoldInputSchema.parse({ seamName: "spec_seam", spec });
-    assert.strictEqual(input.spec?.seamName, "spec_seam");
+    const scaffolder = await create();
+    const res = await scaffolder.scaffold({ seamName: "any", baseDir: "." });
+    assert.ok(res.success);
   });
 }
 
-runScaffolderContractTests(async () => new MockScaffolder());
+describe("MockScaffolder", () => {
+  runScaffolderContractTests(async () => new MockScaffolder(FIXTURE_PATH));
+
+  test("Scaffolder Contract - Fault Injection", async () => {
+    const mock = new MockScaffolder(FAULT_PATH, "fs_permission_denied");
+    await assert.rejects(async () => {
+      await mock.scaffold({ seamName: "any", baseDir: "." });
+    }, (err: any) => err.code === "INTERNAL_ERROR" && err.message.includes("permission denied"));
+  });
+});

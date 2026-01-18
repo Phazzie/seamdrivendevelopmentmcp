@@ -11,6 +11,7 @@ export const ReviewGateSchema = z.object({
   planId: z.string().min(1),
   status: ReviewGateStatusSchema,
   plan: z.string().min(1),
+  affectedResources: z.array(z.string()).default([]), // Added
   critique: z.string().optional(),
   created_at: z.number(),
   updated_at: z.number(),

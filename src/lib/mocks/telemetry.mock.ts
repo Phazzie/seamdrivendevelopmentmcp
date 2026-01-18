@@ -1,32 +1,33 @@
-/**
- * Purpose: Mock telemetry behavior using fixtures (telemetry seam).
- */
+import fs from "fs";
 import { ITelemetryClient, LogLine, BufferStatus } from "../../../contracts/telemetry.contract.js";
-
-// SDD: Grounded by fixture
-const FIXTURE_PATH = "fixtures/telemetry/fs_watch.json";
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 
 export class MockTelemetryClient implements ITelemetryClient {
-  constructor(private fixtureEvents: any[] = []) {}
+  private fixture: any = {};
 
-  async *tail(sourceId: string, filePath: string): AsyncIterable<LogLine> {
-    // Simulate events from fixture
-    for (const event of this.fixtureEvents) {
-      if (event.eventType === 'change') {
-        yield {
-          source: sourceId,
-          content: "Simulated Log Line",
-          timestamp: Date.now()
-        };
-      }
+  constructor(private readonly fixturePath: string, private readonly scenario = "success") {
+    if (fs.existsSync(fixturePath)) {
+      this.fixture = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
     }
   }
 
+  private getScenario(): any {
+    const scenarios = this.fixture.scenarios ?? {};
+    const scenario = scenarios[this.scenario] || scenarios["success"] || {};
+    if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
+      throw new AppError(code, scenario.error.message);
+    }
+    return scenario;
+  }
+
+  async *tail(sourceId: string, filePath: string): AsyncIterable<LogLine> {
+    this.getScenario();
+    yield { source: sourceId, content: "Mock line", timestamp: Date.now() };
+  }
+
   async getBufferStatus(sourceId: string): Promise<BufferStatus> {
-    return {
-      linesBuffered: 10,
-      bytesBuffered: 1024,
-      usagePercent: 5
-    };
+    this.getScenario();
+    return { linesBuffered: 0, bytesBuffered: 0, usagePercent: 0 };
   }
 }

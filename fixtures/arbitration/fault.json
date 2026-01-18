@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "no_gavel_active": {
+      "error": { "code": "LOCKED", "message": "Gavel is not currently active" }
+    }
+  }
+}

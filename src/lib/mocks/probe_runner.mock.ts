@@ -1,22 +1,28 @@
-/**
- * Purpose: Mock implementation of Probe Runner using fixtures.
- */
+import fs from "fs";
 import { IProbeRunner, RunProbesInput, ProbeResult } from "../../../contracts/probe_runner.contract.js";
-
-// SDD: Grounded by fixture
-const FIXTURE_PATH = "fixtures/probe_runner/capabilities.json";
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 
 export class MockProbeRunner implements IProbeRunner {
-  constructor(private fixtureData: any) {}
+  private fixture: any = {};
+
+  constructor(private readonly fixturePath: string, private readonly scenario = "success") {
+    if (fs.existsSync(fixturePath)) {
+      this.fixture = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
+    }
+  }
+
+  private getScenario(): any {
+    const scenarios = this.fixture.scenarios ?? {};
+    const scenario = scenarios[this.scenario] || scenarios["success"] || { outputs: this.fixture };
+    if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
+      throw new AppError(code, scenario.error.message);
+    }
+    return scenario;
+  }
 
   async run(input: RunProbesInput): Promise<ProbeResult[]> {
-    return this.fixtureData.scenarios.map((s: any) => ({
-      name: s.name,
-      success: s.code === 0,
-      code: s.code,
-      stdout: s.stdout,
-      stderr: s.stderr,
-      durationMs: 100
-    }));
+    const s = this.getScenario();
+    return s.outputs?.results || [];
   }
 }

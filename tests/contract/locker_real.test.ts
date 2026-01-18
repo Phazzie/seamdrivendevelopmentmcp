@@ -1,5 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert";
+import path from "path";
 import { runLockerContractTests } from "./locker.test.js";
 import { LockerAdapter } from "../../src/lib/adapters/locker.adapter.js";
 import { MockStore } from "../../src/lib/mocks/store.mock.js";
@@ -16,7 +17,6 @@ describe("Real LockerAdapter (with MockStore)", () => {
     const store = new MockStore();
     const locker = new LockerAdapter(store);
 
-    // Enable Panic Mode manually in store
     await store.update((c) => { c.panic_mode = true; return c; }, 1);
 
     await assert.rejects(async () => {
@@ -34,6 +34,7 @@ describe("Real LockerAdapter (with MockStore)", () => {
         planId: "plan-1",
         status: "pending",
         plan: "Destroy world",
+        affectedResources: [path.resolve("res1")], 
         created_at: Date.now(),
         updated_at: Date.now()
       }]; 
@@ -42,6 +43,6 @@ describe("Real LockerAdapter (with MockStore)", () => {
 
     await assert.rejects(async () => {
       await locker.acquire(["res1"], "owner1", 1000);
-    }, (err: any) => err.code === "LOCKED" && err.message.includes("Review Mode"));
+    }, (err: any) => err.code === "LOCKED" && err.message.includes("blocked by pending Review Gates"));
   });
 });

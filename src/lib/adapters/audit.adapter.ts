@@ -1,54 +1,32 @@
 import { randomUUID } from "crypto";
-import type { AuditEvent, AuditListFilter, IAuditLog } from "../../../contracts/audit.contract.js";
-import type { IStore, PersistedStore } from "../../../contracts/store.contract.js";
+import fs from "fs/promises";
+import path from "path";
+import type { IAuditLog, AuditEvent, AuditListFilter } from "../../../contracts/audit.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
+import type { IStore } from "../../../contracts/store.contract.js";
+import { runTransaction } from "../helpers/store.helper.js";
+import { PathGuard } from "../helpers/path_guard.js";
 
+/**
+ * Purpose: Real implementation of Audit Log (audit seam).
+ * Hardened: Path Jailing for audit trail persistence.
+ */
 export class AuditAdapter implements IAuditLog {
   constructor(private readonly store: IStore) {}
 
-  private async runTransaction<T>(
-    operation: (current: PersistedStore) => { nextState: PersistedStore; result: T }
-  ): Promise<T> {
-    const MAX_RETRIES = 5;
-    let attempt = 0;
-
-    while (attempt < MAX_RETRIES) {
-      try {
-        const current = await this.store.load();
-        const { nextState, result } = operation(current);
-        await this.store.update(() => nextState, current.revision);
-        return result;
-      } catch (err: any) {
-        if (err.code === "STALE_REVISION") {
-          attempt += 1;
-          continue;
-        }
-        throw err;
-      }
-    }
-
-    throw new AppError("INTERNAL_ERROR", "Failed to record audit event after max retries");
-  }
-
-  async record(
-    agentId: string,
-    tool: string,
-    argsSummary: string,
-    resultSummary: string,
-    errorCode?: string
-  ): Promise<AuditEvent> {
-    return this.runTransaction((current) => {
+  async record(agentId: string, tool: string, argsSummary: string, resultSummary: string, errorCode?: string): Promise<AuditEvent> {
+    return runTransaction(this.store, (current) => {
       const event: AuditEvent = {
         id: randomUUID(),
+        timestamp: Date.now(),
         agentId,
         tool,
-        timestamp: Date.now(),
         argsSummary,
         resultSummary,
         errorCode,
       };
 
-      const audit = (current.audit as AuditEvent[]) || [];
+      const audit = Array.isArray(current.audit) ? current.audit : [];
       return {
         nextState: { ...current, audit: [...audit, event] },
         result: event,
@@ -56,19 +34,18 @@ export class AuditAdapter implements IAuditLog {
     });
   }
 
-  async list(filter: AuditListFilter = {}): Promise<AuditEvent[]> {
+  async list(filter?: AuditListFilter): Promise<AuditEvent[]> {
     const current = await this.store.load();
-    let list = (current.audit as AuditEvent[]) || [];
+    let events = Array.isArray(current.audit) ? (current.audit as AuditEvent[]) : [];
 
-    if (filter.agentId) {
-      list = list.filter((event) => event.agentId === filter.agentId);
+    if (filter?.agentId) {
+      events = events.filter((e) => e.agentId === filter.agentId);
     }
-    if (filter.tool) {
-      list = list.filter((event) => event.tool === filter.tool);
+    if (filter?.tool) {
+      events = events.filter((e) => e.tool === filter.tool);
     }
-    if (typeof filter.limit === "number") {
-      list = list.slice(-filter.limit);
-    }
-    return list;
+
+    const limit = filter?.limit ?? 50;
+    return events.slice(-limit);
   }
 }

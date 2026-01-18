@@ -1,5 +1,6 @@
 import { test, describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
+import path from "node:path";
 import { MockStore } from "../../src/lib/mocks/store.mock.js";
 import type { IStore } from "../../contracts/store.contract.js";
 
@@ -62,5 +63,14 @@ export function runStoreContractTests(createStore: () => Promise<IStore>) {
 
 // Run against Mock
 describe("MockStore Implementation", () => {
-  runStoreContractTests(async () => new MockStore());
+  const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "store", "default.json");
+  const FAULT_PATH = path.join(process.cwd(), "fixtures", "store", "fault.json");
+
+  runStoreContractTests(async () => new MockStore(FIXTURE_PATH));
+
+  it("should fail when loading fault fixture", async () => {
+    assert.throws(() => {
+      new MockStore(FAULT_PATH, "corrupt_schema");
+    }, (err: any) => err.code === "VALIDATION_FAILED");
+  });
 });

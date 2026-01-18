@@ -2,18 +2,22 @@
  * Purpose: Mock implementation of the Store (store seam).
  */
 import type { IStore, PersistedStore } from "../../../contracts/store.contract.js";
-import { AppError } from "../../../contracts/store.contract.js";
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 import fs from "fs";
 
 export class MockStore implements IStore {
   private state: PersistedStore;
   private changeListeners: ((rev: number) => void)[] = [];
 
-  constructor(private readonly fixturePath?: string, initialState?: Partial<PersistedStore>) {
-    this.state = {
-      ...this.loadInitialState(fixturePath),
-      ...initialState,
-    };
+  constructor(private readonly fixturePath?: string, scenarioOrState: string | Partial<PersistedStore> = "success") {
+    if (typeof scenarioOrState === "string") {
+      this.state = this.loadInitialState(fixturePath, scenarioOrState);
+    } else {
+      this.state = {
+        ...this.loadInitialState(fixturePath, "success"),
+        ...scenarioOrState,
+      };
+    }
   }
 
   async load(): Promise<PersistedStore> {
@@ -63,7 +67,7 @@ export class MockStore implements IStore {
     });
   }
 
-  private loadInitialState(fixturePath?: string): PersistedStore {
+  private loadInitialState(fixturePath?: string, scenario = "success"): PersistedStore {
     const defaultState: PersistedStore = {
       schemaVersion: 1,
       revision: 1,
@@ -85,8 +89,18 @@ export class MockStore implements IStore {
 
     if (fixturePath && fs.existsSync(fixturePath)) {
       const raw = fs.readFileSync(fixturePath, "utf-8");
-      const parsed = JSON.parse(raw);
-      const { captured_at, ...rest } = parsed;
+      const fixture = JSON.parse(raw);
+      
+      const s = (fixture.scenarios && fixture.scenarios[scenario]) || { outputs: fixture };
+      
+      if (s.error) {
+        const code = AppErrorCodeSchema.parse(s.error.code);
+        throw new AppError(code, s.error.message, s.error.details);
+      }
+
+      const data = s.data || s.outputs || fixture;
+      const { captured_at, ...rest } = data;
+      // Merge with default to handle missing keys in fixture
       return { ...defaultState, ...rest };
     }
 

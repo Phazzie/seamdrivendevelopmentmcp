@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "orphaned_note": {
+      "error": { "code": "VALIDATION_FAILED", "message": "Parent idea not found for note" }
+    }
+  }
+}

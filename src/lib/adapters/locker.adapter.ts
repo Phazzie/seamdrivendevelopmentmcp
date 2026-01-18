@@ -27,17 +27,23 @@ export class LockerAdapter implements ILocker {
         throw new AppError("PANIC_MODE", "System is in panic mode. All locks are frozen.");
       }
 
-      const pendingGates = (current.review_gates || []).filter((g: any) => g.status !== "approved");
-      if (pendingGates.length > 0) {
-        throw new AppError("LOCKED", "System is in Review Mode. Resolve pending gates before acquiring locks.", {
-          pendingGates: pendingGates.map((g: any) => g.id)
+      // Senior Mandate: Surgical Safety Enforcement
+      // We only block lock acquisitions if the requested resources are part of an open Review Gate.
+      const normalizedResources = this.normalizeResources(resources, normalization);
+      const pendingResources = (current.review_gates || [])
+        .filter((g: any) => g.status !== "approved")
+        .flatMap((g: any) => (g.affectedResources || []).map((r: string) => this.normalizeResource(r, normalization)));
+
+      const conflicts = normalizedResources.filter(r => pendingResources.includes(r));
+      if (conflicts.length > 0) {
+        throw new AppError("LOCKED", `Resource acquisition blocked by pending Review Gates: ${conflicts.join(", ")}`, {
+          conflicts
         });
       }
 
       const now = Date.now();
       const activeLocks = (current.locks as Lock[] || []).filter(l => l.expiresAt > now);
       const acquiredLocks: Lock[] = [];
-      const normalizedResources = this.normalizeResources(resources, normalization);
 
       for (const res of normalizedResources) {
         const existing = activeLocks.find(l => l.resource === res);

@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "buffer_corruption": {
+      "error": { "code": "INTERNAL_ERROR", "message": "Terminal buffer corrupted" }
+    }
+  }
+}

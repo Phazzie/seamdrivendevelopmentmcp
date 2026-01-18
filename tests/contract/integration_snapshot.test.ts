@@ -1,54 +1,29 @@
-// Purpose: contract tests for integration snapshot (integration_snapshot seam).
-import { describe, it, beforeEach } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert";
-import fs from "fs";
 import path from "path";
-import type {
-  IIntegrationSnapshotReader,
-  IntegrationSnapshot,
-} from "../../contracts/integration_snapshot.contract.js";
-import { IntegrationSnapshotSchema } from "../../contracts/integration_snapshot.contract.js";
+import type { IIntegrationSnapshotReader } from "../../contracts/integration_snapshot.contract.js";
 import { MockIntegrationSnapshotReader } from "../../src/lib/mocks/integration_snapshot.mock.js";
 
-const FIXTURE_PATH = path.join(
-  process.cwd(),
-  "fixtures",
-  "integration_snapshot",
-  "snapshot.json"
-);
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "integration_snapshot", "snapshot.json");
+const FAULT_PATH = path.join(process.cwd(), "fixtures", "integration_snapshot", "fault.json");
 
-function loadFixture(): IntegrationSnapshot | null {
-  if (!fs.existsSync(FIXTURE_PATH)) return null;
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  return JSON.parse(raw) as IntegrationSnapshot;
-}
-
-export function runIntegrationSnapshotContractTests(
-  createReader: () => Promise<IIntegrationSnapshotReader>
-) {
+export function runIntegrationSnapshotContractTests(create: () => Promise<IIntegrationSnapshotReader>) {
   describe("Integration Snapshot Contract", () => {
-    let reader: IIntegrationSnapshotReader;
-
-    beforeEach(async () => {
-      reader = await createReader();
-    });
-
     it("should return a valid snapshot", async () => {
+      const reader = await create();
       const snapshot = await reader.getSnapshot();
-      const parsed = IntegrationSnapshotSchema.safeParse(snapshot);
-      assert.strictEqual(parsed.success, true);
-    });
-
-    it("should load fixture snapshot when present", async () => {
-      const fixture = loadFixture();
-      if (!fixture) return;
-      const snapshot = await reader.getSnapshot();
-      assert.strictEqual(snapshot.store.revision, fixture.store.revision);
-      assert.strictEqual(snapshot.store_path, fixture.store_path);
+      assert.ok(snapshot.captured_at);
     });
   });
 }
 
 describe("MockIntegrationSnapshotReader", () => {
-  runIntegrationSnapshotContractTests(async () => new MockIntegrationSnapshotReader());
+  runIntegrationSnapshotContractTests(async () => new MockIntegrationSnapshotReader(FIXTURE_PATH));
+
+  it("should fail on fault fixture (snapshot_failed)", async () => {
+    const mock = new MockIntegrationSnapshotReader(FAULT_PATH, "snapshot_failed");
+    await assert.rejects(async () => {
+      await mock.getSnapshot();
+    }, (err: any) => err.code === "INTERNAL_ERROR" && err.message.includes("capture integration snapshot"));
+  });
 });

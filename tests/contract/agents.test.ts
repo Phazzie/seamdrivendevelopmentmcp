@@ -1,7 +1,11 @@
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
+import path from "path";
 import type { IAgentRegistry } from "../../contracts/agents.contract.js";
 import { MockAgentRegistry } from "../../src/lib/mocks/agents.mock.js";
+
+const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "agents", "local_user.json");
+const FAULT_PATH = path.join(process.cwd(), "fixtures", "agents", "fault.json");
 
 export function runAgentContractTests(createRegistry: () => Promise<IAgentRegistry>) {
   describe("Agent Registry Contract", () => {
@@ -35,5 +39,12 @@ export function runAgentContractTests(createRegistry: () => Promise<IAgentRegist
 }
 
 describe("MockAgentRegistry", () => {
-  runAgentContractTests(async () => new MockAgentRegistry());
+  runAgentContractTests(async () => new MockAgentRegistry(FIXTURE_PATH));
+
+  it("should fail when loading fault fixture (name_conflict)", async () => {
+    const mock = new MockAgentRegistry(FAULT_PATH, "name_conflict");
+    await assert.rejects(async () => {
+      await mock.register("Any");
+    }, (err: any) => err.code === "VALIDATION_FAILED" && err.message.includes("already registered"));
+  });
 });

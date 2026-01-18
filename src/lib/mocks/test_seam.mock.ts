@@ -7,5 +7,11 @@ export class MockTestSeam implements ITestSeam {
   constructor(private fixturePath: string, private scenario = "success") {
     this.fixture = JSON.parse(fs["readFileSync"](fixturePath, "utf-8"));
   }
-  async example(): Promise<any> { return this.fixture.scenarios[this.scenario].outputs.example; }
+  private getOutput(method: string) {
+    const s = this.fixture.scenarios[this.scenario];
+    if (!s) throw new AppError("VALIDATION_FAILED", "Unknown scenario");
+    if (s.error) throw new AppError(s.error.code, s.error.message);
+    return s.outputs[method];
+  }
+  async example(): Promise<any> { return this.getOutput("example"); }
 }

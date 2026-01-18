@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-01-16T22:00:00Z",
+  "scenarios": {
+    "stale_cursor": {
+      "error": { "code": "STALE_REVISION", "message": "Event cursor is stale" }
+    }
+  }
+}

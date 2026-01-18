@@ -1,50 +1,57 @@
-import type { ILocker, Lock } from "../../../contracts/locker.contract.js";
-import { AppError } from "../../../contracts/store.contract.js";
+/**
+ * Purpose: Mock implementation for locker using fixtures (locker seam).
+ */
 import fs from "fs";
 import path from "path";
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
+import type { ILocker, Lock } from "../../../contracts/locker.contract.js";
 
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "locker", "capabilities.json");
-const DETERMINISTIC_IDS = [
-  "00000000-0000-0000-0000-000000000010",
-  "00000000-0000-0000-0000-000000000011",
-  "00000000-0000-0000-0000-000000000012",
-];
+type ScenarioFixture = {
+  outputs?: any;
+  error?: { code: string; message: string; details?: Record<string, unknown> };
+};
 
-type NormalizationStrategy = "lowercase" | "none";
-
-function loadNormalizationStrategy(): NormalizationStrategy {
-  if (!fs.existsSync(FIXTURE_PATH)) return "none";
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const data = JSON.parse(raw) as { normalization_strategy?: NormalizationStrategy };
-  return data.normalization_strategy === "lowercase" ? "lowercase" : "none";
-}
+type FixtureFile = {
+  captured_at?: string;
+  scenarios?: Record<string, ScenarioFixture>;
+};
 
 export class MockLocker implements ILocker {
+  private fixture: FixtureFile = {};
   private locks: Map<string, Lock> = new Map();
-  private readonly normalization: NormalizationStrategy;
-  private idIndex = 0;
 
-  constructor() {
-    this.normalization = loadNormalizationStrategy();
+  constructor(private readonly fixturePath: string, private scenario = "success") {
+    if (fs.existsSync(fixturePath)) {
+      this.fixture = JSON.parse(fs.readFileSync(fixturePath, "utf-8"));
+    }
+  }
+
+  private getScenario(): ScenarioFixture {
+    const scenarios = this.fixture.scenarios ?? {};
+    const scenario = scenarios[this.scenario] || scenarios["success"] || {};
+    if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
+      throw new AppError(code, scenario.error.message, scenario.error.details);
+    }
+    return scenario;
   }
 
   async acquire(resources: string[], ownerId: string, ttlMs: number, reason?: string): Promise<Lock[]> {
+    this.getScenario();
     const now = Date.now();
     const acquired: Lock[] = [];
-    const normalizedResources = this.normalizeResources(resources);
+    const normalized = resources.map(r => path.resolve(r));
 
-    // Check for conflicts
-    for (const res of normalizedResources) {
+    for (const res of normalized) {
       const existing = this.locks.get(res);
       if (existing && existing.expiresAt > now && existing.ownerId !== ownerId) {
         throw new AppError("LOCKED", `Resource ${res} is locked by ${existing.ownerId}`);
       }
     }
 
-    // Grant locks
-    for (const res of normalizedResources) {
+    for (const res of normalized) {
       const lock: Lock = {
-        id: this.nextId(),
+        id: `lock-${res}`,
         resource: res,
         ownerId,
         createdAt: now,
@@ -54,67 +61,43 @@ export class MockLocker implements ILocker {
       this.locks.set(res, lock);
       acquired.push(lock);
     }
-
     return acquired;
   }
 
   async release(resources: string[], ownerId: string): Promise<void> {
-    const normalizedResources = this.normalizeResources(resources);
-    for (const res of normalizedResources) {
-      const existing = this.locks.get(res);
-      if (existing && existing.ownerId === ownerId) {
-        this.locks.delete(res);
-      }
+    this.getScenario();
+    for (const res of resources) {
+      this.locks.delete(path.resolve(res));
     }
   }
 
   async renew(resources: string[], ownerId: string, ttlMs: number): Promise<Lock[]> {
+    this.getScenario();
     const now = Date.now();
-    const normalizedResources = this.normalizeResources(resources);
-    const updated: Lock[] = [];
-
-    for (const res of normalizedResources) {
-      const existing = this.locks.get(res);
-      if (!existing || existing.expiresAt <= now) {
-        this.locks.delete(res);
-        throw new AppError("VALIDATION_FAILED", `Resource ${res} is not locked`);
-      }
-      if (existing.ownerId !== ownerId) {
-        throw new AppError("LOCKED", `Resource ${res} is locked by ${existing.ownerId}`);
-      }
-      const renewed = { ...existing, expiresAt: now + ttlMs };
-      this.locks.set(res, renewed);
-      updated.push(renewed);
-    }
-
-    return updated;
+    return resources.map(res => {
+      const resPath = path.resolve(res);
+      const lock = {
+        id: `lock-${resPath}`,
+        resource: resPath,
+        ownerId,
+        createdAt: now,
+        expiresAt: now + ttlMs
+      };
+      this.locks.set(resPath, lock);
+      return lock;
+    });
   }
 
   async list(): Promise<Lock[]> {
+    this.getScenario();
     const now = Date.now();
     return Array.from(this.locks.values()).filter(l => l.expiresAt > now);
   }
 
   async forceRelease(resources: string[]): Promise<void> {
-    const normalizedResources = this.normalizeResources(resources);
-    for (const res of normalizedResources) {
-      this.locks.delete(res);
+    this.getScenario();
+    for (const res of resources) {
+      this.locks.delete(path.resolve(res));
     }
-  }
-
-  private normalizeResources(resources: string[]): string[] {
-    const normalized = resources.map((res) => this.normalizeResource(res));
-    return Array.from(new Set(normalized));
-  }
-
-  private normalizeResource(resource: string): string {
-    const resolved = path.resolve(resource);
-    return this.normalization === "lowercase" ? resolved.toLowerCase() : resolved;
-  }
-
-  private nextId(): string {
-    const value = DETERMINISTIC_IDS[Math.min(this.idIndex, DETERMINISTIC_IDS.length - 1)];
-    this.idIndex += 1;
-    return value;
   }
 }

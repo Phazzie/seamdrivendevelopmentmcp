@@ -1,54 +1,64 @@
 import fs from "fs";
-import path from "path";
-import { AppError } from "../../../contracts/store.contract.js";
+import { randomUUID } from "crypto";
 import type { IReviewGate, ReviewGate, ReviewGateStatus } from "../../../contracts/review_gate.contract.js";
+import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 
-const FIXTURE_PATH = path.join(process.cwd(), "fixtures", "review_gate", "sample.json");
-
-type ReviewGateFixture = {
-  captured_at?: string;
-  gates?: ReviewGate[];
+type ScenarioFixture = {
+  outputs?: any;
+  error?: { code: string; message: string; details?: Record<string, unknown> };
 };
 
-function loadFixtureGates(): ReviewGate[] {
-  if (!fs.existsSync(FIXTURE_PATH)) return [];
-  const raw = fs.readFileSync(FIXTURE_PATH, "utf-8");
-  const parsed = JSON.parse(raw) as ReviewGateFixture;
-  return Array.isArray(parsed.gates) ? parsed.gates : [];
-}
+type FixtureFile = {
+  captured_at: string;
+  scenarios: Record<string, ScenarioFixture>;
+};
 
 export class MockReviewGate implements IReviewGate {
-  private gates: ReviewGate[];
+  private gates: ReviewGate[] = [];
+  private fixture: FixtureFile | null = null;
 
-  constructor() {
-    this.gates = loadFixtureGates();
+  constructor(private readonly fixturePath?: string, private readonly scenario = "success") {
+    if (fixturePath && fs.existsSync(fixturePath)) {
+      const raw = fs.readFileSync(fixturePath, "utf-8");
+      this.fixture = JSON.parse(raw);
+      const s = this.fixture?.scenarios[this.scenario] || this.fixture?.scenarios["success"];
+      if (s?.outputs?.gates) {
+        this.gates = [...s.outputs.gates];
+      }
+    }
   }
 
-  async submitPlan(planId: string, plan: string): Promise<ReviewGate> {
-    if (this.gates.find((gate) => gate.planId === planId)) {
-      throw new AppError("VALIDATION_FAILED", `Plan ${planId} already submitted.`);
+  private getScenario(): ScenarioFixture {
+    if (!this.fixture) return {};
+    const scenarios = this.fixture.scenarios ?? {};
+    const scenario = scenarios[this.scenario] || scenarios["success"] || {};
+    if (scenario.error) {
+      const code = AppErrorCodeSchema.parse(scenario.error.code);
+      throw new AppError(code, scenario.error.message, scenario.error.details);
     }
+    return scenario;
+  }
+
+  async submitPlan(planId: string, plan: string, affectedResources: string[] = []): Promise<ReviewGate> {
+    this.getScenario();
     const now = Date.now();
     const gate: ReviewGate = {
-      id: `00000000-0000-0000-0000-${(this.gates.length + 1).toString().padStart(12, "0")}`,
+      id: randomUUID(),
       planId,
       status: "pending",
       plan,
+      affectedResources,
       created_at: now,
-      updated_at: now,
+      updated_at: now
     };
     this.gates.push(gate);
     return gate;
   }
 
   async submitCritique(planId: string, critique: string): Promise<ReviewGate> {
-    const gate = this.gates.find((entry) => entry.planId === planId);
-    if (!gate) {
-      throw new AppError("VALIDATION_FAILED", `Plan ${planId} not found.`);
-    }
-    if (gate.status !== "pending") {
-      throw new AppError("VALIDATION_FAILED", "Critique already submitted or plan approved.");
-    }
+    this.getScenario();
+    const gate = this.gates.find((g) => g.planId === planId);
+    if (!gate) throw new AppError("VALIDATION_FAILED", `Plan ${planId} not found`);
     gate.status = "critique_submitted";
     gate.critique = critique;
     gate.updated_at = Date.now();
@@ -56,26 +66,26 @@ export class MockReviewGate implements IReviewGate {
   }
 
   async approvePlan(planId: string): Promise<ReviewGate> {
-    const gate = this.gates.find((entry) => entry.planId === planId);
-    if (!gate) {
-      throw new AppError("VALIDATION_FAILED", `Plan ${planId} not found.`);
-    }
+    this.getScenario();
+    const gate = this.gates.find((g) => g.planId === planId);
+    if (!gate) throw new AppError("VALIDATION_FAILED", `Plan ${planId} not found`);
+    
     if (gate.status !== "critique_submitted") {
-      throw new AppError("VALIDATION_FAILED", "Plan must have a critique before approval.");
+      throw new AppError("VALIDATION_FAILED", "Plan cannot be approved without a critique.");
     }
+
     gate.status = "approved";
     gate.updated_at = Date.now();
     return gate;
   }
 
   async getGate(planId: string): Promise<ReviewGate | null> {
-    return this.gates.find((gate) => gate.planId === planId) ?? null;
+    this.getScenario();
+    return this.gates.find((g) => g.planId === planId) || null;
   }
 
   async list(status?: ReviewGateStatus): Promise<ReviewGate[]> {
-    if (status) {
-      return this.gates.filter((gate) => gate.status === status);
-    }
-    return [...this.gates];
+    this.getScenario();
+    return status ? this.gates.filter((g) => g.status === status) : this.gates;
   }
 }
