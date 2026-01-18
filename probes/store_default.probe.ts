@@ -7,9 +7,11 @@ import fs from "fs";
 const ROOT_DIR = process.cwd();
 const FIXTURE_PATH = path.join(ROOT_DIR, "fixtures/store/default.json");
 const STORE_PATH = path.join(os.tmpdir(), "mcp_store_probe.json");
+const SHARD_DIR = path.join(os.tmpdir(), "mcp_store_probe_data");
 
 async function run() {
   if (fs.existsSync(STORE_PATH)) fs.unlinkSync(STORE_PATH);
+  if (fs.existsSync(SHARD_DIR)) fs.rmSync(SHARD_DIR, { recursive: true, force: true });
 
   const jailedFs = new JailedFs(path.dirname(STORE_PATH));
   const store = new StoreAdapter(STORE_PATH, jailedFs);

@@ -202,8 +202,18 @@ You are correct that direct writes are risky.
 ### Web HUD (web_cockpit seam)
 *   Updated `src/tui/web/index.html` layout/theme; added `src/tui/web/client.js` SSE client with reconnect/backoff and `src/tui/web/renderer.js` with rAF render guard.
 *   Rendered system stats + lists (locks, review gates, agents) and added disabled footer input.
-*   Verification: not run yet (will run `npm run verify` and `npm test` after Tasks A/B/C).
+*   Verification: `npm run verify`, `npm test`.
 *   Fixtures: unchanged; `fixtures/web_cockpit/*` not refreshed.
+
+### Review Gate (review_gate seam)
+*   Added fault scenario `lying_agent` to `fixtures/review_gate/fault.json`.
+*   Extended contract tests for lying-agent intent mismatch and mock fault scenario.
+*   Implemented deterministic intent validation for `store.ts` references in `src/lib/adapters/review_gate.adapter.ts`.
+
+### Store Sharding (store seam)
+*   Refactored `StoreAdapter` to read/write shards under `data/` with `manifest.json` updated last.
+*   Added shard layout assertion to `tests/contract/store_real.test.ts`.
+*   Updated `probes/store_default.probe.ts` to use a sharded store root.
 
 ## Codex Update (2026-01-10)
 
