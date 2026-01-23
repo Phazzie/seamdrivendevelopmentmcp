@@ -1,0 +1,102 @@
+{
+  "tools": {
+    "enableHooks": true
+  },
+  "hooks": {
+    "enabled": true,
+    "BeforeTool": [
+      {
+        "matcher": "write_file|replace",
+        "hooks": [
+          {
+            "name": "secret-scanner",
+            "type": "command",
+            "command": "node .gemini/hooks/no-any.js",
+            "timeout": 5000
+          },
+          {
+            "name": "no-fantasy-mocks",
+            "type": "command",
+            "command": "node .gemini/hooks/no-fantasy-mocks.js",
+            "timeout": 5000
+          },
+          {
+            "name": "anti-sloth",
+            "type": "command",
+            "command": "node .gemini/hooks/anti-sloth.js",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "BeforeModel": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "voice-of-reason",
+            "type": "command",
+            "command": "node .gemini/hooks/voice-of-reason.js",
+            "timeout": 5000
+          },
+          {
+            "name": "holodeck",
+            "type": "command",
+            "command": "node .gemini/hooks/holodeck.js",
+            "timeout": 5000
+          },
+          {
+            "name": "rigor-reminder",
+            "type": "command",
+            "command": "node .gemini/hooks/rigor-reminder.js",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "AfterTool": [
+      {
+        "matcher": "write_file|replace",
+        "hooks": [
+          {
+            "name": "mandate-check",
+            "type": "command",
+            "command": "node .gemini/hooks/mandate-check.js",
+            "timeout": 60000
+          },
+          {
+            "name": "sdd-check",
+            "type": "command",
+            "command": "node .gemini/hooks/sdd-on-change.js",
+            "timeout": 30000
+          },
+          {
+            "name": "auto-lint",
+            "type": "command",
+            "command": "node .gemini/hooks/auto-lint.js",
+            "timeout": 30000
+          },
+          {
+            "name": "ensure-test-exists",
+            "type": "command",
+            "command": "node .gemini/hooks/ensure-test-exists.js",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "name": "fixture-audit",
+            "type": "command",
+            "command": "node .gemini/hooks/session-audit.js",
+            "timeout": 60000
+          }
+        ]
+      }
+    ]
+  }
+}
