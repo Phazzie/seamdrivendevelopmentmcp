@@ -2,11 +2,13 @@
  * Purpose: Asynchronous, Sharded Store implementation (store seam).
  * Hardened: Uses JailedFs. Writes individual files for top-level keys. Atomic Manifest update.
  */
+import { randomUUID } from "crypto";
 import EventEmitter from "events";
+import fs from "fs/promises";
 import path from "path";
-import { 
-  PersistedStore, 
-  PersistedStoreSchema, 
+import {
+  PersistedStore,
+  PersistedStoreSchema,
   AppError,
   IStore
 } from "../../../contracts/store.contract.js";
@@ -34,7 +36,9 @@ export class StoreAdapter implements IStore {
   async load(): Promise<PersistedStore> {
     // 1. Try to read Manifest
     if (!this.jfs.exists(this.manifestPath)) {
-      return this.getDefaultState();
+      const defaultState = this.getDefaultState();
+      await this.atomicShardWrite(defaultState);
+      return defaultState;
     }
 
     let manifest: PersistedStore;
@@ -103,7 +107,7 @@ export class StoreAdapter implements IStore {
       throw new AppError("VALIDATION_FAILED", "Update produced invalid state", { errors: validation.error.flatten() });
     }
 
-    await this.atomicShardWrite(current, nextState);
+    await this.atomicShardWrite(nextState);
     this.events.emit("change", nextState.revision);
     return nextState;
   }
@@ -132,55 +136,69 @@ export class StoreAdapter implements IStore {
     });
   }
 
-  private async atomicShardWrite(prev: PersistedStore, next: PersistedStore): Promise<void> {
-    // 1. Ensure shard dir exists
-    if (!this.jfs.exists(this.shardDir)) {
-      await this.jfs.mkdir(this.shardDir);
-    }
-
-    // 2. Identify changed shards
+  private async atomicShardWrite(next: PersistedStore): Promise<void> {
     const keys = Object.keys(next) as (keyof PersistedStore)[];
-    const writes: Promise<void>[] = [];
-
-    // Keys that stay in manifest (Metadata)
     const manifestKeys = ["schemaVersion", "revision", "panic_mode"];
-    const nextManifest: any = { ...next };
+    const nextManifest: Record<string, unknown> = { ...next };
+    const stageDir = `${this.shardDir}.stage_${randomUUID()}`;
+    const backupDir = `${this.shardDir}.prev_${randomUUID()}`;
+    let stageSwapped = false;
+    let backupCreated = false;
 
-    for (const key of keys) {
-      if (manifestKeys.includes(key)) continue;
+    try {
+      await this.jfs.mkdir(stageDir);
 
-      const prevVal = prev[key];
-      const nextVal = next[key];
+      for (const key of keys) {
+        if (manifestKeys.includes(key)) continue;
+        const nextVal = next[key];
+        const shardPath = path.join(stageDir, `${key}.json`);
+        await this.jfs.writeFile(shardPath, JSON.stringify(nextVal, null, 2));
 
-      // If changed, write shard
-      if (JSON.stringify(prevVal) !== JSON.stringify(nextVal)) {
-        const shardPath = path.join(this.shardDir, `${key}.json`);
-        writes.push(this.jfs.writeFile(shardPath, JSON.stringify(nextVal, null, 2)));
+        if (Array.isArray(nextVal)) {
+          nextManifest[key] = [];
+        } else if (typeof nextVal === "object" && nextVal !== null) {
+          if (key === "knowledge") nextManifest[key] = { nodes: [], edges: [] };
+          else if (key === "arbitration") nextManifest[key] = { status: "idle", updated_at: 0 };
+          else nextManifest[key] = {};
+        }
       }
 
-      // Strip data from manifest
-      if (Array.isArray(nextVal)) {
-        nextManifest[key] = []; // Placeholder
-      } else if (typeof nextVal === 'object' && nextVal !== null) {
-        // For 'knowledge', 'arbitration'
-        if (key === 'knowledge') nextManifest[key] = { nodes: [], edges: [] };
-        else if (key === 'arbitration') nextManifest[key] = { status: 'idle', updated_at: 0 }; 
-        else nextManifest[key] = {}; 
+      if (this.jfs.exists(this.shardDir)) {
+        await this.jfs.rename(this.shardDir, backupDir);
+        backupCreated = true;
+      }
+
+      await this.jfs.rename(stageDir, this.shardDir);
+      stageSwapped = true;
+
+      await this.jfs.writeFile(this.manifestPath, JSON.stringify(nextManifest, null, 2));
+    } catch (err: unknown) {
+      if (backupCreated && !stageSwapped) {
+        try {
+          await this.jfs.rename(backupDir, this.shardDir);
+        } catch (restoreErr) {
+          console.error("[StoreAdapter] Failed to restore shard directory:", restoreErr);
+        }
+      }
+
+      const message = err instanceof Error ? err.message : String(err);
+      throw new AppError("INTERNAL_ERROR", `Atomic shard write failed: ${message}`);
+    } finally {
+      if (!stageSwapped) {
+        await this.safeRemoveDir(stageDir);
+      }
+      if (backupCreated && stageSwapped) {
+        await this.safeRemoveDir(backupDir);
       }
     }
+  }
 
-    // 3. Write Shards (Parallel)
-    await Promise.all(writes);
-
-    // 4. Update Manifest (The Commit)
-    // We write the manifest LAST. If this fails, the shards are "orphaned" but the state is consistent (old revision).
-    // If shards write but manifest fails, next load() will see old manifest + new shards? 
-    // RISK: Yes. load() blindly loads shards if they exist.
-    // FIX: We should version the shards or put revision in them.
-    // FOR NOW: We rely on the fact that shard writes are idempotent. 
-    // Ideally, we'd write to a tmp dir and rename the dir, but that's expensive.
-    
-    await this.jfs.writeFile(this.manifestPath, JSON.stringify(nextManifest, null, 2));
+  private async safeRemoveDir(dirPath: string): Promise<void> {
+    try {
+      await fs.rm(dirPath, { recursive: true, force: true });
+    } catch (err) {
+      console.error("[StoreAdapter] Failed to remove directory:", err);
+    }
   }
 
   private getDefaultState(): PersistedStore {
