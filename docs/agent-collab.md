@@ -16,3 +16,7 @@
 - Hooks
   - Synced and verified the Avant-Garde Hook System (Holodeck, No-Any, Anti-Sloth, etc.).
   - Established `handoffs/GEMINI_SYNC_LOG.md` for cross-session alignment.
+- Seam: docs
+  - Consolidated doc sprawl. `docs/SDD_MASTER_GUIDE.md` (V1.2.0) is now the single source of truth for SDD and Laws.
+  - Updated `AGENTS.md` (V1.2.0) as the operational SOP.
+  - Archived philosophical content to `docs/archive/THE_SHAOLIN_CHRONICLES.md`.

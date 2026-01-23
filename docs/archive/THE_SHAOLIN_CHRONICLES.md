@@ -1,3 +1,7 @@
+> 🏛️ **ARCHIVED DOCUMENT**
+> This file is preserved for philosophical context and historical reference. 
+> For active engineering mandates and protocols, refer to `docs/SDD_MASTER_GUIDE.md`.
+
 # The Seam-Driven Development (SDD) Master Blueprint
 
 ## VOLUME I: THE CLEAN SHAOLIN CHRONICLES (Wu Bob & The GZA)
