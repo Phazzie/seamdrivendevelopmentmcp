@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-11T00:16:26.501Z",
+  "captured_at": "2026-01-23T04:42:37.362Z",
   "scenarios": {
     "success": {
       "description": "Sample scaffold output",
@@ -7,13 +7,34 @@
         "scaffold": {
           "success": true,
           "files": [
-            { "path": "${baseDir}/contracts/ex.ts", "type": "contract" },
-            { "path": "${baseDir}/probes/ex.ts", "type": "probe" },
-            { "path": "${baseDir}/fixtures/ex/s.json", "type": "fixture" },
-            { "path": "${baseDir}/fixtures/ex/f.json", "type": "fixture" },
-            { "path": "${baseDir}/src/lib/mocks/ex.ts", "type": "mock" },
-            { "path": "${baseDir}/tests/contract/ex.ts", "type": "test" },
-            { "path": "${baseDir}/src/lib/adapters/ex.ts", "type": "adapter" }
+            {
+              "path": "${baseDir}/contracts/ex.ts",
+              "type": "contract"
+            },
+            {
+              "path": "${baseDir}/probes/ex.ts",
+              "type": "probe"
+            },
+            {
+              "path": "${baseDir}/fixtures/ex/s.json",
+              "type": "fixture"
+            },
+            {
+              "path": "${baseDir}/fixtures/ex/f.json",
+              "type": "fixture"
+            },
+            {
+              "path": "${baseDir}/src/lib/mocks/ex.ts",
+              "type": "mock"
+            },
+            {
+              "path": "${baseDir}/tests/contract/ex.ts",
+              "type": "test"
+            },
+            {
+              "path": "${baseDir}/src/lib/adapters/ex.ts",
+              "type": "adapter"
+            }
           ]
         }
       }

@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const FIXTURE_DIR = path.join(__dirname, '../../fixtures/probe_runner');
+const FIXTURE_DIR = path.join(process.cwd(), 'fixtures/probe_runner');
 if (!fs.existsSync(FIXTURE_DIR)) fs.mkdirSync(FIXTURE_DIR, { recursive: true });
 
 async function runProbe() {

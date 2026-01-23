@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const FIXTURE_DIR = path.join(__dirname, "../../fixtures/plan_parser");
+const FIXTURE_DIR = path.join(process.cwd(), "fixtures/plan_parser");
 const PLAN_FILE = path.join(__dirname, "../../MASTER_PLAN.md");
 
 if (!fs.existsSync(FIXTURE_DIR)) fs.mkdirSync(FIXTURE_DIR, { recursive: true });
@@ -37,6 +37,14 @@ async function runProbe() {
   };
 
   fs.writeFileSync(path.join(FIXTURE_DIR, "samples.json"), JSON.stringify(result, null, 2));
+
+  const DEFAULT_FILE = path.join(FIXTURE_DIR, "default.json");
+  if (fs.existsSync(DEFAULT_FILE)) {
+    const data = JSON.parse(fs.readFileSync(DEFAULT_FILE, "utf-8"));
+    data.captured_at = result.captured_at;
+    fs.writeFileSync(DEFAULT_FILE, JSON.stringify(data, null, 2));
+  }
+
   console.log("plan_parser data-capture probe complete.");
 }
 

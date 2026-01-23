@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-18T17:59:25.292Z",
+  "captured_at": "2026-01-22T15:38:36.967Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -51,6 +51,38 @@
             "context": "Sync is slow",
             "decision": "Move to promises",
             "created_at": 1768759165203
+          },
+          {
+            "id": "8ee13b90-b05e-478c-9690-3b61a3020259",
+            "title": "Use Zod for validation",
+            "status": "accepted",
+            "context": "Need type safety",
+            "decision": "Use Zod",
+            "created_at": 1768973627663
+          },
+          {
+            "id": "228f595b-7751-4c42-9ec7-b1794df27569",
+            "title": "Async Store",
+            "status": "proposed",
+            "context": "Sync is slow",
+            "decision": "Move to promises",
+            "created_at": 1768973628559
+          },
+          {
+            "id": "02fa9f20-0157-42b3-ba32-f853d0f53b40",
+            "title": "Use Zod for validation",
+            "status": "accepted",
+            "context": "Need type safety",
+            "decision": "Use Zod",
+            "created_at": 1769096316798
+          },
+          {
+            "id": "794ce325-07e6-4fad-96f7-311587c04b9a",
+            "title": "Async Store",
+            "status": "proposed",
+            "context": "Sync is slow",
+            "decision": "Move to promises",
+            "created_at": 1769096316901
           }
         ]
       }

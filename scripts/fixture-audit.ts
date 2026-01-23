@@ -13,7 +13,7 @@ interface AuditConfig {
 
 interface AuditResult {
   file: string;
-  status: 'ok' | 'missing_field' | 'invalid_date' | 'stale';
+  status: 'ok' | 'missing_field' | 'invalid_date' | 'stale' | 'forgery_risk';
   ageDays?: number;
   message?: string;
 }
@@ -128,6 +128,10 @@ function main() {
           console.error(`[STALE] ${result.file}: ${result.message}`);
           errorCount++;
         }
+        break;
+      case 'forgery_risk':
+        console.error(`[FORGERY] ${result.file}: ${result.message}`);
+        errorCount++;
         break;
       case 'ok':
         // console.log(`✅ [OK]      ${result.file} (${result.ageDays?.toFixed(1)}d)`);

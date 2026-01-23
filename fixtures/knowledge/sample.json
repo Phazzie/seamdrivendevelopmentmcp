@@ -1,29 +1,15 @@
 {
-  "captured_at": "2026-01-18T17:59:24.571Z",
+  "captured_at": "2026-01-22T15:39:02.689Z",
   "scenarios": {
     "success": {
       "outputs": {
         "nodes": [
           {
-            "id": "b8fe4118-57fc-45e0-878b-9f08275e1320",
+            "id": "60eee837-62be-464c-b2ca-32453ac374c3",
             "type": "concept",
             "content": "SDD",
-            "created_at": 1768753948639,
-            "updated_at": 1768753948639
-          },
-          {
-            "id": "c7d98b2f-1482-4ae6-a274-d6cabbea65ea",
-            "type": "concept",
-            "content": "SDD",
-            "created_at": 1768759142312,
-            "updated_at": 1768759142312
-          },
-          {
-            "id": "feec4cef-cda4-4aed-af11-2df5935be940",
-            "type": "concept",
-            "content": "SDD",
-            "created_at": 1768759164462,
-            "updated_at": 1768759164462
+            "created_at": 1769096342626,
+            "updated_at": 1769096342626
           }
         ],
         "edges": []

@@ -22,4 +22,11 @@ fs.writeFileSync(
   JSON.stringify(result, null, 2)
 );
 
+const DEFAULT_FILE = path.join(FIXTURE_DIR, "default.json");
+if (fs.existsSync(DEFAULT_FILE)) {
+  const data = JSON.parse(fs.readFileSync(DEFAULT_FILE, "utf-8"));
+  data.captured_at = result.captured_at;
+  fs.writeFileSync(DEFAULT_FILE, JSON.stringify(data, null, 2));
+}
+
 console.log("Scheduler probe captured runtime context.");

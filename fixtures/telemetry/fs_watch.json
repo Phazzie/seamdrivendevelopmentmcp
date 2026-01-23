@@ -9,14 +9,14 @@
     {
       "eventType": "change",
       "filename": "probe.log",
-      "latency": 151
+      "latency": 152
     },
     {
       "eventType": "rename",
       "filename": "probe.log.1",
-      "latency": 252
+      "latency": 254
     }
   ],
   "timings": [],
-  "captured_at": "2026-01-18T17:59:21.669Z"
+  "captured_at": "2026-01-22T15:39:04.044Z"
 }

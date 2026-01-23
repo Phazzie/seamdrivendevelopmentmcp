@@ -1,26 +1,14 @@
 {
-  "captured_at": "2026-01-18T17:59:20.880Z",
+  "captured_at": "2026-01-22T15:39:09.115Z",
   "scenarios": {
     "success": {
       "outputs": {
         "entries": [
           {
-            "id": "624fceb4-131c-4611-811e-34da4be92740",
+            "id": "7e19f8e4-6f50-4236-a16d-45b08e15ccf9",
             "agentId": "a1",
             "mood": "productive",
-            "timestamp": 1768753954799
-          },
-          {
-            "id": "489dadd1-5162-4b4b-b98f-9de67e468885",
-            "agentId": "a1",
-            "mood": "productive",
-            "timestamp": 1768759139621
-          },
-          {
-            "id": "7c2d86ef-c762-4bf2-a534-ce77d9d383cc",
-            "agentId": "a1",
-            "mood": "productive",
-            "timestamp": 1768759160785
+            "timestamp": 1769096349096
           }
         ]
       }

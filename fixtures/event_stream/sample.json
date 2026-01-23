@@ -1,32 +1,16 @@
 {
-  "captured_at": "2026-01-18T17:59:25.972Z",
+  "captured_at": "2026-01-22T15:38:52.895Z",
   "scenarios": {
     "success": {
       "outputs": {
         "events": [
           {
-            "id": "77aa9bea-4432-4da7-8cb0-7c12c56ae8e3",
+            "id": "7f51ce4c-4180-4a02-84e7-cf1b7ea86f93",
             "type": "test_event",
             "data": {
               "foo": "bar"
             },
-            "timestamp": 1768753939970
-          },
-          {
-            "id": "7efa04e1-e52f-406c-aa6d-47357f5d5cbf",
-            "type": "test_event",
-            "data": {
-              "foo": "bar"
-            },
-            "timestamp": 1768759143577
-          },
-          {
-            "id": "6621683b-3fee-493a-a934-93bc5a840220",
-            "type": "test_event",
-            "data": {
-              "foo": "bar"
-            },
-            "timestamp": 1768759165773
+            "timestamp": 1769096332819
           }
         ]
       }

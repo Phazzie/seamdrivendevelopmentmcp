@@ -1,29 +1,15 @@
 {
-  "captured_at": "2026-01-18T17:59:19.813Z",
+  "captured_at": "2026-01-22T15:39:11.082Z",
   "scenarios": {
     "success": {
       "outputs": {
         "notifications": [
           {
-            "id": "fe77a2b8-1349-425a-ae29-a6036266648a",
+            "id": "1b1a8408-4176-4047-aaf0-06c3eacb5a96",
             "title": "Alert",
             "message": "Test",
             "priority": "normal",
-            "created_at": 1768759159709
-          },
-          {
-            "id": "0f440604-eb95-4db0-835c-f3704ad5764e",
-            "title": "Alert",
-            "message": "Test",
-            "priority": "normal",
-            "created_at": 1768759138524
-          },
-          {
-            "id": "7c80cf79-62a7-476e-9015-01b8d0ce946d",
-            "title": "Alert",
-            "message": "Test",
-            "priority": "normal",
-            "created_at": 1768753956729
+            "created_at": 1769096351065
           }
         ]
       }

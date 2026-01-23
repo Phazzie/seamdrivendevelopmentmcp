@@ -1,28 +1,14 @@
 {
-  "captured_at": "2026-01-18T17:59:26.239Z",
+  "captured_at": "2026-01-22T15:39:07.102Z",
   "scenarios": {
     "success": {
       "outputs": {
         "messages": [
           {
-            "id": "ce242a5f-15e2-4ecc-bc6d-ff033439fd8f",
+            "id": "94beea4c-8186-4783-ad50-71eeb71e5fd6",
             "sender": "User",
             "content": "Hello",
-            "timestamp": 1768753952828,
-            "channelId": "general"
-          },
-          {
-            "id": "4d815a9b-af0e-441e-96fb-e159200d6f3a",
-            "sender": "User",
-            "content": "Hello",
-            "timestamp": 1768759143850,
-            "channelId": "general"
-          },
-          {
-            "id": "f6cd7acf-e444-410e-a8a1-1f4ac66c272b",
-            "sender": "User",
-            "content": "Hello",
-            "timestamp": 1768759166123,
+            "timestamp": 1769096347074,
             "channelId": "general"
           }
         ]

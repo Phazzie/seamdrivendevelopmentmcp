@@ -1,13 +1,13 @@
 {
-  "captured_at": "2026-01-18T17:59:21.402Z",
+  "captured_at": "2026-01-22T15:38:39.908Z",
   "scenarios": {
     "success": {
       "outputs": {
         "agent": {
-          "id": "77b6e5c5-f51c-4103-9778-f436132ecb36",
+          "id": "c608a9ba-099f-4943-b24d-8e8212a8219e",
           "name": "Claude",
-          "createdAt": 1768759161310,
-          "lastSeenAt": 1768759161310
+          "createdAt": 1769096319892,
+          "lastSeenAt": 1769096319892
         }
       }
     }

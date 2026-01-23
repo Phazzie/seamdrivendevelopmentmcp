@@ -1,41 +1,19 @@
 {
-  "captured_at": "2026-01-18T17:59:23.019Z",
+  "captured_at": "2026-01-22T15:39:17.655Z",
   "scenarios": {
     "success": {
       "outputs": {
         "gates": [
           {
-            "id": "7f3fa30a-9616-4ae6-8940-2cb77f3f9103",
+            "id": "12f4231c-1774-4c91-8924-b97a3ed0d3e1",
             "planId": "p1",
             "status": "pending",
             "plan": "plan",
             "affectedResources": [
               "file.ts"
             ],
-            "created_at": 1768753962615,
-            "updated_at": 1768753962615
-          },
-          {
-            "id": "90468c44-f6b1-44ac-9a0b-3fad7a727de0",
-            "planId": "p1",
-            "status": "pending",
-            "plan": "plan",
-            "affectedResources": [
-              "file.ts"
-            ],
-            "created_at": 1768759141692,
-            "updated_at": 1768759141692
-          },
-          {
-            "id": "ec93e25a-3126-431d-80a2-d164c41f9506",
-            "planId": "p1",
-            "status": "pending",
-            "plan": "plan",
-            "affectedResources": [
-              "file.ts"
-            ],
-            "created_at": 1768759162701,
-            "updated_at": 1768759162701
+            "created_at": 1769096357611,
+            "updated_at": 1769096357611
           }
         ]
       }

@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-01-18T18:00:00.920Z",
+  "captured_at": "2026-01-22T15:38:43.570Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -12,9 +12,8 @@
     "requested": {
       "outputs": {
         "state": {
-          "status": "requested",
-          "requestedBy": "agent-1",
-          "updated_at": 1768759200818
+          "status": "idle",
+          "updated_at": 0
         }
       }
     }

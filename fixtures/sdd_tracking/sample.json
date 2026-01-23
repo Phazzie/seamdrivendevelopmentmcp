@@ -1,12 +1,12 @@
 {
-  "captured_at": "2026-01-18T17:59:20.952Z",
+  "captured_at": "2026-01-22T15:39:21.312Z",
   "scenarios": {
     "success": {
       "description": "Real scan of current project",
       "outputs": {
         "getReport": {
-          "generatedAt": "2026-01-18T17:59:20.951Z",
-          "overallScore": 0.1724137931034483,
+          "generatedAt": "2026-01-22T15:39:21.311Z",
+          "overallScore": 0.20689655172413793,
           "isHealthy": false,
           "seams": [
             {
@@ -22,8 +22,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00020538194444444445,
-                "capturedAt": "2026-01-18T17:59:03.201Z"
+                "ageDays": 0.0005063310185185185,
+                "capturedAt": "2026-01-22T15:38:36.967Z"
               },
               "issues": [
                 "Missing probe"
@@ -42,8 +42,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00023819444444444444,
-                "capturedAt": "2026-01-18T17:59:00.367Z"
+                "ageDays": 0.00047246527777777776,
+                "capturedAt": "2026-01-22T15:38:39.908Z"
               },
               "issues": [
                 "Missing probe"
@@ -61,13 +61,12 @@
                 "test": true
               },
               "fixtureFreshness": {
-                "isFresh": false,
-                "ageDays": 7.738287719907407,
-                "capturedAt": "2026-01-11T00:16:12.888Z"
+                "isFresh": true,
+                "ageDays": 0.0004300810185185185,
+                "capturedAt": "2026-01-22T15:38:43.570Z"
               },
               "issues": [
-                "Missing probe",
-                "Stale fixture (7.7 days)"
+                "Missing probe"
               ]
             },
             {
@@ -83,8 +82,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00023578703703703704,
-                "capturedAt": "2026-01-18T17:59:00.575Z"
+                "ageDays": 0.0004133101851851852,
+                "capturedAt": "2026-01-22T15:38:45.019Z"
               },
               "issues": [
                 "Missing probe"
@@ -103,11 +102,11 @@
               },
               "fixtureFreshness": {
                 "isFresh": false,
-                "ageDays": 8.978300092592592,
+                "ageDays": 12.881076712962964,
                 "capturedAt": "2026-01-09T18:30:35.819Z"
               },
               "issues": [
-                "Stale fixture (9.0 days)"
+                "Stale fixture (12.9 days)"
               ]
             },
             {
@@ -123,8 +122,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.0002255787037037037,
-                "capturedAt": "2026-01-18T17:59:01.457Z"
+                "ageDays": 0.000383275462962963,
+                "capturedAt": "2026-01-22T15:38:47.733Z"
               },
               "issues": [
                 "Missing probe"
@@ -143,8 +142,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.000004375,
-                "capturedAt": "2026-01-18T17:59:20.569Z"
+                "ageDays": 0.0003494328703703704,
+                "capturedAt": "2026-01-22T15:38:50.657Z"
               },
               "issues": [
                 "Missing probe"
@@ -163,8 +162,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.0001998611111111111,
-                "capturedAt": "2026-01-18T17:59:03.679Z"
+                "ageDays": 0.0003235300925925926,
+                "capturedAt": "2026-01-22T15:38:52.895Z"
               },
               "issues": [
                 "Missing probe"
@@ -183,8 +182,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00023664351851851852,
-                "capturedAt": "2026-01-18T17:59:00.502Z"
+                "ageDays": 0.00025800925925925926,
+                "capturedAt": "2026-01-22T15:38:58.557Z"
               },
               "issues": []
             },
@@ -201,7 +200,7 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 1.8328813425925925,
+                "ageDays": 5.735658912037037,
                 "capturedAt": "2026-01-16T22:00:00Z"
               },
               "issues": []
@@ -242,8 +241,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00021465277777777777,
-                "capturedAt": "2026-01-18T17:59:02.402Z"
+                "ageDays": 0.00021112268518518518,
+                "capturedAt": "2026-01-22T15:39:02.689Z"
               },
               "issues": [
                 "Missing probe"
@@ -262,8 +261,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00022094907407407407,
-                "capturedAt": "2026-01-18T17:59:01.858Z"
+                "ageDays": 0.00009803240740740741,
+                "capturedAt": "2026-01-22T15:39:12.461Z"
               },
               "issues": [
                 "Missing probe"
@@ -282,8 +281,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.0001967939814814815,
-                "capturedAt": "2026-01-18T17:59:03.946Z"
+                "ageDays": 0.00016005787037037038,
+                "capturedAt": "2026-01-22T15:39:07.102Z"
               },
               "issues": [
                 "Missing probe"
@@ -302,8 +301,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 7.986111111111111e-7,
-                "capturedAt": "2026-01-18T17:59:20.880Z"
+                "ageDays": 0.00013675925925925927,
+                "capturedAt": "2026-01-22T15:39:09.115Z"
               },
               "issues": [
                 "Missing probe"
@@ -322,8 +321,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.000013148148148148148,
-                "capturedAt": "2026-01-18T17:59:19.813Z"
+                "ageDays": 0.00011399305555555555,
+                "capturedAt": "2026-01-22T15:39:11.082Z"
               },
               "issues": [
                 "Missing probe"
@@ -342,11 +341,11 @@
               },
               "fixtureFreshness": {
                 "isFresh": false,
-                "ageDays": 10.631447291666667,
+                "ageDays": 14.534225474537037,
                 "capturedAt": "2026-01-08T02:50:03.903Z"
               },
               "issues": [
-                "Stale fixture (10.6 days)"
+                "Stale fixture (14.5 days)"
               ]
             },
             {
@@ -357,16 +356,17 @@
                 "probe": true,
                 "fixture": true,
                 "mock": true,
-                "adapter": true,
+                "adapter": false,
                 "test": true
               },
               "fixtureFreshness": {
                 "isFresh": false,
-                "ageDays": 8.978083703703703,
+                "ageDays": 12.88086212962963,
                 "capturedAt": "2026-01-09T18:30:54.517Z"
               },
               "issues": [
-                "Stale fixture (9.0 days)"
+                "Missing adapter",
+                "Stale fixture (12.9 days)"
               ]
             },
             {
@@ -382,8 +382,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.000221875,
-                "capturedAt": "2026-01-18T17:59:01.779Z"
+                "ageDays": 0.00003878472222222222,
+                "capturedAt": "2026-01-22T15:39:17.655Z"
               },
               "issues": [
                 "Missing probe"
@@ -402,12 +402,12 @@
               },
               "fixtureFreshness": {
                 "isFresh": false,
-                "ageDays": 7.738130185185185,
+                "ageDays": 11.640908865740741,
                 "capturedAt": "2026-01-11T00:16:26.501Z"
               },
               "issues": [
                 "Missing probe",
-                "Stale fixture (7.7 days)"
+                "Stale fixture (11.6 days)"
               ]
             },
             {
@@ -423,8 +423,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00024127314814814815,
-                "capturedAt": "2026-01-18T17:59:00.104Z"
+                "ageDays": 0.000023101851851851852,
+                "capturedAt": "2026-01-22T15:39:19.032Z"
               },
               "issues": [
                 "Missing probe"
@@ -443,8 +443,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00024395833333333333,
-                "capturedAt": "2026-01-18T17:58:59.872Z"
+                "ageDays": 3.902779050925926,
+                "capturedAt": "2026-01-18T17:59:20.952Z"
               },
               "issues": []
             },
@@ -461,7 +461,7 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 1.8328813657407408,
+                "ageDays": 5.735660972222222,
                 "capturedAt": "2026-01-16T22:00:00Z"
               },
               "issues": [
@@ -470,24 +470,21 @@
             },
             {
               "name": "store",
-              "isCompliant": false,
+              "isCompliant": true,
               "components": {
                 "contract": true,
-                "probe": false,
+                "probe": true,
                 "fixture": true,
                 "mock": true,
                 "adapter": true,
                 "test": true
               },
               "fixtureFreshness": {
-                "isFresh": false,
-                "ageDays": 13.249548032407407,
-                "capturedAt": "2026-01-05T12:00:00.000Z"
+                "isFresh": true,
+                "ageDays": 0.0003068634259259259,
+                "capturedAt": "2026-01-22T15:38:54.595Z"
               },
-              "issues": [
-                "Missing probe",
-                "Stale fixture (13.2 days)"
-              ]
+              "issues": []
             },
             {
               "name": "tasks",
@@ -502,8 +499,8 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.00021172453703703704,
-                "capturedAt": "2026-01-18T17:59:02.657Z"
+                "ageDays": 3.9027352893518517,
+                "capturedAt": "2026-01-18T17:59:24.825Z"
               },
               "issues": [
                 "Missing probe"
@@ -522,7 +519,7 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 1.8328813657407408,
+                "ageDays": 5.735661736111111,
                 "capturedAt": "2026-01-16T22:00:00Z"
               },
               "issues": [
@@ -542,7 +539,7 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.4876098148148148,
+                "ageDays": 4.390390914351852,
                 "capturedAt": "2026-01-18T06:17:11.462Z"
               },
               "issues": []
@@ -560,7 +557,7 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.0600271875,
+                "ageDays": 3.962808877314815,
                 "capturedAt": "2026-01-18T16:32:54.602Z"
               },
               "issues": [
@@ -581,7 +578,7 @@
               },
               "fixtureFreshness": {
                 "isFresh": true,
-                "ageDays": 0.05753623842592592,
+                "ageDays": 3.9603181828703704,
                 "capturedAt": "2026-01-18T16:36:29.820Z"
               },
               "issues": []

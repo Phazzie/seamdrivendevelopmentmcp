@@ -1,35 +1,17 @@
 {
-  "captured_at": "2026-01-18T17:59:24.825Z",
+  "captured_at": "2026-01-22T15:39:29.684Z",
   "scenarios": {
     "success": {
       "outputs": {
         "tasks": [
           {
-            "id": "4b4cf855-4fa9-4dea-8809-feed3525ae44",
+            "id": "a93f8874-d8cd-4dc1-a93d-d60dad066caf",
             "title": "Test Task",
             "description": "Desc",
             "status": "todo",
             "blockedBy": [],
-            "created_at": 1768759164734,
-            "updated_at": 1768759164734
-          },
-          {
-            "id": "77a4a4be-c5ec-48df-9653-ed035e9080a5",
-            "title": "Test Task",
-            "description": "Desc",
-            "status": "todo",
-            "blockedBy": [],
-            "created_at": 1768759142555,
-            "updated_at": 1768759142555
-          },
-          {
-            "id": "d57d2cdc-979e-47b8-857c-1cf5f80785d7",
-            "title": "Test Task",
-            "description": "Desc",
-            "status": "todo",
-            "blockedBy": [],
-            "created_at": 1768753971304,
-            "updated_at": 1768753971304
+            "created_at": 1769096369663,
+            "updated_at": 1769096369663
           }
         ]
       }
