@@ -34,6 +34,19 @@ export class AgentAdapter implements IAgentRegistry {
   async register(name: string): Promise<Agent> {
     const validatedName = AgentNameSchema.parse(name);
     return this.runTransaction((current) => {
+      const agents = (current.agents as Agent[]) || [];
+      const existing = agents.find((a) => a.name === validatedName);
+
+      if (existing) {
+        const now = Date.now();
+        const updated: Agent = { ...existing, lastSeenAt: now };
+        const nextAgents = agents.map((a) => (a.id === existing.id ? updated : a));
+        return {
+          nextState: { ...current, agents: nextAgents },
+          result: updated,
+        };
+      }
+
       const now = Date.now();
       const agent: Agent = {
         id: randomUUID(),
@@ -42,7 +55,6 @@ export class AgentAdapter implements IAgentRegistry {
         lastSeenAt: now,
       };
 
-      const agents = (current.agents as Agent[]) || [];
       return {
         nextState: { ...current, agents: [...agents, agent] },
         result: agent,
