@@ -1,5 +1,3 @@
-> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
-
 # Project Status: V1.1.0 (Liquid Hardening)
 **Status:** 🟢 GREEN (SDD Compliant, Mandates Enforced)
 

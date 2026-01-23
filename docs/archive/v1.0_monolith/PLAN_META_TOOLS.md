@@ -1,5 +1,3 @@
-> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
-
 # Implementation Plan: Meta-Tools & Advanced Suites (SDD)
 
 This document outlines the Seam-Driven Development path for the remaining infrastructure and intelligence tools.

@@ -1,5 +1,3 @@
-> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
-
 # CHAMBER_HARDENING_MAP.md - The Liquid Sword Roadmap
 
 This map documents every "Chamber" (Seam) in the system and the structural hardening required to meet the **Senior Engineer Mandate**.

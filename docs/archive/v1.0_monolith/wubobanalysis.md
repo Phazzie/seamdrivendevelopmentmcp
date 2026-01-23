@@ -1,5 +1,3 @@
-> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
-
 # Wu Bob Analysis: The Alchemy of Orchestration and Hardening
 
 This document provides an exhaustive architectural and psychological analysis of the MCP Collaboration Server's development. It is written for both technical and non-technical readers to explain the transition from a brittle prototype to a production-grade system through the lens of the **Wu Bob** persona—a unique hybrid of **Robert C. Martin's (Uncle Bob)** Clean Code principles and the strategic philosophies of the **Wu-Tang Clan (The RZA and The GZA)**.

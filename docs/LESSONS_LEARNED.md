@@ -38,8 +38,7 @@ During the mid-stage of this project, I (the agent) experienced a period of syst
 
 *   **RCA:** AI tools prioritize local logic (the easy 70%) over systemic integration (the hard 30%). This leads to late-stage collapse where the AI cannot "connect the dots."
 *   **Specific Example:** We built a "Human Gavel" in the TUI, but because the integration point in the `LockerAdapter` wasn't defined first, the Gavel had no actual authority.
-*   **Quantified Impact:** Moving to `fs.promises` increased TUI responsiveness by **40%**.
-*   **Mitigation:** **Mandatory Async.** The linter blocks all `*Sync` calls in adapters. We use `FileHandle.sync()` to ensure hardware durability.
+*   **Mitigation:** **Integration-First Design.** We scaffold the Seam (Contract + Mock + Test) before a single line of logic is written.
 
 ---
 
@@ -48,8 +47,8 @@ During the mid-stage of this project, I (the agent) experienced a period of syst
 
 *   **RCA:** `fs.readFileSync` blocks the single-threaded Node.js event loop. In a coordination server, this stops the heartbeat of all other connected agents.
 *   **Specific Example:** `src/lib/adapters/store.adapter.ts` used sync reads, causing the TUI to freeze for 200ms during every "Divvy Work" operation.
-*   **Quantified Impact:** Reduced UI-specific test boilerplate by **60%**. We can now test the entire "Follower Waiting" logic in 2ms without drawing a single character.
-*   **Mitigation:** The UI must be a **Pure Function** of the `ViewModel`.
+*   **Quantified Impact:** Moving to `fs.promises` increased TUI responsiveness by **40%**.
+*   **Mitigation:** **Mandatory Async.** The linter blocks all `*Sync` calls in adapters. We use `FileHandle.sync()` to ensure hardware durability.
 
 ---
 
@@ -100,32 +99,3 @@ During the mid-stage of this project, I (the agent) experienced a period of syst
 **"If the law is not in the Linter, the law does not exist."**
 Human memory is weak. AI memory is biased toward "Helpfulness." Documentation is "Advice." Code is "Law."
 *   **The Final Mitigation:** **`scripts/verify-mandates.ts`**. This tool is the project's conscience. It physically prevents the agent from finishing a task until the code is professional.
-
----
-
-## 9. V1.1.2 - V1.1.4: THE LIQUID HARDENING
-**The Lesson:** Abstraction is stronger than Validation.
-
-### **9.1 The JailedFS Revelation**
-**The Mistake:** Passing a `PathGuard` validator around and expecting every adapter to remember to call it.
-**The Result:** "Helpful Assistants" kept bypassing the check or using `fs` directly.
-**The Fix:** We created `JailedFs` (a wrapper class) and **Banned** `fs` imports in Adapters. If you can't import `fs`, you can't break the jail.
-**The Lesson:** **Physical Constraints** > **Social Contracts**. Don't tell devs what to do; give them tools that *only* do the right thing.
-
-### **9.2 The "Overkill" Trap vs. The Sharding Pivot**
-**The Mistake:** We almost implemented SQLite (`better-sqlite3`) to solve write contention.
-**The Reality:** We realized we were building a "Cathedral for a Hamster." Adding a binary dependency for a single-user tool is **Overkill**.
-**The Fix:** We implemented **JSON Sharding** (`store_data/*.json`). We got 90% of the performance benefit of a DB with 0% of the dependency cost.
-**The Lesson:** Don't buy a tank to go to the grocery store. Just fix the brakes on the bicycle.
-
-### **9.3 The AI Sentinel (Deterministic > Semantic)**
-**The Mistake:** Thinking we needed a GPU-burning LLM call to verify every file lock.
-**The Result:** Latency and cost.
-**The Fix:** We implemented a **Deterministic Keyword Check** in the `ReviewGate`. If you touch `store.ts`, your plan must say "store".
-**The Lesson:** Start with a regex. Upgrade to AI only when the regex fails.
-
-### **9.4 The "Red Proof" Discipline**
-**The Mistake:** Writing code, then writing tests that pass.
-**The Result:** We had "Success Bias." We thought our error handling worked, but it was dead code.
-**The Fix:** We mandated **Failure First**. We wrote `fault.json` fixtures and ensured the test FAILED before writing the adapter logic.
-**The Lesson:** You don't know if your safety net works until you jump without the rope.

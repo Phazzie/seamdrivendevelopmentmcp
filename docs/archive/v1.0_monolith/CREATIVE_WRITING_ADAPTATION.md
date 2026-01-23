@@ -1,5 +1,3 @@
-> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
-
 <!-- Purpose: Creative writing adaptation notes (seam: n/a). -->
 # The Creative Writing Adaptation: Two Perspectives
 

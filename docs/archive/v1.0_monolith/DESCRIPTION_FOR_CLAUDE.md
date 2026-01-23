@@ -1,5 +1,3 @@
-> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
-
 # MCP Collaboration Server: Project Briefing for Claude
 
 **Status:** Feature Complete (100% Roadmap), Healthy (SDD Compliant), Maintenance Mode.

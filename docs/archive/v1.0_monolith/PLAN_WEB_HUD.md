@@ -1,5 +1,3 @@
-> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
-
 # PLAN_WEB_HUD.md - The "Shadow Web" Cockpit
 
 **Goal:** Provide a high-fidelity, real-time dashboard for the MCP server without the limitations of a terminal UI.
