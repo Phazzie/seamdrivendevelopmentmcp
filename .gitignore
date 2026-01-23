@@ -11,3 +11,4 @@ src/**/*.js
 .gemini/
 gha-creds-*.json
 !src/tui/web/*.js
+tests/tmp/

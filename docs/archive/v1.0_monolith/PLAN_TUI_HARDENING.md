@@ -1,3 +1,5 @@
+> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
+
 # PLAN_TUI_HARDENING.md - Granular Execution Plan
 
 This plan outlines the hardening of the Mission Control TUI, focusing on Performance, Visibility, and Safety using Seam-Driven Development.

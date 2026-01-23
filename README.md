@@ -1,34 +1,62 @@
-# MCP Collaboration Server (V1.1.0 Liquid)
+# MCP Collaboration Server (V1.1.4 Liquid Sword)
 
-A stateful Model Context Protocol (MCP) server designed for multi-agent coordination with high-rigor safety, asynchronous persistence, and mechanical mandate enforcement.
+A hardened, stateful Model Context Protocol (MCP) server for autonomous multi-agent coordination. Built with **Async Sovereignty**, **Sharded Persistence**, and **Physical Security Jailing**.
 
-## 🚀 Core Philosophy: Seam-Driven Development
-This project is built using **SDD**, a methodology that forces integration-first design.
-1.  **Contract:** Define the law (Zod).
-2.  **Probe:** Capture reality (Fixtures).
-3.  **Mock:** Mirror the reality.
-4.  **Test:** Prove the contract.
-5.  **Adapter:** Implement the work.
+## 🚀 The Core Philosophy: Seam-Driven Development (SDD)
+This project is not a prototype; it is an infrastructure-grade fortress. We follow the **Red Proof** protocol:
+1.  **Contract:** Define the law (Zod Schema).
+2.  **Probe:** Capture the reality (Fixtures).
+3.  **Mock:** Mirror the reality (Path-Blind).
+4.  **Test:** Prove the contract (Failure & Success).
+5.  **Adapter:** Implement the work (Logic).
 
 ## 🛠 Hardened Architecture
-- **Async Store:** Fully non-blocking persistence with hardware-level `fsync` durability.
-- **Surgical Safety:** Lock acquisitions are physically blocked by pending human review gates.
-- **Path Jailing:** All file-system operations are jailed within the project root.
-- **Mandate Linter:** Build-blocking enforcement of code quality (No `any`, No `Sync`, No magic paths).
+- **Sharded Store:** State is split into atomic shards (`store_data/tasks.json`, etc.) to eliminate write contention during high-velocity agent swarms.
+- **JailedFS:** A physical wrapper around `fs` that strictly enforces root-directory confinement. Adapters cannot see outside the project.
+- **AI Sentinel:** The `ReviewGate` deterministically validates Plan Intent against File Locks. "Lying Agents" are rejected automatically.
+- **Web Cockpit:** A native, zero-dependency Dashboard for real-time human observability.
 
 ## 📥 Getting Started
+
+### 1. Installation
 ```bash
 npm install
 npm run build
+```
+
+### 2. Running the Server (Standard)
+```bash
 npm start
 ```
 
-## 🧪 Quality Control
+### 3. Running with Web HUD (Visual Dashboard)
+To enable the browser-based dashboard at `http://localhost:3000`:
 ```bash
-npm test      # Runs full suite + Mandate Linter
-npm run verify # Runs Mandate Linter only
-npm run probes # Refreshes all reality fixtures
+MCP_WEB_PORT=3000 npm start
 ```
 
+## 🧪 Quality Control (The Mechanical Law)
+This project enforces quality via a mandatory linter script.
+```bash
+npm test      # Runs full suite + Mandate Linter
+npm run verify # Runs Mandate Linter only (Checks for 'any', 'Sync', etc.)
+npm run probes # Refreshes all 23 SDD fixtures
+```
+
+## 🧠 The Avant-Garde Hook System
+Contributors are assisted by a cybernetic hook system (`.gemini/hooks/`) that enforces rigor automatically.
+- **No-Any:** Blocks `as any` writes.
+- **Anti-Sloth:** Blocks lazy `TODO` comments.
+- **Holodeck:** Auto-injects Contract context.
+
 ## 🛡 Senior Engineer Mandates
-Contributors MUST adhere to the rules in `AGENTS.md`. Shortcuts are physically blocked by the CI pipeline.
+Contributors **MUST** adhere to the rules in `docs/SDD_MASTER_GUIDE.md`. 
+- **No Sync I/O:** Use `JailedFs`.
+- **No Magic Paths:** Dependency Injection only.
+- **No External Deps:** Core logic is zero-dependency.
+
+## 🔗 Architecture Overview
+- **Entrypoint:** `ServerBootstrap` (Pure Wiring).
+- **Core:** `StoreAdapter` (Sharded JSON).
+- **Security:** `LockerAdapter` + `ReviewGateAdapter`.
+- **Observability:** `WebCockpitAdapter` (SSE Stream).

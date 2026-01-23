@@ -1,3 +1,5 @@
+> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
+
 # The Verbatim Chronicles & Wu-Bob Dimensional Analysis
 
 This document provides a 100% verbatim log of the conversation and a deep-dive interrogation into the cognitive differences between the various architectural personas used during the Liquid Hardening of the MCP Collaboration Server.

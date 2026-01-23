@@ -1,3 +1,5 @@
+> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
+
 <!-- Purpose: Wu-Tang collaboration profiles (seam: n/a). -->
 # The Wu-Tang Clan: Lyrical Analysis & Team Dynamics
 

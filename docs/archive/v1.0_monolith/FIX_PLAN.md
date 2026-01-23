@@ -1,3 +1,5 @@
+> ARCHIVED DOCUMENT: Historical reference only. Not current or authoritative. See `docs/SDD_MASTER_GUIDE.md`, `docs/THE_LAW.md`, `AGENTS.md`, and `README.md`.
+
 # SDD Fix Plan & ROI Ranking
 
 This document outlines the top 10 recommended fixes for the MCP Collaboration Server, ranked by Return on Investment (ROI).
