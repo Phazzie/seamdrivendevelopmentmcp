@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import type { Agent, IAgentRegistry } from "../../../contracts/agents.contract.js";
-import { AgentNameSchema } from "../../../contracts/agents.contract.js";
+import { AgentNameSchema, AgentSelfNameSchema } from "../../../contracts/agents.contract.js";
 import type { IStore, PersistedStore } from "../../../contracts/store.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
 
@@ -31,15 +31,23 @@ export class AgentAdapter implements IAgentRegistry {
     throw new AppError("INTERNAL_ERROR", "Failed to update agents after max retries");
   }
 
-  async register(name: string): Promise<Agent> {
+  async register(name: string, selfName: string): Promise<Agent> {
     const validatedName = AgentNameSchema.parse(name);
+    const validatedSelfName = AgentSelfNameSchema.parse(selfName);
+    const normalizedSelfName = validatedSelfName.toLowerCase();
     return this.runTransaction((current) => {
       const agents = (current.agents as Agent[]) || [];
-      const existing = agents.find((a) => a.name === validatedName);
+      const existing = agents.find((a) => this.getNormalizedSelfName(a) === normalizedSelfName);
 
       if (existing) {
+        if (existing.name !== validatedName) {
+          throw new AppError(
+            "VALIDATION_FAILED",
+            `Agent selfName '${validatedSelfName}' already registered for ${existing.name}`
+          );
+        }
         const now = Date.now();
-        const updated: Agent = { ...existing, lastSeenAt: now };
+        const updated: Agent = { ...existing, selfName: existing.selfName || validatedSelfName, lastSeenAt: now };
         const nextAgents = agents.map((a) => (a.id === existing.id ? updated : a));
         return {
           nextState: { ...current, agents: nextAgents },
@@ -51,6 +59,7 @@ export class AgentAdapter implements IAgentRegistry {
       const agent: Agent = {
         id: randomUUID(),
         name: validatedName,
+        selfName: validatedSelfName,
         createdAt: now,
         lastSeenAt: now,
       };
@@ -98,5 +107,10 @@ export class AgentAdapter implements IAgentRegistry {
         result: updated,
       };
     });
+  }
+
+  private getNormalizedSelfName(agent: Agent): string {
+    const candidate = agent.selfName || agent.name;
+    return candidate.toLowerCase();
   }
 }

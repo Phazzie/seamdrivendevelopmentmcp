@@ -16,19 +16,19 @@ function runAgentContractTests(createRegistry: () => Promise<any>) {
     });
 
     it("allows registering 'Claude'", async () => {
-      const agent = await agents.register("Claude");
+      const agent = await agents.register("Claude", "claude-main");
       assert.strictEqual(agent.name, "Claude");
       assert.ok(agent.id);
     });
 
     it("allows registering 'Gemini'", async () => {
-      const agent = await agents.register("Gemini");
+      const agent = await agents.register("Gemini", "gemini-main");
       assert.strictEqual(agent.name, "Gemini");
     });
 
     it("rejects unknown agents (e.g. 'ChatGPT')", async () => {
       await assert.rejects(
-        async () => await agents.register("ChatGPT"),
+        async () => await agents.register("ChatGPT", "chatgpt-main"),
         (err: any) => {
           // Zod error or validation failed
           return true; 

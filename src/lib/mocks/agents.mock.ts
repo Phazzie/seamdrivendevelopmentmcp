@@ -1,7 +1,7 @@
 import fs from "fs";
 import { randomUUID } from "crypto";
 import type { IAgentRegistry, Agent } from "../../../contracts/agents.contract.js";
-import { AgentNameSchema } from "../../../contracts/agents.contract.js";
+import { AgentNameSchema, AgentSelfNameSchema } from "../../../contracts/agents.contract.js";
 import { AppError, AppErrorCodeSchema } from "../../../contracts/store.contract.js";
 
 type ScenarioFixture = {
@@ -36,12 +36,25 @@ export class MockAgentRegistry implements IAgentRegistry {
     return scenario;
   }
 
-  async register(name: string): Promise<Agent> {
+  async register(name: string, selfName: string): Promise<Agent> {
     this.getScenario();
     const parsedName = AgentNameSchema.parse(name);
+    const parsedSelfName = AgentSelfNameSchema.parse(selfName);
+    const normalizedSelfName = parsedSelfName.toLowerCase();
+    const existing = Array.from(this.agents.values()).find(
+      (agent) => agent.selfName.toLowerCase() === normalizedSelfName
+    );
+    if (existing) {
+      if (existing.name !== parsedName) {
+        throw new AppError("VALIDATION_FAILED", `Agent selfName '${parsedSelfName}' already registered for ${existing.name}`);
+      }
+      existing.lastSeenAt = Date.now();
+      return existing;
+    }
     const agent: Agent = {
       id: randomUUID(),
       name: parsedName,
+      selfName: parsedSelfName,
       lastSeenAt: Date.now(),
       createdAt: Date.now()
     };
