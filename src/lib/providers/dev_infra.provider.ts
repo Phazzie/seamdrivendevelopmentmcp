@@ -2,14 +2,14 @@ import { z } from "zod";
 import { IToolProvider, ToolHandler } from "../helpers/tool_registry.js";
 import { SddTrackingAdapter } from "../adapters/sdd_tracking.adapter.js";
 import { ScaffolderAdapter } from "../adapters/scaffolder.adapter.js";
-import { ProbeRunnerAdapter } from "../adapters/probe_runner.adapter.js";
+import { ProbeRunnerHelper } from "../helpers/probe_runner.helper.js";
 import { PathGuard } from "../helpers/path_guard.js";
 
 export class DevInfraProvider implements IToolProvider {
   constructor(
     private sdd: SddTrackingAdapter,
     private scaffolder: ScaffolderAdapter,
-    private probeRunner: ProbeRunnerAdapter,
+    private probeRunner: ProbeRunnerHelper,
     private pathGuard: PathGuard
   ) {}
 

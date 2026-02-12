@@ -7,7 +7,7 @@ import fs from "fs/promises";
 import path from "path";
 import { PathGuard } from "../helpers/path_guard.js";
 import { createRevisionStream } from "../helpers/revision_stream.js";
-import { IStore } from "../../../contracts/store.contract.js";
+import { AppError, IStore } from "../../../contracts/store.contract.js";
 import type { IWebCockpit } from "../../../contracts/web_cockpit.contract.js";
 
 export class WebCockpitAdapter implements IWebCockpit {
@@ -17,18 +17,36 @@ export class WebCockpitAdapter implements IWebCockpit {
   constructor(
     private readonly store: IStore,
     private readonly pathGuard: PathGuard,
-    private readonly port: number = 3000
+    private readonly port: number = 3000,
+    private readonly host: string = "127.0.0.1"
   ) {
     this.staticDir = this.pathGuard.join("src/tui/web"); // Jail to web root
     this.server = http.createServer(this.handleRequest.bind(this));
   }
 
   async start(): Promise<void> {
-    return new Promise((resolve) => {
-      this.server.listen(this.port, () => {
+    return new Promise((resolve, reject) => {
+      const onError = (err: NodeJS.ErrnoException) => {
+        cleanup();
+        const code = err.code;
+        const message =
+          code === "EADDRINUSE"
+            ? `Port ${this.port} is already in use`
+            : `Web HUD failed to start: ${err.message || String(err)}`;
+        reject(new AppError("INTERNAL_ERROR", message, code ? { code } : undefined));
+      };
+      const onListening = () => {
+        cleanup();
         console.error(`[WebHUD] Listening on http://localhost:${this.port}`);
         resolve();
-      });
+      };
+      const cleanup = () => {
+        this.server.off("error", onError);
+        this.server.off("listening", onListening);
+      };
+      this.server.once("error", onError);
+      this.server.once("listening", onListening);
+      this.server.listen(this.port, this.host);
     });
   }
 
@@ -63,6 +81,7 @@ export class WebCockpitAdapter implements IWebCockpit {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(state));
     } catch (err) {
+      console.error("[WebHUD] State load failed:", err);
       res.writeHead(500);
       res.end(JSON.stringify({ error: "State load failed" }));
     }
@@ -107,7 +126,8 @@ export class WebCockpitAdapter implements IWebCockpit {
       
       res.writeHead(200, { "Content-Type": contentType });
       res.end(content);
-    } catch {
+    } catch (err) {
+      console.error("[WebHUD] Static file error:", err);
       res.writeHead(404);
       res.end("Not Found");
     }

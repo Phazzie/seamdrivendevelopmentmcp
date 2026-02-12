@@ -3,7 +3,12 @@ import { IToolProvider, ToolHandler } from "../helpers/tool_registry.js";
 import { TaskAdapter } from "../adapters/tasks.adapter.js";
 import { DependencyAdapter } from "../adapters/dependency.adapter.js";
 import { SchedulerAdapter } from "../adapters/scheduler.adapter.js";
+import { TaskStatusSchema, TaskSchema } from "../../../contracts/tasks.contract.js";
+import { SchedulerAgentSchema } from "../../../contracts/scheduler.contract.js";
 
+/**
+ * Purpose: Management Tool Provider (management seam).
+ */
 export class ManagementProvider implements IToolProvider {
   constructor(
     private tasks: TaskAdapter,
@@ -64,6 +69,19 @@ export class ManagementProvider implements IToolProvider {
           },
           required: ["childId", "parentId", "agentId"]
         }
+      },
+      {
+        name: "divvy_work",
+        description: "Distribute unassigned tasks among available agents. AI DIRECTIVE: Use this to balance load when multiple tasks are pending.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            tasks: { type: "array", items: { type: "object" }, description: "List of all current tasks." },
+            agents: { type: "array", items: { type: "object" }, description: "List of available agents and their capacities." },
+            agentId: { type: "string" }
+          },
+          required: ["tasks", "agents", "agentId"]
+        }
       }
     ];
   }
@@ -75,16 +93,27 @@ export class ManagementProvider implements IToolProvider {
         return await this.tasks.create(input.title, input.description, input.assignee);
       },
       update_task_status: async (args) => {
-        const input = z.object({ taskId: z.string(), status: z.any() }).parse(args);
+        const input = z.object({ taskId: z.string(), status: TaskStatusSchema }).parse(args);
         return await this.tasks.updateStatus(input.taskId, input.status);
       },
       list_tasks: async (args) => {
-        const input = z.object({ status: z.any().optional() }).parse(args);
+        const input = z.object({ status: TaskStatusSchema.optional() }).parse(args);
         return await this.tasks.list(input.status);
       },
       add_dependency: async (args) => {
         const input = z.object({ childId: z.string(), parentId: z.string() }).parse(args);
         return await this.dependencies.addDependency(input.childId, input.parentId);
+      },
+      divvy_work: async (args) => {
+        const input = z.object({ 
+          tasks: z.array(TaskSchema), 
+          agents: z.array(SchedulerAgentSchema) 
+        }).parse(args);
+        
+        return await this.scheduler.schedule({
+          tasks: input.tasks,
+          agents: input.agents
+        });
       }
     };
   }

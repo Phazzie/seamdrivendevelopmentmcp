@@ -29,7 +29,7 @@ import { ReviewGateAdapter } from "../adapters/review_gate.adapter.js";
 import { AgentAdapter } from "../adapters/agents.adapter.js";
 import { StatusAdapter } from "../adapters/status.adapter.js";
 import { AuditAdapter } from "../adapters/audit.adapter.js";
-import { ProbeRunnerAdapter } from "../adapters/probe_runner.adapter.js";
+import { ProbeRunnerHelper } from "./probe_runner.helper.js";
 import { ScaffolderAdapter } from "../adapters/scaffolder.adapter.js";
 import { SddTrackingAdapter } from "../adapters/sdd_tracking.adapter.js";
 import { WebCockpitAdapter } from "../adapters/web_cockpit.adapter.js";
@@ -42,8 +42,10 @@ import { CommunicationProvider } from "../providers/communication.provider.js";
 import { MetaProvider } from "../providers/meta.provider.js";
 import { DevInfraProvider } from "../providers/dev_infra.provider.js";
 
-import { MockIntentVerifier } from "../mocks/intent_verifier.mock.js";
-
+/**
+ * Purpose: Centralized wiring harness for the MCP Server (infrastructure seam).
+ * Hardened: Encapsulates all DI, environment resolution, and signal handling.
+ */
 export class ServerBootstrap {
   private readonly rootDir: string;
   private readonly storePath: string;
@@ -65,8 +67,9 @@ export class ServerBootstrap {
   }
 
   async start(): Promise<void> {
-    const { executor, registry, webHud } = this.wire();
+    const { executor, registry, webHud, store, pathGuard } = this.wire();
     this.webHud = webHud;
+    await this.runStartupChecks(store, pathGuard);
 
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: registry.getTools()
@@ -100,30 +103,40 @@ export class ServerBootstrap {
   }
 
   private wire() {
-    const pathGuard = new PathGuard(this.rootDir);
-    const jailedFs = new JailedFs(this.rootDir);
+    const storeDir = path.dirname(this.storePath);
+    const pathGuard = new PathGuard(this.rootDir, [storeDir]);
+    const jailedFs = new JailedFs(this.rootDir, [storeDir]);
     const store = new StoreAdapter(this.storePath, jailedFs);
     const agents = new AgentAdapter(store);
     const audit = new AuditAdapter(store);
     const executor = new ToolExecutor(agents, audit);
     const webHud = new WebCockpitAdapter(store, pathGuard, Number(process.env.MCP_WEB_PORT || 3000));
     
-    const intentVerifier = new MockIntentVerifier(true);
-
     // Register Suites
     this.registry.register(new ManagementProvider(new TaskAdapter(store), new DependencyAdapter(store), new SchedulerAdapter()));
     this.registry.register(new IntelligenceProvider(new KnowledgeAdapter(store), new AdrAdapter(store), new IdeaAdapter(store)));
     this.registry.register(new InfrastructureProvider(new LockerAdapter(store, path.join(this.rootDir, "fixtures/locker/capabilities.json")), agents, new StatusAdapter(store), audit, pathGuard));
     this.registry.register(new CommunicationProvider(new MessageAdapter(store), new EventStreamAdapter(store), new NotificationAdapter(store)));
-    this.registry.register(new MetaProvider(new ReviewGateAdapter(store, intentVerifier), new ArbitrationAdapter(store), new MoodAdapter(store), new ConfidenceAuctionAdapter()));
-    this.registry.register(new DevInfraProvider(new SddTrackingAdapter(this.rootDir), new ScaffolderAdapter(jailedFs), new ProbeRunnerAdapter(this.rootDir), pathGuard));
+    this.registry.register(new MetaProvider(new ReviewGateAdapter(store), new ArbitrationAdapter(store), new MoodAdapter(store), new ConfidenceAuctionAdapter(), store));
+    this.registry.register(new DevInfraProvider(new SddTrackingAdapter(this.rootDir), new ScaffolderAdapter(jailedFs), new ProbeRunnerHelper(this.rootDir), pathGuard));
 
-    return { executor, registry: this.registry, webHud };
+    return { executor, registry: this.registry, webHud, store, pathGuard };
   }
 
   private ensureEnvironment() {
     const dir = path.dirname(this.storePath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  }
+
+  private async runStartupChecks(store: StoreAdapter, pathGuard: PathGuard): Promise<void> {
+    try {
+      await pathGuard.validate(this.rootDir);
+      await pathGuard.validate(this.storePath);
+      await store.load();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      throw new Error(`Startup self-check failed: ${message}`);
+    }
   }
 
   private setupSignalHandlers() {

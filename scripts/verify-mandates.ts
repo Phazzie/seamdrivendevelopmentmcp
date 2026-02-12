@@ -44,9 +44,19 @@ function scanFile(filePath: string) {
       fail(filePath, "Forbidden Handshake: Adapter importing another Adapter detected.", line);
     }
 
-    // Rule 4: No 'as any' anywhere in src (StrictMode)
-    if (text.includes("as any") && !text.includes("// allowed-any")) {
-      fail(filePath, "Type Safety Violation: usage of 'as any'", line);
+    // Rule 4: No 'as any' or 'as unknown as' anywhere in src (StrictMode)
+    if ((text.includes("as any") || text.includes("as unknown as")) && !text.includes("// allowed-any")) {
+      fail(filePath, "Type Safety Violation: usage of 'as any' or 'as unknown as'", line);
+    }
+
+    // Rule 4b: No NYI placeholders in source paths
+    if (/throw new Error\((["'])NYI\1\)/.test(text)) {
+      fail(filePath, "Release Integrity Violation: NYI placeholder detected", line);
+    }
+
+    // Rule 6: No Shell Jailbreaks (No child_process in adapters)
+    if (isAdapter && (text.includes("child_process") || text.includes("spawn") || text.includes("exec"))) {
+      fail(filePath, "Security Violation: Shell Jailbreak attempt. Adapters must not use child_process.", line);
     }
 
     // Rule 5: No Magic Globals (Mutable state at top level)

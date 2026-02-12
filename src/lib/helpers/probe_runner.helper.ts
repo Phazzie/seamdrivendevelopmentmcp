@@ -7,7 +7,7 @@ import fs from "fs/promises";
 import path from "path";
 import { IProbeRunner, RunProbesInput, ProbeResult } from "../../../contracts/probe_runner.contract.js";
 
-export class ProbeRunnerAdapter implements IProbeRunner {
+export class ProbeRunnerHelper implements IProbeRunner {
   constructor(private readonly projectRoot: string) {}
 
   async run(input: RunProbesInput): Promise<ProbeResult[]> {
@@ -35,9 +35,9 @@ export class ProbeRunnerAdapter implements IProbeRunner {
           "tsc", file,
           "--outDir", outDir,
           "--rootDir", this.projectRoot,
-          "--module", "esnext",
+          "--module", "NodeNext",
           "--target", "es2022",
-          "--moduleResolution", "node",
+          "--moduleResolution", "NodeNext",
           "--esModuleInterop",
           "--skipLibCheck"
         ]);

@@ -7,6 +7,37 @@ import type { ISddTracking, SddReport, SddSeamStatus } from "../../../contracts/
 
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
+type SeamPaths = {
+  probe?: string[];
+  adapter?: string[];
+};
+
+// Some seams use historical file names or non-lib adapter locations.
+const SEAM_PATH_OVERRIDES: Record<string, SeamPaths> = {
+  adr: { probe: ["probes/adr_sample.probe.ts"] },
+  agents: { probe: ["probes/agent_identity.probe.ts", "probes/agent_claude.probe.ts"] },
+  arbitration: { probe: ["probes/arbitration_sample.probe.ts"] },
+  audit: { probe: ["probes/audit_sample.probe.ts"] },
+  confidence_auction: { probe: ["probes/confidence_auction_sample.probe.ts"] },
+  dependency: { probe: ["probes/dependency_sample.probe.ts"] },
+  event_stream: { probe: ["probes/event_stream_sample.probe.ts"] },
+  knowledge: { probe: ["probes/knowledge_sample.probe.ts"] },
+  locker: { probe: ["probes/path_normalization.probe.ts", "probes/fs_atomic.probe.ts"] },
+  messages: { probe: ["probes/messages_sample.probe.ts"] },
+  mood: { probe: ["probes/mood_sample.probe.ts"] },
+  notifications: { probe: ["probes/notifications_sample.probe.ts"] },
+  review_gate: { probe: ["probes/review_gate_sample.probe.ts"] },
+  scheduler: { probe: ["probes/scheduler_sample.probe.ts"] },
+  status: { probe: ["probes/status_snapshot.probe.ts"] },
+  tasks: { probe: ["probes/tasks_sample.probe.ts"] },
+  telemetry: { probe: ["probes/log_tail.probe.ts"] },
+  tui: {
+    probe: ["probes/tui/chat_simulation.probe.ts"],
+    adapter: ["src/tui/adapters/tui.adapter.ts"],
+  },
+  probe_runner: { adapter: ["src/lib/helpers/probe_runner.helper.ts"] },
+};
+
 export class SddTrackingAdapter implements ISddTracking {
   private cache: { timestamp: number; report: SddReport } | null = null;
   private readonly rootDir: string;
@@ -48,33 +79,38 @@ export class SddTrackingAdapter implements ISddTracking {
     const seams = contractFiles.map(f => f.replace(".contract.ts", ""));
 
     const seamReports: SddSeamStatus[] = await Promise.all(seams.map(async (seam) => {
+      const overrides = SEAM_PATH_OVERRIDES[seam] || {};
+      const probeCandidates = [
+        path.join(this.rootDir, "probes", `${seam}.probe.ts`),
+        ...(overrides.probe || []).map((p) => path.join(this.rootDir, p)),
+      ];
+      const adapterCandidates = [
+        path.join(this.rootDir, "src", "lib", "adapters", `${seam}.adapter.ts`),
+        ...(overrides.adapter || []).map((p) => path.join(this.rootDir, p)),
+      ];
+
       const components = {
         contract: await this.exists(path.join(this.rootDir, "contracts", `${seam}.contract.ts`)),
-        probe: await this.exists(path.join(this.rootDir, "probes", `${seam}.probe.ts`)),
+        probe: await this.existsAny(probeCandidates),
         fixture: await this.exists(path.join(this.rootDir, "fixtures", seam)),
         mock: await this.exists(path.join(this.rootDir, "src", "lib", "mocks", `${seam}.mock.ts`)),
-        adapter: await this.exists(path.join(this.rootDir, "src", "lib", "adapters", `${seam}.adapter.ts`)),
+        adapter: await this.existsAny(adapterCandidates),
         test: await this.exists(path.join(this.rootDir, "tests", "contract", `${seam}.test.ts`))
       };
 
       // Check fixture freshness
       const fixtureDir = path.join(this.rootDir, "fixtures", seam);
-      const fixtureSample = path.join(fixtureDir, "sample.json");
       let fixtureFreshness = { isFresh: false, ageDays: null as number | null, capturedAt: null as string | null };
 
       if (components.fixture) {
-        let targetFixture = fixtureSample;
-        if (!(await this.exists(targetFixture))) {
-           const dirFiles = await fs.readdir(fixtureDir).catch(() => []);
-           const jsonFiles = dirFiles.filter(f => f.endsWith(".json"));
-           if (jsonFiles.length > 0) targetFixture = path.join(fixtureDir, jsonFiles[0]);
-        }
-        
-        const { capturedAt, ageDays } = await this.parseCapturedAt(targetFixture);
-        fixtureFreshness.capturedAt = capturedAt;
-        fixtureFreshness.ageDays = ageDays;
-        if (ageDays !== null && ageDays <= 7) {
-          fixtureFreshness.isFresh = true;
+        const targetFixture = await this.selectFixtureEvidenceFile(fixtureDir);
+        if (targetFixture) {
+          const { capturedAt, ageDays } = await this.parseCapturedAt(targetFixture);
+          fixtureFreshness.capturedAt = capturedAt;
+          fixtureFreshness.ageDays = ageDays;
+          if (ageDays !== null && ageDays <= 7) {
+            fixtureFreshness.isFresh = true;
+          }
         }
       }
 
@@ -126,6 +162,39 @@ export class SddTrackingAdapter implements ISddTracking {
     } catch {
       return { capturedAt: null, ageDays: null };
     }
+  }
+
+  private async selectFixtureEvidenceFile(fixtureDir: string): Promise<string | null> {
+    const preferred = ["sample.json", "snapshot.json", "fs_watch.json"];
+    for (const file of preferred) {
+      const candidate = path.join(fixtureDir, file);
+      if (await this.exists(candidate)) return candidate;
+    }
+
+    const dirFiles = await fs.readdir(fixtureDir).catch(() => []);
+    const jsonFiles = dirFiles.filter((f) => f.endsWith(".json"));
+    if (jsonFiles.length === 0) return null;
+
+    const nonFault = jsonFiles.filter((f) => !/^fault/i.test(f));
+    const candidates = nonFault.length > 0 ? nonFault : jsonFiles;
+
+    const withMtime = await Promise.all(
+      candidates.map(async (file) => {
+        const fullPath = path.join(fixtureDir, file);
+        const stat = await fs.stat(fullPath);
+        return { fullPath, mtimeMs: stat.mtimeMs };
+      })
+    );
+
+    withMtime.sort((a, b) => b.mtimeMs - a.mtimeMs);
+    return withMtime[0]?.fullPath || null;
+  }
+
+  private async existsAny(paths: string[]): Promise<boolean> {
+    for (const p of paths) {
+      if (await this.exists(p)) return true;
+    }
+    return false;
   }
 
   private async exists(p: string): Promise<boolean> {

@@ -1,27 +1,38 @@
 import fs from "fs/promises";
-import { existsSync, createReadStream, createWriteStream } from "fs";
+import { existsSync, realpathSync } from "fs";
 import path from "path";
+
+const DENIED_CRITICAL_ROOTS = new Set(["/", "/Users", "/home"]);
 
 /**
  * Purpose: A hardened, path-aware wrapper for Node FS (helpers seam).
  * Hardened: Automatically prepends root, validates boundaries, prevents symlink escapes.
  */
 export class JailedFs {
-  private readonly absoluteRoot: string;
+  private readonly allowedRoots: string[];
 
-  constructor(rootDir: string) {
-    this.absoluteRoot = path.resolve(rootDir);
+  constructor(rootDir: string, extraAllowed: string[] = []) {
+    this.allowedRoots = [
+      this.resolveAndValidateAllowedRoot(rootDir),
+      ...extraAllowed.map((p) => this.resolveAndValidateAllowedRoot(p)),
+    ];
   }
 
   private async resolveAndValidate(targetPath: string): Promise<string> {
-    const resolved = path.resolve(this.absoluteRoot, targetPath);
-    if (!resolved.startsWith(this.absoluteRoot)) {
-      throw new Error(`SECURITY VIOLATION: Path traversal blocked. Target: ${targetPath}`);
+    const resolved = path.resolve(this.allowedRoots[0], targetPath);
+    if (!this.isWithinAllowedRoots(resolved)) {
+      throw new Error(
+        `SECURITY VIOLATION: Path traversal blocked. Target: ${targetPath}`
+      );
     }
+    await this.assertNoSymlinkEscape(resolved);
     return resolved;
   }
 
-  async readFile(filePath: string, encoding: BufferEncoding = "utf-8"): Promise<string> {
+  async readFile(
+    filePath: string,
+    encoding: BufferEncoding = "utf-8"
+  ): Promise<string> {
     const safePath = await this.resolveAndValidate(filePath);
     return fs.readFile(safePath, encoding);
   }
@@ -66,12 +77,91 @@ export class JailedFs {
 
   exists(filePath: string): boolean {
     // Note: Sync check for path-resolution only
-    const resolved = path.resolve(this.absoluteRoot, filePath);
-    if (!resolved.startsWith(this.absoluteRoot)) return false;
+    const resolved = path.resolve(this.allowedRoots[0], filePath);
+    if (!this.isWithinAllowedRoots(resolved)) return false;
+
+    const existingAnchor = this.findNearestExistingPath(resolved);
+    if (existingAnchor) {
+      try {
+        const realAnchor = realpathSync(existingAnchor);
+        if (!this.isWithinAllowedRoots(realAnchor)) return false;
+      } catch {
+        return false;
+      }
+    }
+
     return existsSync(resolved);
   }
 
   getRootDir(): string {
-    return this.absoluteRoot;
+    return this.allowedRoots[0];
+  }
+
+  private isWithinAllowedRoots(targetPath: string): boolean {
+    return this.allowedRoots.some((root) => {
+      if (this.isWithinRoot(root, targetPath)) return true;
+      if (!existsSync(root)) return false;
+      try {
+        const canonicalRoot = realpathSync(root);
+        return this.isWithinRoot(canonicalRoot, targetPath);
+      } catch {
+        return false;
+      }
+    });
+  }
+
+  private isWithinRoot(root: string, targetPath: string): boolean {
+    const relative = path.relative(root, targetPath);
+    return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+  }
+
+  private async assertNoSymlinkEscape(resolvedPath: string): Promise<void> {
+    const existingAnchor = this.findNearestExistingPath(resolvedPath);
+    if (!existingAnchor) return;
+
+    const realAnchor = await fs.realpath(existingAnchor);
+    if (!this.isWithinAllowedRoots(realAnchor)) {
+      throw new Error(`SECURITY VIOLATION: Symlink escape detected. Real: ${realAnchor}`);
+    }
+
+    if (existsSync(resolvedPath)) {
+      const realTarget = await fs.realpath(resolvedPath);
+      if (!this.isWithinAllowedRoots(realTarget)) {
+        throw new Error(`SECURITY VIOLATION: Symlink escape detected. Real: ${realTarget}`);
+      }
+    }
+  }
+
+  private findNearestExistingPath(targetPath: string): string | null {
+    let cursor = targetPath;
+    while (!existsSync(cursor)) {
+      const parent = path.dirname(cursor);
+      if (parent === cursor) return null;
+      cursor = parent;
+    }
+    return cursor;
+  }
+
+  private resolveAndValidateAllowedRoot(inputPath: string): string {
+    const resolved = path.resolve(inputPath);
+    this.assertNotCriticalRoot(resolved);
+
+    if (existsSync(resolved)) {
+      let canonical: string;
+      try {
+        canonical = realpathSync(resolved);
+      } catch {
+        throw new Error(`SECURITY VIOLATION: Unable to canonicalize allowed root: ${resolved}`);
+      }
+      this.assertNotCriticalRoot(canonical);
+    }
+
+    return resolved;
+  }
+
+  private assertNotCriticalRoot(candidate: string): void {
+    if (DENIED_CRITICAL_ROOTS.has(candidate)) {
+      throw new Error(`SECURITY VIOLATION: Attempted to whitelist critical system root: ${candidate}`);
+    }
   }
 }

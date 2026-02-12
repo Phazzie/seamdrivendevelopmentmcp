@@ -2,10 +2,10 @@
 /**
  * Purpose: CLI tool to run probes and refresh fixtures.
  */
-import { ProbeRunnerAdapter } from "../lib/adapters/probe_runner.adapter.js";
+import { ProbeRunnerHelper } from "../lib/helpers/probe_runner.helper.js";
 
 async function main() {
-  const runner = new ProbeRunnerAdapter(process.cwd());
+  const runner = new ProbeRunnerHelper(process.cwd());
   const pattern = process.argv[2] || "probes/**/*.probe.ts";
   
   console.log(`Running probes matching: ${pattern}...`);

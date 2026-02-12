@@ -25,7 +25,8 @@ export class ScaffolderAdapter implements IScaffolder {
 
     const writeFile = async (relPath: string, content: string, type: GeneratedFile["type"]) => {
       const fullPath = path.join(baseDir, relPath);
-      await this.jfs.writeFile(fullPath, content.trim() + "\n");
+      const header = `/**\n * Purpose: Generated ${type} for ${seamName} (seam: ${seamName}).\n * MANDATE: NO "as" + "any" casting, NO "*Sync" I/O, NO Path Escape.\n */\n`;
+      await this.jfs.writeFile(fullPath, header + content.trim() + "\n");
       generated.push({ path: fullPath, type });
     };
 
@@ -39,8 +40,9 @@ export class ScaffolderAdapter implements IScaffolder {
       await writeFile(`src/lib/adapters/${seamName}.adapter.ts`, this.renderAdapter(spec), "adapter");
       
       return { success: true, files: generated };
-    } catch (err: any) {
-      return { success: false, files: generated, message: err.message };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      return { success: false, files: generated, message };
     }
   }
 
@@ -144,7 +146,7 @@ export class ScaffolderAdapter implements IScaffolder {
 
   private renderAdapter(spec: ScaffoldSpec): string {
     const pascal = this.toPascal(spec.seamName);
-    const methods = spec.methods.map(m => `  async ${m.name}(): Promise<any> { throw new Error("NYI"); }`).join("\n\n");
+    const methods = spec.methods.map(m => `  async ${m.name}(): Promise<any> { throw new AppError("INTERNAL_ERROR", "Generated adapter method not implemented"); }`).join("\n\n");
 
     return [
       'import { AppError } from "../../../contracts/store.contract.js";',

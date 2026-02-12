@@ -44,4 +44,27 @@ describe("Real StoreAdapter Implementation", () => {
     const manifest = JSON.parse(fs.readFileSync(TEST_FILE, "utf-8"));
     assert.strictEqual(manifest.tasks.length, 0, "Manifest should have empty tasks array");
   });
+
+  it("should swap shard directory atomically", async () => {
+    if (process.platform === "win32") return;
+    cleanup();
+    const store = new StoreAdapter(TEST_FILE, jailedFs);
+    const initial = await store.load();
+    await store.update((current) => {
+      current.panic_mode = true;
+      return current;
+    }, initial.revision);
+
+    if (!fs.existsSync(SHARD_DIR)) throw new Error("Shard directory missing");
+    const pre = fs.statSync(SHARD_DIR);
+
+    const before = await store.load();
+    await store.update((current) => {
+      current.panic_mode = !current.panic_mode;
+      return current;
+    }, before.revision);
+
+    const post = fs.statSync(SHARD_DIR);
+    assert.notStrictEqual(pre.ino, post.ino, "Shard directory was not swapped");
+  });
 });

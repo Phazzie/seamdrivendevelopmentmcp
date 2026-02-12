@@ -20,6 +20,7 @@ export class StoreAdapter implements IStore {
   private readonly events = new EventEmitter();
   private readonly manifestPath: string;
   private readonly shardDir: string;
+  private writeQueue: Promise<void> = Promise.resolve();
 
   constructor(
     filePath: string, 
@@ -90,26 +91,28 @@ export class StoreAdapter implements IStore {
     updater: (current: PersistedStore) => PersistedStore,
     expectedRevision: number
   ): Promise<PersistedStore> {
-    const current = await this.load();
+    return this.withWriteLock(async () => {
+      const current = await this.load();
 
-    if (current.revision !== expectedRevision) {
-      throw new AppError("STALE_REVISION", `Revision mismatch: expected ${expectedRevision}, found ${current.revision}`, {
-        expected: expectedRevision,
-        found: current.revision,
-      });
-    }
+      if (current.revision !== expectedRevision) {
+        throw new AppError("STALE_REVISION", `Revision mismatch: expected ${expectedRevision}, found ${current.revision}`, {
+          expected: expectedRevision,
+          found: current.revision,
+        });
+      }
 
-    const nextState = updater(JSON.parse(JSON.stringify(current)));
-    nextState.revision = current.revision + 1;
+      const nextState = updater(JSON.parse(JSON.stringify(current)));
+      nextState.revision = current.revision + 1;
 
-    const validation = PersistedStoreSchema.safeParse(nextState);
-    if (!validation.success) {
-      throw new AppError("VALIDATION_FAILED", "Update produced invalid state", { errors: validation.error.flatten() });
-    }
+      const validation = PersistedStoreSchema.safeParse(nextState);
+      if (!validation.success) {
+        throw new AppError("VALIDATION_FAILED", "Update produced invalid state", { errors: validation.error.flatten() });
+      }
 
-    await this.atomicShardWrite(nextState);
-    this.events.emit("change", nextState.revision);
-    return nextState;
+      await this.atomicShardWrite(nextState);
+      this.events.emit("change", nextState.revision);
+      return nextState;
+    });
   }
 
   async waitForRevision(sinceRevision: number, timeoutMs: number): Promise<number> {
@@ -198,6 +201,21 @@ export class StoreAdapter implements IStore {
       await fs.rm(dirPath, { recursive: true, force: true });
     } catch (err) {
       console.error("[StoreAdapter] Failed to remove directory:", err);
+    }
+  }
+
+  private async withWriteLock<T>(operation: () => Promise<T>): Promise<T> {
+    const previous = this.writeQueue;
+    let release: (() => void) | undefined;
+    this.writeQueue = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+
+    await previous;
+    try {
+      return await operation();
+    } finally {
+      release?.();
     }
   }
 
