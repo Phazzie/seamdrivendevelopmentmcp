@@ -1,0 +1,20 @@
+# Surface Audit
+scripts/verify-mandates.ts:52:    // Rule 4b: No NYI placeholders in source paths
+scripts/verify-mandates.ts:53:    if (/throw new Error\((["'])NYI\1\)/.test(text)) {
+scripts/verify-mandates.ts:54:      fail(filePath, "Release Integrity Violation: NYI placeholder detected", line);
+
+# Deprecated Exposed Adapters
+
+# Provider Wiring
+src/lib/providers/intelligence.provider.ts:12:export class IntelligenceProvider implements IToolProvider {
+src/lib/providers/management.provider.ts:12:export class ManagementProvider implements IToolProvider {
+src/lib/helpers/server_bootstrap.ts:116:    this.registry.register(new ManagementProvider(new TaskAdapter(store), new DependencyAdapter(store), new SchedulerAdapter()));
+src/lib/helpers/server_bootstrap.ts:117:    this.registry.register(new IntelligenceProvider(new KnowledgeAdapter(store), new AdrAdapter(store), new IdeaAdapter(store)));
+src/lib/helpers/server_bootstrap.ts:118:    this.registry.register(new InfrastructureProvider(new LockerAdapter(store, path.join(this.rootDir, "fixtures/locker/capabilities.json")), agents, new StatusAdapter(store), audit, pathGuard));
+src/lib/helpers/server_bootstrap.ts:119:    this.registry.register(new CommunicationProvider(new MessageAdapter(store), new EventStreamAdapter(store), new NotificationAdapter(store)));
+src/lib/helpers/server_bootstrap.ts:120:    this.registry.register(new MetaProvider(new ReviewGateAdapter(store), new ArbitrationAdapter(store), new MoodAdapter(store), new ConfidenceAuctionAdapter(), store));
+src/lib/helpers/server_bootstrap.ts:121:    this.registry.register(new DevInfraProvider(new SddTrackingAdapter(this.rootDir), new ScaffolderAdapter(jailedFs), new ProbeRunnerHelper(this.rootDir), pathGuard));
+src/lib/providers/communication.provider.ts:8:export class CommunicationProvider implements IToolProvider {
+src/lib/providers/infrastructure.provider.ts:14:export class InfrastructureProvider implements IToolProvider {
+src/lib/providers/meta.provider.ts:16:export class MetaProvider implements IToolProvider {
+src/lib/providers/dev_infra.provider.ts:8:export class DevInfraProvider implements IToolProvider {

@@ -1,0 +1,11 @@
+▶ Tool Registry Smoke (Wiring + Invocation)
+  ✔ registers tools and invokes representative handlers across all providers (355.281595ms)
+✔ Tool Registry Smoke (Wiring + Invocation) (357.052649ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 760.637552

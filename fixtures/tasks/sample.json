@@ -1,17 +1,17 @@
 {
-  "captured_at": "2026-01-22T15:39:29.684Z",
+  "captured_at": "2026-02-11T21:32:38.002Z",
   "scenarios": {
     "success": {
       "outputs": {
         "tasks": [
           {
-            "id": "a93f8874-d8cd-4dc1-a93d-d60dad066caf",
+            "id": "e203df5e-cf36-497a-a459-a96e8862f9a7",
             "title": "Test Task",
             "description": "Desc",
             "status": "todo",
             "blockedBy": [],
-            "created_at": 1769096369663,
-            "updated_at": 1769096369663
+            "created_at": 1770845557977,
+            "updated_at": 1770845557977
           }
         ]
       }

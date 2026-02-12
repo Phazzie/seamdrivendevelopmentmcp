@@ -1,19 +1,19 @@
 {
-  "captured_at": "2026-01-22T15:39:17.655Z",
+  "captured_at": "2026-02-11T21:32:26.597Z",
   "scenarios": {
     "success": {
       "outputs": {
         "gates": [
           {
-            "id": "12f4231c-1774-4c91-8924-b97a3ed0d3e1",
+            "id": "2cd41d13-155d-44cc-80e7-9fbaa26d47a0",
             "planId": "p1",
             "status": "pending",
             "plan": "plan",
             "affectedResources": [
               "file.ts"
             ],
-            "created_at": 1769096357611,
-            "updated_at": 1769096357611
+            "created_at": 1770845546571,
+            "updated_at": 1770845546571
           }
         ]
       }

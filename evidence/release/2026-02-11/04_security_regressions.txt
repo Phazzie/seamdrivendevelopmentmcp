@@ -1,0 +1,22 @@
+▶ JailedFs with External Roots
+  ✔ should block external paths by default (1.455044ms)
+  ✔ should allow external paths if whitelisted (22.869464ms)
+  ✔ should allow exists check on whitelisted external paths (1.529564ms)
+  ✔ should block sibling-prefix escape paths (5.101197ms)
+  ✔ should block symlink escape writes (5.537157ms)
+✔ JailedFs with External Roots (44.058658ms)
+▶ PathGuard with External Roots
+  ✔ should block external paths by default (1.51759ms)
+  ✔ should allow external paths if whitelisted (6.310089ms)
+  ✔ should allow subdirectories of whitelisted external roots (1.50756ms)
+  ✔ should block sibling-prefix escape paths (1.04291ms)
+  ✔ should block symlink escape paths (1.957117ms)
+✔ PathGuard with External Roots (13.981403ms)
+ℹ tests 10
+ℹ suites 2
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 210.796083

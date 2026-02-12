@@ -1,11 +1,11 @@
 {
-  "captured_at": "2026-01-22T15:38:58.557Z",
+  "captured_at": "2026-02-11T21:32:10.151Z",
   "scenarios": {
     "success": {
       "description": "Happy path",
       "outputs": {
         "create": {
-          "id": "667eb1b2-5ebc-486a-930b-b1d0a6401d77",
+          "id": "5dd920f2-a805-420d-8fdf-147fc8d7ae15",
           "title": "New capture",
           "summary": "",
           "status": "draft",
@@ -13,11 +13,11 @@
           "notes": [],
           "relatedTaskIds": [],
           "relatedIdeaIds": [],
-          "created_at": 1769096338557,
-          "updated_at": 1769096338557
+          "created_at": 1770845530150,
+          "updated_at": 1770845530150
         },
         "update": {
-          "id": "667eb1b2-5ebc-486a-930b-b1d0a6401d77",
+          "id": "5dd920f2-a805-420d-8fdf-147fc8d7ae15",
           "title": "New capture",
           "summary": "",
           "status": "active",
@@ -27,12 +27,12 @@
           "notes": [],
           "relatedTaskIds": [],
           "relatedIdeaIds": [],
-          "created_at": 1769096338557,
-          "updated_at": 1769096338558
+          "created_at": 1770845530150,
+          "updated_at": 1770845530151
         },
         "list": [
           {
-            "id": "667eb1b2-5ebc-486a-930b-b1d0a6401d77",
+            "id": "5dd920f2-a805-420d-8fdf-147fc8d7ae15",
             "title": "New capture",
             "summary": "",
             "status": "draft",
@@ -40,11 +40,11 @@
             "notes": [],
             "relatedTaskIds": [],
             "relatedIdeaIds": [],
-            "created_at": 1769096338557,
-            "updated_at": 1769096338557
+            "created_at": 1770845530150,
+            "updated_at": 1770845530150
           },
           {
-            "id": "f1928653-db6d-464b-b8d5-6d8d3f33f3d0",
+            "id": "a8341b5c-093b-40b5-a15c-eb54b7c27735",
             "title": "Backlog idea",
             "summary": "Parking lot",
             "status": "parked",
@@ -54,14 +54,14 @@
             "notes": [],
             "relatedTaskIds": [],
             "relatedIdeaIds": [
-              "667eb1b2-5ebc-486a-930b-b1d0a6401d77"
+              "5dd920f2-a805-420d-8fdf-147fc8d7ae15"
             ],
-            "created_at": 1769096338560,
-            "updated_at": 1769096338560
+            "created_at": 1770845530153,
+            "updated_at": 1770845530153
           }
         ],
         "get": {
-          "id": "667eb1b2-5ebc-486a-930b-b1d0a6401d77",
+          "id": "5dd920f2-a805-420d-8fdf-147fc8d7ae15",
           "title": "New capture",
           "summary": "",
           "status": "draft",
@@ -69,27 +69,27 @@
           "notes": [],
           "relatedTaskIds": [],
           "relatedIdeaIds": [],
-          "created_at": 1769096338557,
-          "updated_at": 1769096338557
+          "created_at": 1770845530150,
+          "updated_at": 1770845530150
         },
         "addNote": {
-          "id": "667eb1b2-5ebc-486a-930b-b1d0a6401d77",
+          "id": "5dd920f2-a805-420d-8fdf-147fc8d7ae15",
           "title": "New capture",
           "summary": "",
           "status": "draft",
           "tags": [],
           "notes": [
             {
-              "id": "d2a24e2a-70fb-4738-9d51-27048fc7da0a",
+              "id": "cc92e306-fbf4-4e24-80f5-7bc16e75ff6c",
               "author": "codex",
               "body": "First note",
-              "created_at": 1769096338559
+              "created_at": 1770845530152
             }
           ],
           "relatedTaskIds": [],
           "relatedIdeaIds": [],
-          "created_at": 1769096338557,
-          "updated_at": 1769096338559
+          "created_at": 1770845530150,
+          "updated_at": 1770845530152
         }
       }
     },

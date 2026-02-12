@@ -1,14 +1,14 @@
 {
-  "captured_at": "2026-01-22T15:39:07.102Z",
+  "captured_at": "2026-02-11T21:32:17.457Z",
   "scenarios": {
     "success": {
       "outputs": {
         "messages": [
           {
-            "id": "94beea4c-8186-4783-ad50-71eeb71e5fd6",
+            "id": "732ba447-224c-45b5-b070-88b5779600ac",
             "sender": "User",
             "content": "Hello",
-            "timestamp": 1769096347074,
+            "timestamp": 1770845537433,
             "channelId": "general"
           }
         ]

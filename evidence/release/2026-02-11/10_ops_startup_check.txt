@@ -1,0 +1,4 @@
+{
+  "startupSelfCheck": "pass",
+  "storePath": "/var/folders/8t/y6bg4yx53pl7r3przh6jzcz00000gn/T/mcp-startup-check-Ex4g2j/store.json"
+}

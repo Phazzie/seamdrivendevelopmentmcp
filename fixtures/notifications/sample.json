@@ -1,15 +1,15 @@
 {
-  "captured_at": "2026-01-22T15:39:11.082Z",
+  "captured_at": "2026-02-11T21:32:20.977Z",
   "scenarios": {
     "success": {
       "outputs": {
         "notifications": [
           {
-            "id": "1b1a8408-4176-4047-aaf0-06c3eacb5a96",
+            "id": "02643334-3615-48d9-aa78-001dc63d2ecf",
             "title": "Alert",
             "message": "Test",
             "priority": "normal",
-            "created_at": 1769096351065
+            "created_at": 1770845540951
           }
         ]
       }

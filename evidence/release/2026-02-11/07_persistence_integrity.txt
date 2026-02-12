@@ -1,0 +1,33 @@
+▶ MockStore Implementation
+  ▶ Store Contract
+    ✔ should load default state (1.574261ms)
+    ✔ should atomic update successfully (0.529255ms)
+    ✔ should pulse via waitForRevision on update (6.684808ms)
+    ✔ should reject stale revision updates (4.947099ms)
+  ✔ Store Contract (15.945229ms)
+  ✔ should fail when loading fault fixture (11.832166ms)
+✔ MockStore Implementation (30.794429ms)
+▶ Real StoreAdapter Implementation
+  ▶ Store Contract
+    ✔ should load default state (56.61609ms)
+    ✔ should atomic update successfully (68.864541ms)
+    ✔ should pulse via waitForRevision on update (93.723296ms)
+    ✔ should reject stale revision updates (88.881146ms)
+  ✔ Store Contract (310.24305ms)
+  ✔ should create shard files on update (35.827339ms)
+  ✔ should swap shard directory atomically (56.068586ms)
+✔ Real StoreAdapter Implementation (427.692336ms)
+▶ Store Persistence Integration
+  ✔ should persist changes to disk immediately (69.393103ms)
+✔ Store Persistence Integration (71.654631ms)
+▶ Store Persistence Integration
+  ✔ should persist changes to disk immediately (108.147716ms)
+✔ Store Persistence Integration (109.346017ms)
+ℹ tests 13
+ℹ suites 6
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 744.141849

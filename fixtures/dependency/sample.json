@@ -1,17 +1,17 @@
 {
-  "captured_at": "2026-01-22T15:38:50.657Z",
+  "captured_at": "2026-02-11T21:32:05.501Z",
   "scenarios": {
     "success": {
       "outputs": {
         "tasks": [
           {
-            "id": "83541e55-d4be-44ae-9ebe-77b8c7e34416",
+            "id": "d62ff18d-4e60-4548-acdd-c063b2e91ef1",
             "title": "Parent",
             "description": "P",
             "status": "todo",
             "blockedBy": [],
-            "created_at": 1769096330414,
-            "updated_at": 1769096330414
+            "created_at": 1770845525436,
+            "updated_at": 1770845525436
           }
         ]
       }

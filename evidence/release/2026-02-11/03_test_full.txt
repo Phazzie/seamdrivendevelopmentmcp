@@ -1,0 +1,410 @@
+
+> mcp-collaboration-server@1.0.0 test
+> npx tsc -p tsconfig.json && node dist/scripts/verify-mandates.js && node --test dist/tests/unit/*.js dist/tests/contract/*.js dist/tests/integration/*.js
+
+🔍 Scanning for Mandate Violations...
+✅ All Systems Compliant.
+▶ MockAdrLog
+  ▶ ADR Log Contract
+    ✔ should load fixture ADRs when present (1.705271ms)
+    ✔ should create ADRs with default status (0.724112ms)
+    ✔ should filter ADRs by status (0.586252ms)
+  ✔ ADR Log Contract (4.01419ms)
+  ✔ should fail when loading fault fixture (invalid_status) (1.320431ms)
+✔ MockAdrLog (6.055861ms)
+▶ AdrAdapter
+  ▶ ADR Log Contract
+    ✔ should load fixture ADRs when present (1.031715ms)
+    ✔ should create ADRs with default status (2.589295ms)
+    ✔ should filter ADRs by status (0.665368ms)
+  ✔ ADR Log Contract (4.754201ms)
+✔ AdrAdapter (4.965881ms)
+▶ MockAgentRegistry
+  ▶ Agent Identity Contract
+    ✔ allows registering 'Claude' (1.907677ms)
+    ✔ allows registering 'Gemini' (0.33005ms)
+    ✔ rejects unknown agents (e.g. 'ChatGPT') (1.576584ms)
+  ✔ Agent Identity Contract (4.794683ms)
+✔ MockAgentRegistry (5.316901ms)
+▶ AgentAdapter (Real)
+  ▶ Agent Identity Contract
+    ✔ allows registering 'Claude' (1.052108ms)
+    ✔ allows registering 'Gemini' (1.052936ms)
+    ✔ rejects unknown agents (e.g. 'ChatGPT') (0.998737ms)
+  ✔ Agent Identity Contract (3.607592ms)
+✔ AgentAdapter (Real) (3.903482ms)
+▶ MockAgentRegistry
+  ▶ Agent Registry Contract
+    ✔ should register and resolve an agent (1.966287ms)
+    ✔ should list agents (0.574673ms)
+    ✔ should update lastSeenAt on touch (0.480873ms)
+  ✔ Agent Registry Contract (3.930571ms)
+  ✔ should fail when loading fault fixture (name_conflict) (0.922616ms)
+✔ MockAgentRegistry (5.593503ms)
+▶ MockAgentRegistry
+  ▶ Agent Registry Contract
+    ✔ should register and resolve an agent (2.168301ms)
+    ✔ should list agents (0.544298ms)
+    ✔ should update lastSeenAt on touch (0.598584ms)
+  ✔ Agent Registry Contract (4.525998ms)
+  ✔ should fail when loading fault fixture (name_conflict) (1.692669ms)
+✔ MockAgentRegistry (6.95925ms)
+▶ Real AgentAdapter (with MockStore)
+  ▶ Agent Registry Contract
+    ✔ should register and resolve an agent (1.113971ms)
+    ✔ should list agents (4.770908ms)
+    ✔ should update lastSeenAt on touch (1.311554ms)
+  ✔ Agent Registry Contract (8.368647ms)
+✔ Real AgentAdapter (with MockStore) (8.574144ms)
+▶ MockArbitration
+  ▶ Arbitration Contract
+    ✔ should start idle (1.348408ms)
+    ✔ should request, grant, and release the gavel (0.610347ms)
+  ✔ Arbitration Contract (2.923289ms)
+  ✔ should fail when loading fault fixture (no_gavel_active) (1.022976ms)
+✔ MockArbitration (4.596385ms)
+▶ MockAuditLog
+  ▶ Audit Log Contract
+    ✔ should record audit events (1.789268ms)
+    ✔ should list audit events with filters (0.66045ms)
+  ✔ Audit Log Contract (3.358576ms)
+  ✔ should fail when loading fault fixture (read_denied) (3.266468ms)
+✔ MockAuditLog (7.280207ms)
+▶ MockAuditLog
+  ▶ Audit Log Contract
+    ✔ should record audit events (1.824433ms)
+    ✔ should list audit events with filters (0.628463ms)
+  ✔ Audit Log Contract (3.263259ms)
+  ✔ should fail when loading fault fixture (read_denied) (0.898172ms)
+✔ MockAuditLog (4.815919ms)
+▶ Real AuditAdapter (with MockStore)
+  ▶ Audit Log Contract
+    ✔ should record audit events (0.986314ms)
+    ✔ should list audit events with filters (0.609013ms)
+  ✔ Audit Log Contract (2.038738ms)
+✔ Real AuditAdapter (with MockStore) (2.275125ms)
+✔ BuildPlan Contract - Basic (6.333095ms)
+✔ BuildPlan Contract - Adapter (0.676818ms)
+✔ Confidence Auction Contract - Mock (5.202388ms)
+✔ Confidence Auction Contract - Adapter (1.07815ms)
+▶ MockDependencyManager
+  ▶ Dependency Manager Contract
+    ✔ should load fixture dependencies (1.273131ms)
+    ✔ should add and remove a dependency (0.382973ms)
+  ✔ Dependency Manager Contract (2.563599ms)
+  ✔ should fail when loading fault fixture (circular_dependency) (0.954973ms)
+✔ MockDependencyManager (4.121063ms)
+▶ MockEventStream
+  ▶ Event Stream Contract
+    ✔ should load fixture events when present (1.359331ms)
+  ✔ Event Stream Contract (2.166004ms)
+  ✔ should fail when loading fault fixture (stale_cursor) (0.888475ms)
+✔ MockEventStream (3.639154ms)
+▶ MockIdeaRegistry
+  ▶ Idea Registry Contract
+    ✔ should load fixture ideas when present (1.689101ms)
+    ✔ should create an idea with default status (1.10786ms)
+    ✔ should update an idea (0.765477ms)
+    ✔ should list ideas including recent creates (0.566041ms)
+    ✔ should get an idea by id (2.142733ms)
+    ✔ should add notes to an idea (0.607804ms)
+    ✔ should fail for unknown ideas (0.946729ms)
+  ✔ Idea Registry Contract (9.111078ms)
+✔ MockIdeaRegistry (9.766708ms)
+▶ MockIdeaRegistry
+  ▶ Idea Registry Contract
+    ✔ should load fixture ideas when present (1.880827ms)
+    ✔ should create an idea with default status (1.154151ms)
+    ✔ should update an idea (1.304091ms)
+    ✔ should list ideas including recent creates (3.369999ms)
+    ✔ should get an idea by id (0.757629ms)
+    ✔ should add notes to an idea (0.63574ms)
+    ✔ should fail for unknown ideas (1.553019ms)
+  ✔ Idea Registry Contract (11.8715ms)
+✔ MockIdeaRegistry (12.477982ms)
+▶ Real IdeaAdapter (with MockStore)
+  ▶ Idea Registry Contract
+    ✔ should load fixture ideas when present (2.175069ms)
+    ✔ should create an idea with default status (1.083703ms)
+    ✔ should update an idea (0.704581ms)
+    ✔ should list ideas including recent creates (0.37012ms)
+    ✔ should get an idea by id (0.400943ms)
+    ✔ should add notes to an idea (0.506573ms)
+    ✔ should fail for unknown ideas (0.334408ms)
+  ✔ Idea Registry Contract (6.027962ms)
+✔ Real IdeaAdapter (with MockStore) (6.223ms)
+▶ MockIntegrationSnapshotReader
+  ▶ Integration Snapshot Contract
+    ✔ should return a valid snapshot (1.031053ms)
+  ✔ Integration Snapshot Contract (1.887171ms)
+  ✔ should fail on fault fixture (snapshot_failed) (0.939453ms)
+✔ MockIntegrationSnapshotReader (3.436209ms)
+▶ MockIntegrationSnapshotReader
+  ▶ Integration Snapshot Contract
+    ✔ should return a valid snapshot (1.909608ms)
+  ✔ Integration Snapshot Contract (2.851566ms)
+  ✔ should fail on fault fixture (snapshot_failed) (0.957375ms)
+✔ MockIntegrationSnapshotReader (4.454225ms)
+▶ Real IntegrationSnapshotAdapter (with MockStore)
+  ▶ Integration Snapshot Contract
+    ✔ should return a valid snapshot (1.600282ms)
+  ✔ Integration Snapshot Contract (1.78873ms)
+✔ Real IntegrationSnapshotAdapter (with MockStore) (2.061685ms)
+✔ Knowledge Contract - Mock (1.908118ms)
+✔ Knowledge Contract - Adapter (2.431666ms)
+▶ MockLocker Implementation
+  ▶ Locker Contract
+    ✔ should acquire locks atomically (2.663049ms)
+    ✔ should fail if any resource is locked by another (1.265534ms)
+    ✔ should allow re-entrancy (same owner) (0.698612ms)
+    ✔ should renew locks for owner (0.75408ms)
+    ✔ should normalize resources based on fixture (0.813068ms)
+    ✔ should ignore expired locks (0.458481ms)
+  ✔ Locker Contract (10.762573ms)
+  ✔ should fail when loading fault fixture (0.593788ms)
+✔ MockLocker Implementation (12.282376ms)
+▶ MockLocker Implementation
+  ▶ Locker Contract
+    ✔ should acquire locks atomically (1.778571ms)
+    ✔ should fail if any resource is locked by another (1.33439ms)
+    ✔ should allow re-entrancy (same owner) (0.651464ms)
+    ✔ should renew locks for owner (1.47308ms)
+    ✔ should normalize resources based on fixture (0.912781ms)
+    ✔ should ignore expired locks (3.77347ms)
+  ✔ Locker Contract (11.16959ms)
+  ✔ should fail when loading fault fixture (1.863463ms)
+✔ MockLocker Implementation (13.772256ms)
+▶ Real LockerAdapter (with MockStore)
+  ▶ Locker Contract
+    ✔ should acquire locks atomically (1.4673ms)
+    ✔ should fail if any resource is locked by another (0.630531ms)
+    ✔ should allow re-entrancy (same owner) (0.315872ms)
+    ✔ should renew locks for owner (0.461623ms)
+    ✔ should normalize resources based on fixture (0.686079ms)
+    ✔ should ignore expired locks (1.196004ms)
+  ✔ Locker Contract (5.121588ms)
+  ✔ should block acquisition when panic mode is enabled (0.350781ms)
+  ✔ should block acquisition when a review gate is pending (0.454463ms)
+✔ Real LockerAdapter (with MockStore) (6.191886ms)
+▶ MockMessageBridge
+  ▶ Message Bridge Contract
+    ✔ should post and list messages (1.37089ms)
+  ✔ Message Bridge Contract (2.245624ms)
+  ✔ should fail when loading fault fixture (missing_author) (0.918137ms)
+✔ MockMessageBridge (3.917391ms)
+▶ MockMessageBridge
+  ▶ Message Bridge Contract
+    ✔ should post and list messages (1.423415ms)
+  ✔ Message Bridge Contract (2.295879ms)
+  ✔ should fail when loading fault fixture (missing_author) (0.930532ms)
+✔ MockMessageBridge (3.910622ms)
+▶ Real MessageAdapter (with MockStore)
+  ▶ Message Bridge Contract
+    ✔ should post and list messages (2.64104ms)
+  ✔ Message Bridge Contract (2.895623ms)
+✔ Real MessageAdapter (with MockStore) (3.136738ms)
+▶ MockMoodLog
+  ▶ Mood Log Contract
+    ✔ should load fixture moods when present (1.424124ms)
+    ✔ should log moods (0.557677ms)
+  ✔ Mood Log Contract (6.901366ms)
+  ✔ should fail when loading fault fixture (invalid_mood) (1.044869ms)
+✔ MockMoodLog (8.675401ms)
+▶ MockNotificationCenter
+  ▶ Notification Center Contract
+    ✔ should load fixture notifications when present (1.352459ms)
+  ✔ Notification Center Contract (2.176133ms)
+  ✔ should fail when loading fault fixture (invalid_priority) (0.916772ms)
+✔ MockNotificationCenter (3.718662ms)
+✔ PlanParser Contract - Basic (10.602031ms)
+✔ PlanParser Contract - Adapter (2.796012ms)
+▶ Probe Runner Contract - Mock Verification
+  ✔ should fail on fault fixture (compilation_error) (1.534638ms)
+✔ Probe Runner Contract - Mock Verification (2.555306ms)
+▶ MockReviewGate
+  ▶ Review Gate Contract
+    ✔ should submit, critique, and approve plans (2.279075ms)
+  ✔ Review Gate Contract (3.125298ms)
+  ✔ should fail when loading fault fixture (2.979217ms)
+  ✔ should fail for lying agent scenario (0.559242ms)
+✔ MockReviewGate (7.502896ms)
+▶ ReviewGateAdapter
+  ▶ Review Gate Contract
+    ✔ should submit, critique, and approve plans (1.591126ms)
+  ✔ Review Gate Contract (1.871127ms)
+  ✔ should reject plan if IntentVerifier fails (0.602996ms)
+  ✔ should reject plan when store resource is not acknowledged (1.344951ms)
+✔ ReviewGateAdapter (4.478959ms)
+▶ MockScaffolder
+  ✔ Scaffolder Contract - Valid Input (1.771015ms)
+  ✔ Scaffolder Contract - Fault Injection (0.797443ms)
+✔ MockScaffolder (3.771915ms)
+▶ MockScaffolder
+  ✔ Scaffolder Contract - Valid Input (1.108975ms)
+  ✔ Scaffolder Contract - Fault Injection (0.772125ms)
+✔ MockScaffolder (3.167598ms)
+▶ Real ScaffolderAdapter
+  ✔ Scaffolder Contract - Valid Input (29.260662ms)
+✔ Real ScaffolderAdapter (30.405989ms)
+✔ Scheduler Contract - Mock (8.061018ms)
+✔ Scheduler Contract - Adapter (1.503212ms)
+▶ MockSddTracking
+  ▶ SddTracking Contract
+    ✔ should satisfy contract scenarios (1.725913ms)
+  ✔ SddTracking Contract (6.424025ms)
+✔ MockSddTracking (6.987571ms)
+▶ SddTrackingAdapter
+  ▶ SddTracking Contract
+    ✔ should satisfy contract scenarios (39.040128ms)
+  ✔ SddTracking Contract (39.273438ms)
+✔ SddTrackingAdapter (39.447857ms)
+▶ MockStatusReader
+  ▶ Status Snapshot Contract
+    ✔ should return a status snapshot (4.359059ms)
+  ✔ Status Snapshot Contract (5.26142ms)
+  ✔ should fail when loading fault fixture (status_timeout) (0.95256ms)
+✔ MockStatusReader (7.434153ms)
+▶ MockStatusReader
+  ▶ Status Snapshot Contract
+    ✔ should return a status snapshot (1.565665ms)
+  ✔ Status Snapshot Contract (2.43869ms)
+  ✔ should fail when loading fault fixture (status_timeout) (0.977571ms)
+✔ MockStatusReader (4.098576ms)
+▶ Real StatusAdapter (with MockStore)
+  ▶ Status Snapshot Contract
+    ✔ should return a status snapshot (1.223837ms)
+  ✔ Status Snapshot Contract (1.397194ms)
+✔ Real StatusAdapter (with MockStore) (1.631216ms)
+▶ MockStore Implementation
+  ▶ Store Contract
+    ✔ should load default state (1.797829ms)
+    ✔ should atomic update successfully (0.579575ms)
+    ✔ should pulse via waitForRevision on update (0.845516ms)
+    ✔ should reject stale revision updates (1.083478ms)
+  ✔ Store Contract (5.38698ms)
+  ✔ should fail when loading fault fixture (0.637222ms)
+✔ MockStore Implementation (7.352434ms)
+▶ MockStore Implementation
+  ▶ Store Contract
+    ✔ should load default state (1.829623ms)
+    ✔ should atomic update successfully (0.554326ms)
+    ✔ should pulse via waitForRevision on update (0.74121ms)
+    ✔ should reject stale revision updates (1.279029ms)
+  ✔ Store Contract (5.727158ms)
+  ✔ should fail when loading fault fixture (0.646878ms)
+✔ MockStore Implementation (10.106237ms)
+▶ Real StoreAdapter Implementation
+  ▶ Store Contract
+    ✔ should load default state (29.32428ms)
+    ✔ should atomic update successfully (38.27161ms)
+    ✔ should pulse via waitForRevision on update (47.877293ms)
+    ✔ should reject stale revision updates (29.049893ms)
+  ✔ Store Contract (145.103188ms)
+  ✔ should create shard files on update (75.292957ms)
+  ✔ should swap shard directory atomically (63.408386ms)
+✔ Real StoreAdapter Implementation (285.868489ms)
+▶ MockTaskRegistry
+  ▶ Task Registry Contract
+    ✔ should load fixture tasks when present (1.837017ms)
+    ✔ should create a task with default status 'todo' (0.554905ms)
+    ✔ should list tasks filtering by status (0.87317ms)
+    ✔ should fail to update non-existent task (1.066858ms)
+  ✔ Task Registry Contract (5.418604ms)
+✔ MockTaskRegistry (5.976028ms)
+▶ MockTaskRegistry
+  ▶ Task Registry Contract
+    ✔ should load fixture tasks when present (1.802532ms)
+    ✔ should create a task with default status 'todo' (0.644773ms)
+    ✔ should list tasks filtering by status (0.685359ms)
+    ✔ should fail to update non-existent task (1.106507ms)
+  ✔ Task Registry Contract (8.688797ms)
+✔ MockTaskRegistry (9.2319ms)
+▶ Real TaskAdapter (with MockStore)
+  ▶ Task Registry Contract
+    ✔ should load fixture tasks when present (1.933799ms)
+    ✔ should create a task with default status 'todo' (3.342934ms)
+    ✔ should list tasks filtering by status (0.815617ms)
+    ✔ should fail to update non-existent task (0.387462ms)
+  ✔ Task Registry Contract (6.962465ms)
+✔ Real TaskAdapter (with MockStore) (7.250976ms)
+✔ MockTelemetryClient - should yield log lines (1.361717ms)
+✔ MockTelemetryClient - should fail on fault fixture (0.924619ms)
+▶ MockTestSeam
+  ✔ exists (0.938556ms)
+✔ MockTestSeam (2.015342ms)
+▶ MockTuiDataClient
+  ▶ TUI Data Client Contract
+    ✔ loads chat history (0.902188ms)
+    ✔ returns health snapshot (0.327289ms)
+  ✔ TUI Data Client Contract (3.136017ms)
+  ✔ loads named scenarios (0.226055ms)
+✔ MockTuiDataClient (4.022589ms)
+▶ MockTuiDataClient
+  ▶ TUI Data Client Contract
+    ✔ loads chat history (1.086393ms)
+    ✔ returns health snapshot (0.342534ms)
+  ✔ TUI Data Client Contract (2.395909ms)
+  ✔ loads named scenarios (0.334773ms)
+✔ MockTuiDataClient (3.329679ms)
+▶ Real TuiDataAdapter (with MockStore)
+  ▶ TUI Data Client Contract
+    ✔ loads chat history (0.981354ms)
+    ✔ returns health snapshot (0.734495ms)
+  ✔ TUI Data Client Contract (1.937819ms)
+✔ Real TuiDataAdapter (with MockStore) (2.24387ms)
+▶ MockWebCockpit
+  ✔ exists (0.92785ms)
+  ✔ should fail on port conflict fault (0.891506ms)
+✔ MockWebCockpit (3.174844ms)
+▶ WebCockpitAdapter
+  ✔ should reject when start cannot bind (13.884112ms)
+✔ WebCockpitAdapter (15.058125ms)
+▶ Agent Identity Persistence
+  ✔ should reuse existing agent ID when registering with same name (63.475192ms)
+✔ Agent Identity Persistence (64.905109ms)
+▶ MCP External Store Fix Verification
+  ✔ should allow Agent registration in an external whitelisted store (53.52118ms)
+✔ MCP External Store Fix Verification (56.394022ms)
+▶ Store Persistence Integration
+  ✔ should persist changes to disk immediately (53.337095ms)
+✔ Store Persistence Integration (54.597061ms)
+▶ Store Persistence Integration
+  ✔ should persist changes to disk immediately (58.866008ms)
+✔ Store Persistence Integration (60.039921ms)
+✔ Plan Tools - Round-Trip Verification (5.183444ms)
+▶ Three-Agent Collaboration (Real Store)
+  ✔ coordinates concurrent locks, contention, and communication (1012.713094ms)
+  ✔ enforces panic freeze and recovers cleanly (306.284852ms)
+✔ Three-Agent Collaboration (Real Store) (1320.455094ms)
+▶ Tool Registry Smoke (Wiring + Invocation)
+  ✔ registers tools and invokes representative handlers across all providers (216.615129ms)
+✔ Tool Registry Smoke (Wiring + Invocation) (217.795063ms)
+▶ JailedFs with External Roots
+  ✔ should block external paths by default (1.443921ms)
+  ✔ should allow external paths if whitelisted (8.71878ms)
+  ✔ should allow exists check on whitelisted external paths (4.423539ms)
+  ✔ should block sibling-prefix escape paths (1.048411ms)
+  ✔ should block symlink escape writes (2.718481ms)
+✔ JailedFs with External Roots (19.778758ms)
+▶ PathGuard with External Roots
+  ✔ should block external paths by default (1.43339ms)
+  ✔ should allow external paths if whitelisted (6.729386ms)
+  ✔ should allow subdirectories of whitelisted external roots (1.506702ms)
+  ✔ should block sibling-prefix escape paths (1.015831ms)
+  ✔ should block symlink escape paths (1.805212ms)
+✔ PathGuard with External Roots (14.053429ms)
+✔ deriveViewModel - idle scenario (2.341507ms)
+✔ deriveViewModel - broadcast_waiting scenario (0.576858ms)
+✔ deriveViewModel - dual_pane_history scenario (0.391226ms)
+✔ deriveViewModel - leader_response scenario (0.470985ms)
+✔ deriveViewModel - stale_state scenario (0.404645ms)
+✔ deriveViewModel - panic_mode scenario (0.42837ms)
+✔ deriveViewModel - command_error scenario (0.473063ms)
+ℹ tests 194
+ℹ suites 101
+ℹ pass 194
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4481.2762

@@ -1,88 +1,24 @@
 {
-  "captured_at": "2026-01-22T15:38:36.967Z",
+  "captured_at": "2026-02-11T21:31:55.143Z",
   "scenarios": {
     "success": {
       "outputs": {
         "adrs": [
           {
-            "id": "c3c1a2ba-835e-430e-80e5-3013879a73ac",
+            "id": "fed633a0-c942-423c-a3fd-d8836b0dc482",
             "title": "Use Zod for validation",
             "status": "accepted",
             "context": "Need type safety",
             "decision": "Use Zod",
-            "created_at": 1768753925414
+            "created_at": 1770845515098
           },
           {
-            "id": "cb2a6884-5ea1-4a99-8006-2e9eb01c1ab0",
+            "id": "765a9a5a-6a78-45d7-b008-1dc03043163f",
             "title": "Async Store",
             "status": "proposed",
             "context": "Sync is slow",
             "decision": "Move to promises",
-            "created_at": 1768753925588
-          },
-          {
-            "id": "d030612e-cb76-44fb-b8d7-1f694a5f26c2",
-            "title": "Use Zod for validation",
-            "status": "accepted",
-            "context": "Need type safety",
-            "decision": "Use Zod",
-            "created_at": 1768759142998
-          },
-          {
-            "id": "bb22de23-a6ac-45ae-9791-75ff53208c0a",
-            "title": "Async Store",
-            "status": "proposed",
-            "context": "Sync is slow",
-            "decision": "Move to promises",
-            "created_at": 1768759143104
-          },
-          {
-            "id": "b1640fac-4e52-4ef6-85d5-5102eb9964e2",
-            "title": "Use Zod for validation",
-            "status": "accepted",
-            "context": "Need type safety",
-            "decision": "Use Zod",
-            "created_at": 1768759165117
-          },
-          {
-            "id": "be4c7d92-844d-4889-986c-8acf15742e25",
-            "title": "Async Store",
-            "status": "proposed",
-            "context": "Sync is slow",
-            "decision": "Move to promises",
-            "created_at": 1768759165203
-          },
-          {
-            "id": "8ee13b90-b05e-478c-9690-3b61a3020259",
-            "title": "Use Zod for validation",
-            "status": "accepted",
-            "context": "Need type safety",
-            "decision": "Use Zod",
-            "created_at": 1768973627663
-          },
-          {
-            "id": "228f595b-7751-4c42-9ec7-b1794df27569",
-            "title": "Async Store",
-            "status": "proposed",
-            "context": "Sync is slow",
-            "decision": "Move to promises",
-            "created_at": 1768973628559
-          },
-          {
-            "id": "02fa9f20-0157-42b3-ba32-f853d0f53b40",
-            "title": "Use Zod for validation",
-            "status": "accepted",
-            "context": "Need type safety",
-            "decision": "Use Zod",
-            "created_at": 1769096316798
-          },
-          {
-            "id": "794ce325-07e6-4fad-96f7-311587c04b9a",
-            "title": "Async Store",
-            "status": "proposed",
-            "context": "Sync is slow",
-            "decision": "Move to promises",
-            "created_at": 1769096316901
+            "created_at": 1770845515122
           }
         ]
       }

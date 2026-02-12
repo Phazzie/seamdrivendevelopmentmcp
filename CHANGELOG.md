@@ -2,6 +2,30 @@
 
 All notable changes to this project are documented here.
 
+## [1.1.4] - 2026-01-18 (Liquid Hardening - Sharded Scale)
+### Added
+- **Store Sharding:** The `StoreAdapter` now splits the JSON monolith into `store_data/*.json` shards. Writes are atomic and isolated by key (e.g., `tasks`, `messages`).
+- **Performance:** Updates now only write the specific shard that changed.
+- **Deep Cloning:** `StoreAdapter.update` now deep-clones state to prevent reference leaks.
+
+## [1.1.3] - 2026-01-18 (Liquid Hardening - Steel Jail)
+### Added
+- **JailedFS:** A physical wrapper around `fs` that strictly enforces root-directory confinement.
+- **AI Sentinel:** `ReviewGateAdapter` now validates Plan Intent against File Locks using keyword analysis.
+- **SDD Recovery:** Refreshed all 23 probe fixtures. SDD Compliance Score restored to 100%.
+- **Web HUD:** A native, zero-dependency HTTP server (`WebCockpitAdapter`) providing a real-time dashboard at `http://localhost:3000`.
+
+## [1.1.2] - 2026-01-18 (Liquid Hardening - Modular Core)
+### Changed
+- **ServerBootstrap:** "God Object" `index.ts` shattered into a modular wiring harness.
+- **Providers:** All tool logic moved to `src/lib/providers/`.
+- **TUI:** Refactored to be Read-Only and Pulse-Driven (`RevisionStream`).
+
+## [1.1.1] - 2026-01-17 (Liquid Hardening - Type Purge)
+### Fixed
+- **Locker Enforcement:** Fixed a bug where locks could be bypassed by non-normalized paths.
+- **Type Safety:** Removed all traces of `any` from the core codebase.
+
 ## [1.1.0] - 2026-01-16 "Liquid Hardening"
 ### Hardened
 - **Store Seam:** Full migration to `fs.promises` and `FileHandle.sync()` for hardware durability. Pulse interface (`waitForRevision`) replaces event listeners.

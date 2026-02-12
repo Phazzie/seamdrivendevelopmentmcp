@@ -1,0 +1,40 @@
+
+> mcp-collaboration-server@1.0.0 probes
+> npx tsc -p tsconfig.json && node dist/src/tools/probes.js
+
+Running probes matching: probes/**/*.probe.ts...
+✅ PASS - adr_sample.probe.ts (2013ms)
+✅ PASS - agent_claude.probe.ts (1841ms)
+✅ PASS - agent_identity.probe.ts (1233ms)
+✅ PASS - arbitration_sample.probe.ts (1769ms)
+✅ PASS - audit_sample.probe.ts (1253ms)
+✅ PASS - build_plan.probe.ts (1226ms)
+✅ PASS - confidence_auction_sample.probe.ts (1194ms)
+✅ PASS - dependency_sample.probe.ts (1840ms)
+✅ PASS - event_stream_sample.probe.ts (1804ms)
+✅ PASS - fs_atomic.probe.ts (1316ms)
+✅ PASS - ideas.probe.ts (1510ms)
+✅ PASS - integration_snapshot.probe.ts (1724ms)
+✅ PASS - knowledge_sample.probe.ts (1833ms)
+✅ PASS - log_tail.probe.ts (1980ms)
+✅ PASS - messages_sample.probe.ts (1766ms)
+✅ PASS - mood_sample.probe.ts (1755ms)
+✅ PASS - notifications_sample.probe.ts (1776ms)
+✅ PASS - path_normalization.probe.ts (1271ms)
+✅ PASS - plan_parser.probe.ts (1251ms)
+✅ PASS - probe_runner.probe.ts (1283ms)
+✅ PASS - review_gate_sample.probe.ts (1818ms)
+✅ PASS - scaffolder.probe.ts (1763ms)
+✅ PASS - scheduler_sample.probe.ts (1199ms)
+✅ PASS - sdd_tracking.probe.ts (1297ms)
+✅ PASS - status_snapshot.probe.ts (1755ms)
+✅ PASS - store.probe.ts (1759ms)
+✅ PASS - store_default.probe.ts (1790ms)
+✅ PASS - tasks_sample.probe.ts (1828ms)
+✅ PASS - test_seam.probe.ts (1279ms)
+✅ PASS - tui/chat_simulation.probe.ts (1304ms)
+✅ PASS - web_cockpit.probe.ts (1242ms)
+❌ FAIL - worker_capability.probe.ts (1221ms)
+  Error: 
+
+Completed with 1 failures.

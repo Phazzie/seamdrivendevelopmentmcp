@@ -1,16 +1,16 @@
 {
-  "captured_at": "2026-01-22T15:38:52.895Z",
+  "captured_at": "2026-02-11T21:32:07.309Z",
   "scenarios": {
     "success": {
       "outputs": {
         "events": [
           {
-            "id": "7f51ce4c-4180-4a02-84e7-cf1b7ea86f93",
+            "id": "24ec8cb6-4506-4fce-b50d-99e1b7951030",
             "type": "test_event",
             "data": {
               "foo": "bar"
             },
-            "timestamp": 1769096332819
+            "timestamp": 1770845527285
           }
         ]
       }

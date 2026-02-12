@@ -3,7 +3,12 @@
     "enableHooks": true
   },
   "hooks": {
-    "enabled": true,
+    "enabled": [
+      "BeforeTool",
+      "BeforeModel",
+      "AfterTool",
+      "SessionStart"
+    ],
     "BeforeTool": [
       {
         "matcher": "write_file|replace",

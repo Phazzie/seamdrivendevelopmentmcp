@@ -1,14 +1,14 @@
 {
-  "captured_at": "2026-01-22T15:39:09.115Z",
+  "captured_at": "2026-02-11T21:32:19.211Z",
   "scenarios": {
     "success": {
       "outputs": {
         "entries": [
           {
-            "id": "7e19f8e4-6f50-4236-a16d-45b08e15ccf9",
+            "id": "a75838ff-c17f-4f1d-b16e-3645bb6685be",
             "agentId": "a1",
             "mood": "productive",
-            "timestamp": 1769096349096
+            "timestamp": 1770845539186
           }
         ]
       }

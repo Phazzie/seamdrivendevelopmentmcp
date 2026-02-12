@@ -1,0 +1,534 @@
+{
+  "generatedAt": "2026-02-11T21:36:27.639Z",
+  "overallScore": 0.9655172413793104,
+  "isHealthy": true,
+  "seams": [
+    {
+      "name": "adr",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.003153865740740741,
+        "capturedAt": "2026-02-11T21:31:55.143Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "agents",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.003117997685185185,
+        "capturedAt": "2026-02-11T21:31:58.243Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "arbitration",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0030975231481481483,
+        "capturedAt": "2026-02-11T21:32:00.011Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "audit",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0030830092592592593,
+        "capturedAt": "2026-02-11T21:32:01.265Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "build_plan",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.003069050925925926,
+        "capturedAt": "2026-02-11T21:32:02.472Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "confidence_auction",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.003055011574074074,
+        "capturedAt": "2026-02-11T21:32:03.685Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "dependency",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0030339930555555554,
+        "capturedAt": "2026-02-11T21:32:05.501Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "event_stream",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0030130671296296294,
+        "capturedAt": "2026-02-11T21:32:07.309Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "ideas",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0029801620370370372,
+        "capturedAt": "2026-02-11T21:32:10.151Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "integration_snapshot",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.002960173611111111,
+        "capturedAt": "2026-02-11T21:32:11.879Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "intent_verifier",
+      "isCompliant": false,
+      "components": {
+        "contract": true,
+        "probe": false,
+        "fixture": false,
+        "mock": true,
+        "adapter": false,
+        "test": false
+      },
+      "fixtureFreshness": {
+        "isFresh": false,
+        "ageDays": null,
+        "capturedAt": null
+      },
+      "issues": [
+        "Missing probe",
+        "Missing fixture",
+        "Missing adapter",
+        "Missing contract test"
+      ]
+    },
+    {
+      "name": "knowledge",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0029389583333333334,
+        "capturedAt": "2026-02-11T21:32:13.712Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "locker",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.002839988425925926,
+        "capturedAt": "2026-02-11T21:32:22.263Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "messages",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.002895613425925926,
+        "capturedAt": "2026-02-11T21:32:17.457Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "mood",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0028753125,
+        "capturedAt": "2026-02-11T21:32:19.211Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "notifications",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.002854872685185185,
+        "capturedAt": "2026-02-11T21:32:20.977Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "plan_parser",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0028255208333333335,
+        "capturedAt": "2026-02-11T21:32:23.513Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "probe_runner",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0028106712962962964,
+        "capturedAt": "2026-02-11T21:32:24.796Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "review_gate",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.002789826388888889,
+        "capturedAt": "2026-02-11T21:32:26.597Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "scaffolder",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0027699421296296296,
+        "capturedAt": "2026-02-11T21:32:28.314Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "scheduler",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0027553703703703703,
+        "capturedAt": "2026-02-11T21:32:29.575Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "sdd_tracking",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.002740486111111111,
+        "capturedAt": "2026-02-11T21:32:30.859Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "status",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0027200462962962964,
+        "capturedAt": "2026-02-11T21:32:32.626Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "store",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0026789699074074073,
+        "capturedAt": "2026-02-11T21:32:36.175Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "tasks",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.002657824074074074,
+        "capturedAt": "2026-02-11T21:32:38.002Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "telemetry",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0029248263888888887,
+        "capturedAt": "2026-02-11T21:32:14.933Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "test_seam",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0026436574074074075,
+        "capturedAt": "2026-02-11T21:32:39.225Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "tui",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0026278935185185186,
+        "capturedAt": "2026-02-11T21:32:40.589Z"
+      },
+      "issues": []
+    },
+    {
+      "name": "web_cockpit",
+      "isCompliant": true,
+      "components": {
+        "contract": true,
+        "probe": true,
+        "fixture": true,
+        "mock": true,
+        "adapter": true,
+        "test": true
+      },
+      "fixtureFreshness": {
+        "isFresh": true,
+        "ageDays": 0.0026139467592592594,
+        "capturedAt": "2026-02-11T21:32:41.792Z"
+      },
+      "issues": []
+    }
+  ]
+}

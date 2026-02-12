@@ -1,0 +1,11 @@
+{
+  "captured_at": "2026-02-11T00:00:00.000Z",
+  "scenarios": {
+    "worker_unavailable": {
+      "error": {
+        "code": "INTERNAL_ERROR",
+        "message": "Worker threads are unavailable in this runtime."
+      }
+    }
+  }
+}

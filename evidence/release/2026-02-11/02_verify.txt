@@ -1,0 +1,6 @@
+
+> mcp-collaboration-server@1.0.0 verify
+> npx tsc -p tsconfig.json && node dist/scripts/verify-mandates.js
+
+🔍 Scanning for Mandate Violations...
+✅ All Systems Compliant.

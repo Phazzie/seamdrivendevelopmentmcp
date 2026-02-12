@@ -1,9 +1,9 @@
 {
-  "captured_at": "2026-01-22T15:39:00.582Z",
+  "captured_at": "2026-02-11T21:32:11.879Z",
   "scenarios": {
     "success": {
       "outputs": {
-        "captured_at": "2026-01-22T15:39:00.581Z",
+        "captured_at": "2026-02-11T21:32:11.878Z",
         "store_path": "/var/folders/8t/y6bg4yx53pl7r3przh6jzcz00000gn/T/mcp_snap_probe_store.json",
         "store": {
           "schemaVersion": 1,
