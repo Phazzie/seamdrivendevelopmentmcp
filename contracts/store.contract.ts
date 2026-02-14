@@ -7,6 +7,7 @@ import { MoodEntrySchema } from "./mood.contract.js";
 import { GavelStateSchema } from "./arbitration.contract.js";
 import { ReviewGateSchema } from "./review_gate.contract.js";
 import { IdeaSchema } from "./ideas.contract.js";
+import { WorkerRegistrationSchema, WorkerRunSchema } from "./worker_orchestrator.contract.js";
 
 const KnowledgeStoreSchema = z.preprocess((value) => {
   if (Array.isArray(value)) {
@@ -60,6 +61,8 @@ export const PersistedStoreSchema = z.object({
   moods: z.array(MoodEntrySchema).default([]),
   arbitration: GavelStateSchema.default({ status: "idle", updated_at: 0 }),
   review_gates: z.array(ReviewGateSchema).default([]),
+  workers: z.array(WorkerRegistrationSchema).default([]),
+  worker_runs: z.array(WorkerRunSchema).default([]),
 });
 
 export type PersistedStore = z.infer<typeof PersistedStoreSchema>;

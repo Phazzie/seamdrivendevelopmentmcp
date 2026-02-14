@@ -62,3 +62,8 @@ Build and harden the MCP collaboration server for multi-agent coordination using
 - **Observability:** Web HUD at `http://localhost:3000` (Enable via `MCP_WEB_PORT`).
 - **Truth:** `contracts/`, `fixtures/`, `probes/`.
 - **Log:** `docs/agent-collab.md`.
+
+## Execution Backbone
+- Agents MUST treat `plan.md` as the active execution source of truth for production hardening and orchestrator delivery.
+- Before coding, read `plan.md` and align current step status.
+- After each completed step, update `plan.md` status/evidence and continue autonomously to the next item until blocked by an external dependency.

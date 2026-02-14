@@ -27,12 +27,46 @@ import { ConfidenceAuctionAdapter } from "../../src/lib/adapters/confidence_auct
 import { SddTrackingAdapter } from "../../src/lib/adapters/sdd_tracking.adapter.js";
 import { ScaffolderAdapter } from "../../src/lib/adapters/scaffolder.adapter.js";
 import { ProbeRunnerHelper } from "../../src/lib/helpers/probe_runner.helper.js";
+import { WorkerOrchestratorAdapter } from "../../src/lib/adapters/worker_orchestrator.adapter.js";
 import { ManagementProvider } from "../../src/lib/providers/management.provider.js";
 import { IntelligenceProvider } from "../../src/lib/providers/intelligence.provider.js";
 import { InfrastructureProvider } from "../../src/lib/providers/infrastructure.provider.js";
 import { CommunicationProvider } from "../../src/lib/providers/communication.provider.js";
 import { MetaProvider } from "../../src/lib/providers/meta.provider.js";
 import { DevInfraProvider } from "../../src/lib/providers/dev_infra.provider.js";
+import { OrchestrationProvider } from "../../src/lib/providers/orchestration.provider.js";
+import {
+  IWorkerRuntime,
+  WorkerModel,
+  WorkerRuntimeInvocation,
+  WorkerRuntimeResult,
+} from "../../contracts/worker_orchestrator.contract.js";
+
+class FakeRuntime implements IWorkerRuntime {
+  createInvocation(
+    model: WorkerModel,
+    prompt: string,
+    cwd: string,
+    timeoutMs: number
+  ): WorkerRuntimeInvocation {
+    return {
+      command: model === "codex_cli" ? "codex" : "gemini",
+      args: ["--prompt", prompt],
+      cwd,
+      timeoutMs,
+    };
+  }
+
+  async run(invocation: WorkerRuntimeInvocation): Promise<WorkerRuntimeResult> {
+    return {
+      exitCode: 0,
+      stdout: `fake:${invocation.command}`,
+      stderr: "",
+      durationMs: 10,
+      timedOut: false,
+    };
+  }
+}
 
 describe("Tool Registry Smoke (Wiring + Invocation)", () => {
   it("registers tools and invokes representative handlers across all providers", async () => {
@@ -82,6 +116,9 @@ describe("Tool Registry Smoke (Wiring + Invocation)", () => {
         new ProbeRunnerHelper(root),
         pathGuard
       ));
+      registry.register(new OrchestrationProvider(
+        new WorkerOrchestratorAdapter(store, new FakeRuntime(), pathGuard, root)
+      ));
 
       const tools = registry.getTools();
       const toolNames = new Set(tools.map((tool: { name: string }) => tool.name));
@@ -91,9 +128,11 @@ describe("Tool Registry Smoke (Wiring + Invocation)", () => {
       assert.ok(toolNames.has("post_message"));
       assert.ok(toolNames.has("build_plan"));
       assert.ok(toolNames.has("get_sdd_report"));
+      assert.ok(toolNames.has("spawn_worker"));
+      assert.ok(toolNames.has("dispatch_task"));
 
       const handlers = registry.getHandlers();
-      assert.ok(Object.keys(handlers).length >= 35);
+      assert.ok(Object.keys(handlers).length >= 40);
 
       const registered = await handlers.register_agent({ name: "mc-smoke" });
       assert.strictEqual(registered.name, "User");
@@ -123,6 +162,12 @@ describe("Tool Registry Smoke (Wiring + Invocation)", () => {
       const report = await handlers.get_sdd_report({});
       assert.strictEqual(typeof report.overallScore, "number");
       assert.strictEqual(typeof report.isHealthy, "boolean");
+
+      const worker = await handlers.spawn_worker({ name: "codex-smoke", model: "codex_cli", role: "writer", cwd: path.join(root, "src"), agentId: registered.id });
+      assert.strictEqual(worker.name, "codex-smoke");
+      const workers = await handlers.list_workers({ agentId: registered.id });
+      assert.ok(Array.isArray(workers));
+      assert.strictEqual(workers.length, 1);
     } finally {
       if (fs.existsSync(tempDir)) fs.rmSync(tempDir, { recursive: true, force: true });
     }

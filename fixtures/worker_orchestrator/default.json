@@ -1,0 +1,32 @@
+{
+  "captured_at": "2026-02-14T00:00:00.000Z",
+  "scenarios": {
+    "single_worker": {
+      "spawn": {
+        "name": "codex-writer-1",
+        "model": "codex_cli",
+        "role": "writer"
+      },
+      "dispatch": {
+        "strategy": "single_worker"
+      }
+    },
+    "writer_reviewer": {
+      "spawn": [
+        {
+          "name": "codex-writer-1",
+          "model": "codex_cli",
+          "role": "writer"
+        },
+        {
+          "name": "gemini-review-1",
+          "model": "gemini_cli",
+          "role": "reviewer"
+        }
+      ],
+      "dispatch": {
+        "strategy": "codex_writes_gemini_reviews"
+      }
+    }
+  }
+}

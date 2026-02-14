@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-02-14T00:00:00.000Z",
+  "scenario": "missing_worker",
+  "error": {
+    "code": "VALIDATION_FAILED",
+    "message": "Worker not found"
+  }
+}

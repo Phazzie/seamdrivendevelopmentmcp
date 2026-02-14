@@ -33,6 +33,7 @@ import { ProbeRunnerHelper } from "./probe_runner.helper.js";
 import { ScaffolderAdapter } from "../adapters/scaffolder.adapter.js";
 import { SddTrackingAdapter } from "../adapters/sdd_tracking.adapter.js";
 import { WebCockpitAdapter } from "../adapters/web_cockpit.adapter.js";
+import { WorkerOrchestratorAdapter } from "../adapters/worker_orchestrator.adapter.js";
 
 // Providers
 import { ManagementProvider } from "../providers/management.provider.js";
@@ -41,6 +42,8 @@ import { InfrastructureProvider } from "../providers/infrastructure.provider.js"
 import { CommunicationProvider } from "../providers/communication.provider.js";
 import { MetaProvider } from "../providers/meta.provider.js";
 import { DevInfraProvider } from "../providers/dev_infra.provider.js";
+import { OrchestrationProvider } from "../providers/orchestration.provider.js";
+import { WorkerRuntimeHelper } from "./worker_runtime.helper.js";
 
 /**
  * Purpose: Centralized wiring harness for the MCP Server (infrastructure seam).
@@ -109,8 +112,14 @@ export class ServerBootstrap {
     const store = new StoreAdapter(this.storePath, jailedFs);
     const agents = new AgentAdapter(store);
     const audit = new AuditAdapter(store);
-    const executor = new ToolExecutor(agents, audit);
+    const executor = new ToolExecutor(agents, audit, store);
     const webHud = new WebCockpitAdapter(store, pathGuard, Number(process.env.MCP_WEB_PORT || 3000));
+    const workerOrchestrator = new WorkerOrchestratorAdapter(
+      store,
+      new WorkerRuntimeHelper(),
+      pathGuard,
+      this.rootDir
+    );
     
     // Register Suites
     this.registry.register(new ManagementProvider(new TaskAdapter(store), new DependencyAdapter(store), new SchedulerAdapter()));
@@ -119,6 +128,7 @@ export class ServerBootstrap {
     this.registry.register(new CommunicationProvider(new MessageAdapter(store), new EventStreamAdapter(store), new NotificationAdapter(store)));
     this.registry.register(new MetaProvider(new ReviewGateAdapter(store), new ArbitrationAdapter(store), new MoodAdapter(store), new ConfidenceAuctionAdapter(), store));
     this.registry.register(new DevInfraProvider(new SddTrackingAdapter(this.rootDir), new ScaffolderAdapter(jailedFs), new ProbeRunnerHelper(this.rootDir), pathGuard));
+    this.registry.register(new OrchestrationProvider(workerOrchestrator));
 
     return { executor, registry: this.registry, webHud, store, pathGuard };
   }

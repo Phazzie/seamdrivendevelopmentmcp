@@ -84,7 +84,9 @@ export class MockStore implements IStore {
       notifications: [],
       moods: [],
       arbitration: { status: "idle", updated_at: 0 },
-      review_gates: []
+      review_gates: [],
+      workers: [],
+      worker_runs: []
     };
 
     if (fixturePath && fs.existsSync(fixturePath)) {
