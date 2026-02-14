@@ -114,29 +114,36 @@ export class MetaProvider implements IToolProvider {
   getHandlers(): Record<string, ToolHandler> {
     return {
       submit_plan: async (args) => {
-        const input = z.object({ planId: z.string(), plan: z.string(), affectedResources: z.array(z.string()).optional() }).parse(args);
+        const input = z.object({
+          planId: z.string(),
+          plan: z.string(),
+          affectedResources: z.array(z.string()).optional(),
+          agentId: z.string()
+        }).parse(args);
         return await this.review.submitPlan(input.planId, input.plan, input.affectedResources);
       },
       submit_critique: async (args) => {
-        const input = z.object({ planId: z.string(), critique: z.string() }).parse(args);
+        const input = z.object({ planId: z.string(), critique: z.string(), agentId: z.string() }).parse(args);
         return await this.review.submitCritique(input.planId, input.critique);
       },
       approve_plan: async (args) => {
-        const input = z.object({ planId: z.string() }).parse(args);
+        const input = z.object({ planId: z.string(), agentId: z.string() }).parse(args);
         return await this.review.approvePlan(input.planId);
       },
       trigger_panic: async (args) => {
-        z.object({ reason: z.string() }).parse(args);
+        z.object({ reason: z.string(), agentId: z.string() }).parse(args);
         return await this.setPanicMode(true);
       },
-      resolve_panic: async () => {
+      resolve_panic: async (args) => {
+        z.object({ agentId: z.string() }).parse(args);
         return await this.setPanicMode(false);
       },
       build_plan: async (args) => {
         const input = z.object({ 
           title: z.string().optional(), 
           sections: z.array(z.any()).optional(), 
-          orphanItems: z.array(z.any()).optional() 
+          orphanItems: z.array(z.any()).optional(),
+          agentId: z.string()
         }).parse(args);
 
         const planInput: BuildPlanInput = {
@@ -147,7 +154,7 @@ export class MetaProvider implements IToolProvider {
         return await this.builder.build(planInput);
       },
       decompose_plan: async (args) => {
-        const input = z.object({ markdown: z.string() }).parse(args);
+        const input = z.object({ markdown: z.string(), agentId: z.string() }).parse(args);
         return await this.parser.parse({ markdown: input.markdown });
       }
     };

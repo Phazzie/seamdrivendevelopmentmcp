@@ -53,9 +53,12 @@ export class DevInfraProvider implements IToolProvider {
 
   getHandlers(): Record<string, ToolHandler> {
     return {
-      get_sdd_report: async () => await this.sdd.getReport(),
+      get_sdd_report: async (args) => {
+        z.object({ agentId: z.string() }).parse(args);
+        return await this.sdd.getReport();
+      },
       scaffold_seam: async (args) => {
-        const input = z.object({ seamName: z.string() }).parse(args);
+        const input = z.object({ seamName: z.string(), agentId: z.string() }).parse(args);
         // Senior Mandate: Use PathGuard root for scaffolding
         return await this.scaffolder.scaffold({ 
           seamName: input.seamName, 
@@ -63,7 +66,7 @@ export class DevInfraProvider implements IToolProvider {
         });
       },
       run_probe: async (args) => {
-        const input = z.object({ pattern: z.string().optional() }).parse(args);
+        const input = z.object({ pattern: z.string().optional(), agentId: z.string() }).parse(args);
         return await this.probeRunner.run({ pattern: input.pattern ?? "" });
       }
     };

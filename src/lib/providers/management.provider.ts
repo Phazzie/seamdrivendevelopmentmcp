@@ -89,25 +89,31 @@ export class ManagementProvider implements IToolProvider {
   getHandlers(): Record<string, ToolHandler> {
     return {
       create_task: async (args) => {
-        const input = z.object({ title: z.string(), description: z.string(), assignee: z.string().optional() }).parse(args);
+        const input = z.object({
+          title: z.string(),
+          description: z.string(),
+          assignee: z.string().optional(),
+          agentId: z.string()
+        }).parse(args);
         return await this.tasks.create(input.title, input.description, input.assignee);
       },
       update_task_status: async (args) => {
-        const input = z.object({ taskId: z.string(), status: TaskStatusSchema }).parse(args);
+        const input = z.object({ taskId: z.string(), status: TaskStatusSchema, agentId: z.string() }).parse(args);
         return await this.tasks.updateStatus(input.taskId, input.status);
       },
       list_tasks: async (args) => {
-        const input = z.object({ status: TaskStatusSchema.optional() }).parse(args);
+        const input = z.object({ status: TaskStatusSchema.optional(), agentId: z.string() }).parse(args);
         return await this.tasks.list(input.status);
       },
       add_dependency: async (args) => {
-        const input = z.object({ childId: z.string(), parentId: z.string() }).parse(args);
+        const input = z.object({ childId: z.string(), parentId: z.string(), agentId: z.string() }).parse(args);
         return await this.dependencies.addDependency(input.childId, input.parentId);
       },
       divvy_work: async (args) => {
         const input = z.object({ 
           tasks: z.array(TaskSchema), 
-          agents: z.array(SchedulerAgentSchema) 
+          agents: z.array(SchedulerAgentSchema),
+          agentId: z.string()
         }).parse(args);
         
         return await this.scheduler.schedule({

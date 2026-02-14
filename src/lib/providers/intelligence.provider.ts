@@ -123,23 +123,35 @@ export class IntelligenceProvider implements IToolProvider {
   getHandlers(): Record<string, ToolHandler> {
     return {
       knowledge_add_node: async (args) => {
-        const input = z.object({ type: z.string(), content: z.string() }).parse(args);
+        const input = z.object({ type: z.string(), content: z.string(), agentId: z.string() }).parse(args);
         return await this.knowledge.addNode(input.type, input.content);
       },
       knowledge_link_nodes: async (args) => {
-        const input = z.object({ fromId: z.string(), toId: z.string(), relation: z.string() }).parse(args);
+        const input = z.object({ fromId: z.string(), toId: z.string(), relation: z.string(), agentId: z.string() }).parse(args);
         return await this.knowledge.linkNodes(input.fromId, input.toId, input.relation);
       },
       knowledge_query: async (args) => {
-        const input = z.object({ type: z.string().optional(), text: z.string().optional(), relation: z.string().optional(), limit: z.number().optional() }).parse(args);
-        return await this.knowledge.query(input);
+        const input = z.object({
+          type: z.string().optional(),
+          text: z.string().optional(),
+          relation: z.string().optional(),
+          limit: z.number().optional(),
+          agentId: z.string()
+        }).parse(args);
+        return await this.knowledge.query({
+          type: input.type,
+          text: input.text,
+          relation: input.relation,
+          limit: input.limit
+        });
       },
       create_adr: async (args) => {
         const input = z.object({ 
           title: z.string(), 
           context: z.string(), 
           decision: z.string(), 
-          status: z.string().optional() 
+          status: z.string().optional(),
+          agentId: z.string()
         }).parse(args);
 
         const adrInput: AdrInput = {
@@ -154,7 +166,8 @@ export class IntelligenceProvider implements IToolProvider {
         const input = z.object({ 
           title: z.string(), 
           summary: z.string().optional(), 
-          tags: z.array(z.string()).optional() 
+          tags: z.array(z.string()).optional(),
+          agentId: z.string()
         }).parse(args);
 
         return await this.ideas.create({
@@ -164,8 +177,19 @@ export class IntelligenceProvider implements IToolProvider {
         });
       },
       ideas_list: async (args) => {
-        const input = z.object({ status: IdeaStatusSchema.optional(), tag: z.string().optional(), query: z.string().optional(), limit: z.number().optional() }).parse(args);
-        return await this.ideas.list(input);
+        const input = z.object({
+          status: IdeaStatusSchema.optional(),
+          tag: z.string().optional(),
+          query: z.string().optional(),
+          limit: z.number().optional(),
+          agentId: z.string()
+        }).parse(args);
+        return await this.ideas.list({
+          status: input.status,
+          tag: input.tag,
+          query: input.query,
+          limit: input.limit
+        });
       },
       ideas_add_note: async (args) => {
         const input = z.object({ ideaId: z.string(), body: z.string(), agentId: z.string() }).parse(args);

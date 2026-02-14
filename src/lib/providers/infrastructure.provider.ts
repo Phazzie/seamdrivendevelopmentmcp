@@ -100,14 +100,23 @@ export class InfrastructureProvider implements IToolProvider {
         const chosenName = "name" in input ? input.name : input.selfName;
         return await this.agents.register(this.assignedModel, chosenName);
       },
-      list_agents: async () => await this.agents.list(),
-      get_status: async () => await this.status.getStatus(),
+      list_agents: async (args) => {
+        z.object({}).passthrough().parse(args ?? {});
+        return await this.agents.list();
+      },
+      get_status: async (args) => {
+        z.object({ agentId: z.string() }).parse(args);
+        return await this.status.getStatus();
+      },
       list_audit: async (args) => {
-        const input = z.object({ limit: z.number().optional() }).parse(args);
+        const input = z.object({ limit: z.number().optional(), agentId: z.string() }).parse(args);
         // Fix: Pass options object to list
         return await this.audit.list({ limit: input.limit || 50 });
       },
-      list_locks: async () => await this.locker.list(),
+      list_locks: async (args) => {
+        z.object({ agentId: z.string() }).parse(args);
+        return await this.locker.list();
+      },
       request_file_locks: async (args) => {
         const input = z.object({
           paths: z.array(z.string()),

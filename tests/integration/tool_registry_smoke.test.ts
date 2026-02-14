@@ -143,23 +143,24 @@ describe("Tool Registry Smoke (Wiring + Invocation)", () => {
         () => true
       );
 
-      const task = await handlers.create_task({ title: "Smoke task", description: "Registry call path" });
+      const task = await handlers.create_task({ title: "Smoke task", description: "Registry call path", agentId: registered.id });
       assert.strictEqual(task.title, "Smoke task");
 
-      const node = await handlers.knowledge_add_node({ type: "note", content: "registry smoke" });
+      const node = await handlers.knowledge_add_node({ type: "note", content: "registry smoke", agentId: registered.id });
       assert.strictEqual(node.type, "note");
 
-      const msg = await handlers.post_message({ sender: "Gemini", content: "hello smoke", channelId: "general" });
+      const msg = await handlers.post_message({ sender: "Gemini", content: "hello smoke", channelId: "general", agentId: registered.id });
       assert.strictEqual(msg.sender, "Gemini");
 
       const built = await handlers.build_plan({
         title: "Smoke Plan",
         sections: [],
         orphanItems: [{ text: "Ship safely", subitems: [] }],
+        agentId: registered.id,
       });
       assert.strictEqual(typeof built.markdown, "string");
 
-      const report = await handlers.get_sdd_report({});
+      const report = await handlers.get_sdd_report({ agentId: registered.id });
       assert.strictEqual(typeof report.overallScore, "number");
       assert.strictEqual(typeof report.isHealthy, "boolean");
 

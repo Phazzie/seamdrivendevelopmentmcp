@@ -110,29 +110,50 @@ export class CommunicationProvider implements IToolProvider {
           sender: z.string(),
           metadata: z.record(z.string(), z.any()).optional(),
           channelId: z.string().optional(),
-          threadId: z.string().optional()
+          threadId: z.string().optional(),
+          agentId: z.string()
         }).parse(args);
         return await this.messages.post(input.sender, input.content, input);
       },
       list_messages: async (args) => {
-        const input = z.object({ channelId: z.string().optional(), limit: z.number().optional(), before: z.number().optional() }).parse(args);
-        return await this.messages.list(input);
+        const input = z.object({
+          channelId: z.string().optional(),
+          limit: z.number().optional(),
+          before: z.number().optional(),
+          agentId: z.string()
+        }).parse(args);
+        return await this.messages.list({ channelId: input.channelId, limit: input.limit });
       },
       publish_event: async (args) => {
-        const input = z.object({ type: z.string(), data: z.record(z.string(), z.any()).optional() }).parse(args);
-        return await this.eventStream.publish(input);
+        const input = z.object({ type: z.string(), data: z.record(z.string(), z.any()).optional(), agentId: z.string() }).parse(args);
+        return await this.eventStream.publish({ type: input.type, data: input.data });
       },
       list_events: async (args) => {
-        const input = z.object({ type: z.string().optional(), since: z.number().optional(), limit: z.number().optional() }).parse(args);
-        return await this.eventStream.list(input);
+        const input = z.object({
+          type: z.string().optional(),
+          since: z.number().optional(),
+          limit: z.number().optional(),
+          agentId: z.string()
+        }).parse(args);
+        return await this.eventStream.list({ type: input.type, since: input.since, limit: input.limit });
       },
       wait_for_events: async (args) => {
-        const input = z.object({ type: z.string().optional(), since: z.number().optional(), timeoutMs: z.number().optional() }).parse(args);
-        return await this.eventStream.waitForEvents(input);
+        const input = z.object({
+          type: z.string().optional(),
+          since: z.number().optional(),
+          timeoutMs: z.number().optional(),
+          agentId: z.string()
+        }).parse(args);
+        return await this.eventStream.waitForEvents({ type: input.type, since: input.since, timeoutMs: input.timeoutMs });
       },
       send_notification: async (args) => {
-        const input = z.object({ title: z.string(), message: z.string(), priority: NotificationPrioritySchema.optional() }).parse(args);
-        return await this.notifications.send(input);
+        const input = z.object({
+          title: z.string(),
+          message: z.string(),
+          priority: NotificationPrioritySchema.optional(),
+          agentId: z.string()
+        }).parse(args);
+        return await this.notifications.send({ title: input.title, message: input.message, priority: input.priority });
       }
     };
   }

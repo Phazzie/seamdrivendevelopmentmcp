@@ -52,12 +52,12 @@ describe("MetaProvider panic-mode handlers", () => {
     const handlers = provider.getHandlers();
 
     store.failNextUpdate();
-    await handlers.trigger_panic({ reason: "emergency" });
+    await handlers.trigger_panic({ reason: "emergency", agentId: "agent-test" });
     const afterTrigger = await store.load();
     assert.strictEqual(afterTrigger.panic_mode, true);
 
     store.failNextUpdate();
-    await handlers.resolve_panic({});
+    await handlers.resolve_panic({ agentId: "agent-test" });
     const afterResolve = await store.load();
     assert.strictEqual(afterResolve.panic_mode, false);
   });
