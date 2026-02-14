@@ -29,7 +29,7 @@ Evidence:
 - Full gate run outputs.
 
 ### Phase 1: Pre-Orchestrator Debt Burn-Down
-Status: `in_progress`
+Status: `completed`
 
 Work:
 - Normalize provider schema/handler parity for `agentId`.
@@ -110,4 +110,4 @@ If no user response is available, continue executing phases in order:
 4. Move to next phase until blocked by an external dependency (credentials, missing binaries, or environment permissions).
 
 ## Current Focus
-- Complete Phase 1 schema/handler consistency tightening, then move into Phase 3 reliability enhancements.
+- Implement Phase 3 reliability enhancements (failure recovery, orchestration playbook depth, and run analytics) while keeping gates green.
