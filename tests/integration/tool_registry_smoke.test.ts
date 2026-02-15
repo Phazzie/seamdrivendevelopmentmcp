@@ -43,6 +43,8 @@ import {
 } from "../../contracts/worker_orchestrator.contract.js";
 
 class FakeRuntime implements IWorkerRuntime {
+  readonly mode = "cli" as const;
+
   createInvocation(
     model: WorkerModel,
     prompt: string,
@@ -54,7 +56,14 @@ class FakeRuntime implements IWorkerRuntime {
       args: ["--prompt", prompt],
       cwd,
       timeoutMs,
+      prompt,
+      workerModel: model,
+      runtimeModel: this.resolveModel(model),
     };
+  }
+
+  resolveModel(model: WorkerModel): string {
+    return model === "codex_cli" ? "gpt-5.2-codex" : "gemini-2.5-flash";
   }
 
   async run(invocation: WorkerRuntimeInvocation): Promise<WorkerRuntimeResult> {
@@ -117,7 +126,7 @@ describe("Tool Registry Smoke (Wiring + Invocation)", () => {
         pathGuard
       ));
       registry.register(new OrchestrationProvider(
-        new WorkerOrchestratorAdapter(store, new FakeRuntime(), pathGuard, root)
+        new WorkerOrchestratorAdapter(store, { cli: new FakeRuntime() }, pathGuard, root)
       ));
 
       const tools = registry.getTools();

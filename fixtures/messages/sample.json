@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:17.457Z",
+  "captured_at": "2026-02-15T05:21:40.051Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -9,6 +9,20 @@
             "sender": "User",
             "content": "Hello",
             "timestamp": 1770845537433,
+            "channelId": "general"
+          },
+          {
+            "id": "b3e9293e-fd81-4f74-ad16-10697e4c5626",
+            "sender": "User",
+            "content": "Hello",
+            "timestamp": 1771132799038,
+            "channelId": "general"
+          },
+          {
+            "id": "30de83c7-50ab-4789-b155-98ca6338fc3e",
+            "sender": "User",
+            "content": "Hello",
+            "timestamp": 1771132900026,
             "channelId": "general"
           }
         ]

@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:05.501Z",
+  "captured_at": "2026-02-15T05:21:28.095Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -12,6 +12,24 @@
             "blockedBy": [],
             "created_at": 1770845525436,
             "updated_at": 1770845525436
+          },
+          {
+            "id": "51c37162-ff5a-4a1d-8a1f-a5d8b83558e5",
+            "title": "Parent",
+            "description": "P",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1771132786398,
+            "updated_at": 1771132786398
+          },
+          {
+            "id": "f09082a5-4a17-419b-a5b1-6890d93f9163",
+            "title": "Parent",
+            "description": "P",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1771132888025,
+            "updated_at": 1771132888025
           }
         ]
       }

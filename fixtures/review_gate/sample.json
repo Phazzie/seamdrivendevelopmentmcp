@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:26.597Z",
+  "captured_at": "2026-02-15T05:21:49.260Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -14,6 +14,28 @@
             ],
             "created_at": 1770845546571,
             "updated_at": 1770845546571
+          },
+          {
+            "id": "dd61eedb-3a8f-49c5-a8e4-0119e32d3d42",
+            "planId": "p1",
+            "status": "pending",
+            "plan": "plan",
+            "affectedResources": [
+              "file.ts"
+            ],
+            "created_at": 1771132808816,
+            "updated_at": 1771132808816
+          },
+          {
+            "id": "56f314bb-8967-44ae-926d-597a0378f68e",
+            "planId": "p1",
+            "status": "pending",
+            "plan": "plan",
+            "affectedResources": [
+              "file.ts"
+            ],
+            "created_at": 1771132909235,
+            "updated_at": 1771132909235
           }
         ]
       }

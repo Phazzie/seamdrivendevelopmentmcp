@@ -24,7 +24,7 @@ async function runProbe() {
     // We create a simple worker script inline using a data URI or a temporary file
     // For this probe, we'll spawn this very file and check the isMainThread flag
     if (isMainThread) {
-      const worker = new Worker(__filename, {
+      const worker = new Worker(new URL(import.meta.url), {
         workerData: { ping: 'pong' }
       });
 

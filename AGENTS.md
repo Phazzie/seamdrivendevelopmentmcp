@@ -63,6 +63,9 @@ Build and harden the MCP collaboration server for multi-agent coordination using
 - **Truth:** `contracts/`, `fixtures/`, `probes/`.
 - **Log:** `docs/agent-collab.md`.
 
+## ExecPlans
+When writing complex features or significant refactors, use an ExecPlan (as described in `.agent/PLANS.md`) from design to implementation.
+
 ## Execution Backbone
 - Agents MUST treat `plan.md` as the active execution source of truth for production hardening and orchestrator delivery.
 - Before coding, read `plan.md` and align current step status.

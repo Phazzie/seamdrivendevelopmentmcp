@@ -18,11 +18,18 @@ export const WorkerDispatchStrategySchema = z.enum([
 ]);
 export type WorkerDispatchStrategy = z.infer<typeof WorkerDispatchStrategySchema>;
 
+export const WorkerRuntimeModeSchema = z.enum(["cli", "openai_sdk", "google_sdk"]);
+export type WorkerRuntimeMode = z.infer<typeof WorkerRuntimeModeSchema>;
+
+export const WorkerFallbackPolicySchema = z.enum(["never", "on_error"]);
+export type WorkerFallbackPolicy = z.infer<typeof WorkerFallbackPolicySchema>;
+
 export const WorkerRegistrationSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(2).max(64),
   model: WorkerModelSchema,
   role: WorkerRoleSchema,
+  runtimeMode: WorkerRuntimeModeSchema.default("cli"),
   status: WorkerStatusSchema,
   cwd: z.string(),
   createdAt: z.number().int(),
@@ -36,6 +43,9 @@ export const WorkerRunStepSchema = z.object({
   workerId: z.string().uuid(),
   workerName: z.string(),
   model: WorkerModelSchema,
+  runtimeMode: WorkerRuntimeModeSchema.default("cli"),
+  runtimeModel: z.string().default("legacy"),
+  fallbackFrom: WorkerRuntimeModeSchema.optional(),
   role: WorkerRoleSchema,
   prompt: z.string(),
   command: z.string(),
@@ -55,6 +65,8 @@ export const WorkerRunSchema = z.object({
   id: z.string().uuid(),
   taskId: z.string().uuid(),
   strategy: WorkerDispatchStrategySchema,
+  requestedRuntimeMode: WorkerRuntimeModeSchema.optional(),
+  fallbackPolicy: WorkerFallbackPolicySchema.default("on_error"),
   status: WorkerRunStatusSchema,
   startedAt: z.number().int(),
   completedAt: z.number().int().optional(),
@@ -68,6 +80,7 @@ export const SpawnWorkerInputSchema = z.object({
   name: z.string().min(2).max(64),
   model: WorkerModelSchema,
   role: WorkerRoleSchema.default("writer"),
+  runtimeMode: WorkerRuntimeModeSchema.optional(),
   cwd: z.string().optional(),
   metadata: z.record(z.string(), z.any()).optional(),
 });
@@ -78,6 +91,8 @@ export const DispatchTaskInputSchema = z.object({
   strategy: WorkerDispatchStrategySchema.default("single_worker"),
   workerId: z.string().uuid().optional(),
   reviewerWorkerId: z.string().uuid().optional(),
+  runtimeMode: WorkerRuntimeModeSchema.optional(),
+  fallbackPolicy: WorkerFallbackPolicySchema.default("on_error"),
   extraInstructions: z.string().optional(),
   timeoutMs: z.number().int().positive().max(10 * 60 * 1000).default(120000),
 });
@@ -93,6 +108,9 @@ export interface WorkerRuntimeInvocation {
   args: string[];
   cwd: string;
   timeoutMs: number;
+  prompt: string;
+  workerModel: WorkerModel;
+  runtimeModel: string;
 }
 
 export interface WorkerRuntimeResult {
@@ -104,12 +122,14 @@ export interface WorkerRuntimeResult {
 }
 
 export interface IWorkerRuntime {
+  readonly mode: WorkerRuntimeMode;
   createInvocation(
     model: WorkerModel,
     prompt: string,
     cwd: string,
     timeoutMs: number
   ): WorkerRuntimeInvocation;
+  resolveModel(model: WorkerModel): string;
   run(invocation: WorkerRuntimeInvocation): Promise<WorkerRuntimeResult>;
 }
 

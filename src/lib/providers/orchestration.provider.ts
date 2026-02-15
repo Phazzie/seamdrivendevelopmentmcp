@@ -2,9 +2,11 @@ import { z } from "zod";
 import { IToolProvider, ToolHandler } from "../helpers/tool_registry.js";
 import { WorkerOrchestratorAdapter } from "../adapters/worker_orchestrator.adapter.js";
 import {
+  WorkerFallbackPolicySchema,
   WorkerDispatchStrategySchema,
   WorkerModelSchema,
   WorkerRoleSchema,
+  WorkerRuntimeModeSchema,
 } from "../../../contracts/worker_orchestrator.contract.js";
 
 /**
@@ -24,6 +26,7 @@ export class OrchestrationProvider implements IToolProvider {
             name: { type: "string" },
             model: { type: "string", enum: ["codex_cli", "gemini_cli"] },
             role: { type: "string", enum: ["orchestrator", "writer", "reviewer", "tester", "researcher"] },
+            runtimeMode: { type: "string", enum: ["cli", "openai_sdk", "google_sdk"] },
             cwd: { type: "string" },
             metadata: { type: "object" },
             agentId: { type: "string" },
@@ -68,6 +71,8 @@ export class OrchestrationProvider implements IToolProvider {
             },
             workerId: { type: "string" },
             reviewerWorkerId: { type: "string" },
+            runtimeMode: { type: "string", enum: ["cli", "openai_sdk", "google_sdk"] },
+            fallbackPolicy: { type: "string", enum: ["never", "on_error"] },
             extraInstructions: { type: "string" },
             timeoutMs: { type: "number" },
             agentId: { type: "string" },
@@ -94,6 +99,7 @@ export class OrchestrationProvider implements IToolProvider {
           name: z.string(),
           model: WorkerModelSchema,
           role: WorkerRoleSchema.optional(),
+          runtimeMode: WorkerRuntimeModeSchema.optional(),
           cwd: z.string().optional(),
           metadata: z.record(z.string(), z.any()).optional(),
           agentId: z.string(),
@@ -102,6 +108,7 @@ export class OrchestrationProvider implements IToolProvider {
           name: input.name,
           model: input.model,
           role: input.role,
+          runtimeMode: input.runtimeMode,
           cwd: input.cwd,
           metadata: input.metadata,
         });
@@ -120,6 +127,8 @@ export class OrchestrationProvider implements IToolProvider {
           strategy: WorkerDispatchStrategySchema.optional(),
           workerId: z.string().optional(),
           reviewerWorkerId: z.string().optional(),
+          runtimeMode: WorkerRuntimeModeSchema.optional(),
+          fallbackPolicy: WorkerFallbackPolicySchema.optional(),
           extraInstructions: z.string().optional(),
           timeoutMs: z.number().optional(),
           agentId: z.string(),
@@ -129,6 +138,8 @@ export class OrchestrationProvider implements IToolProvider {
           strategy: input.strategy,
           workerId: input.workerId,
           reviewerWorkerId: input.reviewerWorkerId,
+          runtimeMode: input.runtimeMode,
+          fallbackPolicy: input.fallbackPolicy,
           extraInstructions: input.extraInstructions,
           timeoutMs: input.timeoutMs,
         });

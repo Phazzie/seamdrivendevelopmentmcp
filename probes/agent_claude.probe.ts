@@ -14,7 +14,7 @@ async function run() {
   const store = new StoreAdapter(STORE_PATH, jailedFs);
   const agents = new AgentAdapter(store);
 
-  const agent = await agents.register("Claude");
+  const agent = await agents.register("Claude", "claude-probe");
   
   const fixture = {
     captured_at: new Date().toISOString(),

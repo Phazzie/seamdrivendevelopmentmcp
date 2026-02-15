@@ -1,12 +1,12 @@
 {
-  "captured_at": "2026-02-11T21:32:43.053Z",
+  "captured_at": "2026-02-15T05:22:05.443Z",
   "env": {
     "node_version": "v23.8.0",
     "platform": "darwin"
   },
   "capability": {
-    "worker_threads": false,
-    "latency_ms": -1
+    "worker_threads": true,
+    "latency_ms": 518
   },
-  "error": "__filename is not defined"
+  "error": null
 }

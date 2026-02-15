@@ -1,13 +1,14 @@
 {
-  "captured_at": "2026-02-11T21:31:56.987Z",
+  "captured_at": "2026-02-15T05:21:19.580Z",
   "scenarios": {
     "success": {
       "outputs": {
         "agent": {
-          "id": "08519c8a-7bdc-472a-8e47-7503498ab13e",
+          "id": "04f6f30c-0567-47f7-93fe-ca1aae48c91c",
           "name": "Claude",
-          "createdAt": 1770845516968,
-          "lastSeenAt": 1770845516968
+          "selfName": "claude-probe",
+          "createdAt": 1771132879560,
+          "lastSeenAt": 1771132879560
         }
       }
     }

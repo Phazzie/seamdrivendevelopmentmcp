@@ -4,6 +4,7 @@ import type { Task } from "../../../contracts/tasks.contract.js";
 import {
   DispatchTaskInput,
   DispatchTaskInputSchema,
+  WorkerFallbackPolicy,
   IWorkerOrchestrator,
   IWorkerRuntime,
   SpawnWorkerInput,
@@ -18,6 +19,7 @@ import {
   WorkerRunSchema,
   WorkerRunStep,
   WorkerRunStepSchema,
+  WorkerRuntimeMode,
 } from "../../../contracts/worker_orchestrator.contract.js";
 import { AppError } from "../../../contracts/store.contract.js";
 import type { IStore, PersistedStore } from "../../../contracts/store.contract.js";
@@ -36,9 +38,10 @@ type StrategyPlan = {
 export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
   constructor(
     private readonly store: IStore,
-    private readonly runtime: IWorkerRuntime,
+    private readonly runtimes: Partial<Record<WorkerRuntimeMode, IWorkerRuntime>>,
     private readonly pathGuard: PathGuard,
-    private readonly defaultCwd: string
+    private readonly defaultCwd: string,
+    private readonly defaultRuntimeMode: WorkerRuntimeMode = "cli"
   ) {}
 
   async createWorker(input: SpawnWorkerInput): Promise<WorkerRegistration> {
@@ -58,6 +61,7 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
         name: parsed.name,
         model: parsed.model,
         role: parsed.role,
+        runtimeMode: parsed.runtimeMode ?? this.defaultRuntimeMode,
         status: "idle",
         cwd: safeCwd,
         createdAt: now,
@@ -110,7 +114,15 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
     const runId = randomUUID();
     const now = Date.now();
 
-    await this.reserveRunAndWorkers(runId, plan.workers, task.id, parsed.strategy, now);
+    await this.reserveRunAndWorkers(
+      runId,
+      plan.workers,
+      task.id,
+      parsed.strategy,
+      now,
+      parsed.runtimeMode,
+      parsed.fallbackPolicy
+    );
 
     let steps: WorkerRunStep[] = [];
     let status: WorkerRun["status"] = "completed";
@@ -141,7 +153,9 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
     selectedWorkers: WorkerRegistration[],
     taskId: string,
     strategy: WorkerDispatchStrategy,
-    startedAt: number
+    startedAt: number,
+    requestedRuntimeMode?: WorkerRuntimeMode,
+    fallbackPolicy: WorkerFallbackPolicy = "on_error"
   ): Promise<void> {
     await runTransaction(this.store, (current) => {
       const workers = this.readWorkers(current);
@@ -166,6 +180,8 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
         id: runId,
         taskId,
         strategy,
+        requestedRuntimeMode,
+        fallbackPolicy,
         status: "running",
         startedAt,
         steps: [],
@@ -263,7 +279,7 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
 
     const runSingle = async (worker: WorkerRegistration, task: Task, timeoutMs: number, extraInstructions?: string) => {
       const prompt = this.buildSingleWorkerPrompt(task, worker, extraInstructions);
-      const step = await this.runStep(worker, worker.role, prompt, timeoutMs);
+      const step = await this.runStep(worker, worker.role, prompt, timeoutMs, input.runtimeMode, input.fallbackPolicy);
       return [step];
     };
 
@@ -287,9 +303,9 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
         workers: uniqueWorkers(writer, reviewer),
         run: async (task, timeoutMs, extraInstructions) => {
           const writerPrompt = this.buildWriterPrompt(task, writer, extraInstructions);
-          const writerStep = await this.runStep(writer, "writer", writerPrompt, timeoutMs);
+          const writerStep = await this.runStep(writer, "writer", writerPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy);
           const reviewerPrompt = this.buildReviewerPrompt(task, reviewer, writerStep.stdout, "focus on correctness, test gaps, and security");
-          const reviewerStep = await this.runStep(reviewer, "reviewer", reviewerPrompt, timeoutMs);
+          const reviewerStep = await this.runStep(reviewer, "reviewer", reviewerPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy);
           return [writerStep, reviewerStep];
         },
       };
@@ -302,9 +318,9 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
         workers: uniqueWorkers(writer, reviewer),
         run: async (task, timeoutMs, extraInstructions) => {
           const writerPrompt = this.buildWriterPrompt(task, writer, extraInstructions);
-          const writerStep = await this.runStep(writer, "writer", writerPrompt, timeoutMs);
+          const writerStep = await this.runStep(writer, "writer", writerPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy);
           const reviewerPrompt = this.buildReviewerPrompt(task, reviewer, writerStep.stdout, "focus on regressions, architecture quality, and release risk");
-          const reviewerStep = await this.runStep(reviewer, "reviewer", reviewerPrompt, timeoutMs);
+          const reviewerStep = await this.runStep(reviewer, "reviewer", reviewerPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy);
           return [writerStep, reviewerStep];
         },
       };
@@ -327,8 +343,8 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
           const codexPrompt = this.buildWriterPrompt(task, codexWriter, extraInstructions);
           const geminiPrompt = this.buildWriterPrompt(task, geminiWriter, extraInstructions);
           const [codexStep, geminiStep] = await Promise.all([
-            this.runStep(codexWriter, "writer", codexPrompt, timeoutMs),
-            this.runStep(geminiWriter, "writer", geminiPrompt, timeoutMs),
+            this.runStep(codexWriter, "writer", codexPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy),
+            this.runStep(geminiWriter, "writer", geminiPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy),
           ]);
           const reviewPayload = [
             "Candidate A (Codex):",
@@ -338,7 +354,7 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
             geminiStep.stdout,
           ].join("\n");
           const reviewerPrompt = this.buildReviewerPrompt(task, reviewer, reviewPayload, "pick the stronger approach, cite risks, and propose a merged final patch plan");
-          const reviewerStep = await this.runStep(reviewer, "reviewer", reviewerPrompt, timeoutMs);
+          const reviewerStep = await this.runStep(reviewer, "reviewer", reviewerPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy);
           return [codexStep, geminiStep, reviewerStep];
         },
       };
@@ -363,14 +379,21 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
         workers: uniqueWorkers(writer, redTeamReviewer),
         run: async (task, timeoutMs, extraInstructions) => {
           const writerPrompt = this.buildWriterPrompt(task, writer, extraInstructions);
-          const writerStep = await this.runStep(writer, "writer", writerPrompt, timeoutMs);
+          const writerStep = await this.runStep(writer, "writer", writerPrompt, timeoutMs, input.runtimeMode, input.fallbackPolicy);
           const redTeamPrompt = this.buildReviewerPrompt(
             task,
             redTeamReviewer,
             writerStep.stdout,
             "perform a hostile security review: path traversal, command injection, race conditions, and data corruption scenarios"
           );
-          const reviewerStep = await this.runStep(redTeamReviewer, "reviewer", redTeamPrompt, timeoutMs);
+          const reviewerStep = await this.runStep(
+            redTeamReviewer,
+            "reviewer",
+            redTeamPrompt,
+            timeoutMs,
+            input.runtimeMode,
+            input.fallbackPolicy
+          );
           return [writerStep, reviewerStep];
         },
       };
@@ -383,25 +406,92 @@ export class WorkerOrchestratorAdapter implements IWorkerOrchestrator {
     worker: WorkerRegistration,
     role: WorkerRole,
     prompt: string,
-    timeoutMs: number
+    timeoutMs: number,
+    requestedRuntimeMode?: WorkerRuntimeMode,
+    fallbackPolicy: WorkerFallbackPolicy = "on_error"
   ): Promise<WorkerRunStep> {
-    const invocation = this.runtime.createInvocation(worker.model, prompt, worker.cwd, timeoutMs);
-    const runtimeResult = await this.runtime.run(invocation);
+    const selectedMode = requestedRuntimeMode ?? worker.runtimeMode ?? this.defaultRuntimeMode;
+    const primary = this.getRuntime(selectedMode);
+    const fallback = this.getRuntime("cli");
+    if (!primary) {
+      if (selectedMode !== "cli" && fallbackPolicy === "on_error" && fallback) {
+        const fallbackInvocation = fallback.createInvocation(worker.model, prompt, worker.cwd, timeoutMs);
+        const fallbackResult = await fallback.run(fallbackInvocation);
+        return WorkerRunStepSchema.parse({
+          workerId: worker.id,
+          workerName: worker.name,
+          model: worker.model,
+          runtimeMode: "cli",
+          runtimeModel: fallbackInvocation.runtimeModel,
+          fallbackFrom: selectedMode,
+          role,
+          prompt,
+          command: fallbackInvocation.command,
+          args: fallbackInvocation.args,
+          exitCode: fallbackResult.exitCode,
+          durationMs: fallbackResult.durationMs,
+          timedOut: fallbackResult.timedOut,
+          stdout: fallbackResult.stdout,
+          stderr: `Runtime mode '${selectedMode}' is not available.\n${fallbackResult.stderr}`.trim(),
+        });
+      }
+      throw new AppError("VALIDATION_FAILED", `Runtime mode '${selectedMode}' is not available.`);
+    }
+
+    const primaryInvocation = primary.createInvocation(worker.model, prompt, worker.cwd, timeoutMs);
+    const primaryResult = await primary.run(primaryInvocation);
+    const canFallback =
+      fallbackPolicy === "on_error" &&
+      selectedMode !== "cli" &&
+      fallback &&
+      (primaryResult.exitCode !== 0 || primaryResult.timedOut);
+
+    if (!canFallback) {
+      return WorkerRunStepSchema.parse({
+        workerId: worker.id,
+        workerName: worker.name,
+        model: worker.model,
+        runtimeMode: selectedMode,
+        runtimeModel: primaryInvocation.runtimeModel,
+        role,
+        prompt,
+        command: primaryInvocation.command,
+        args: primaryInvocation.args,
+        exitCode: primaryResult.exitCode,
+        durationMs: primaryResult.durationMs,
+        timedOut: primaryResult.timedOut,
+        stdout: primaryResult.stdout,
+        stderr: primaryResult.stderr,
+      });
+    }
+
+    const fallbackInvocation = fallback.createInvocation(worker.model, prompt, worker.cwd, timeoutMs);
+    const fallbackResult = await fallback.run(fallbackInvocation);
+    const combinedStderr = [primaryResult.stderr, `Fallback from runtime '${selectedMode}' to 'cli'.`]
+      .filter((chunk) => chunk && chunk.length > 0)
+      .join("\n");
 
     return WorkerRunStepSchema.parse({
       workerId: worker.id,
       workerName: worker.name,
       model: worker.model,
+      runtimeMode: "cli",
+      runtimeModel: fallbackInvocation.runtimeModel,
+      fallbackFrom: selectedMode,
       role,
       prompt,
-      command: invocation.command,
-      args: invocation.args,
-      exitCode: runtimeResult.exitCode,
-      durationMs: runtimeResult.durationMs,
-      timedOut: runtimeResult.timedOut,
-      stdout: runtimeResult.stdout,
-      stderr: runtimeResult.stderr,
+      command: fallbackInvocation.command,
+      args: fallbackInvocation.args,
+      exitCode: fallbackResult.exitCode,
+      durationMs: primaryResult.durationMs + fallbackResult.durationMs,
+      timedOut: fallbackResult.timedOut,
+      stdout: fallbackResult.stdout,
+      stderr: [combinedStderr, fallbackResult.stderr].filter((chunk) => chunk && chunk.length > 0).join("\n"),
     });
+  }
+
+  private getRuntime(mode: WorkerRuntimeMode): IWorkerRuntime | undefined {
+    return this.runtimes[mode];
   }
 
   private buildSingleWorkerPrompt(task: Task, worker: WorkerRegistration, extraInstructions?: string): string {

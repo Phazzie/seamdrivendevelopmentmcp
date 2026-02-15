@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:36.175Z",
+  "captured_at": "2026-02-15T05:21:58.666Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -24,7 +24,9 @@
           "status": "idle",
           "updated_at": 0
         },
-        "review_gates": []
+        "review_gates": [],
+        "workers": [],
+        "worker_runs": []
       }
     }
   }

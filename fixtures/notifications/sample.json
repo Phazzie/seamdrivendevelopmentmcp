@@ -1,9 +1,23 @@
 {
-  "captured_at": "2026-02-11T21:32:20.977Z",
+  "captured_at": "2026-02-15T05:21:43.667Z",
   "scenarios": {
     "success": {
       "outputs": {
         "notifications": [
+          {
+            "id": "94309e19-e57f-4fc3-911a-169a2250e25c",
+            "title": "Alert",
+            "message": "Test",
+            "priority": "normal",
+            "created_at": 1771132903641
+          },
+          {
+            "id": "225497cd-a9ac-46b5-b318-dcf8588a2594",
+            "title": "Alert",
+            "message": "Test",
+            "priority": "normal",
+            "created_at": 1771132803061
+          },
           {
             "id": "02643334-3615-48d9-aa78-001dc63d2ecf",
             "title": "Alert",

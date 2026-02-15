@@ -1,9 +1,27 @@
 {
-  "captured_at": "2026-02-11T21:32:38.002Z",
+  "captured_at": "2026-02-15T05:22:00.496Z",
   "scenarios": {
     "success": {
       "outputs": {
         "tasks": [
+          {
+            "id": "7d50d693-4979-43db-b998-c7257aaff066",
+            "title": "Test Task",
+            "description": "Desc",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1771132920431,
+            "updated_at": 1771132920431
+          },
+          {
+            "id": "00d17d79-3e18-40ef-8688-25b732272456",
+            "title": "Test Task",
+            "description": "Desc",
+            "status": "todo",
+            "blockedBy": [],
+            "created_at": 1771132821239,
+            "updated_at": 1771132821239
+          },
           {
             "id": "e203df5e-cf36-497a-a459-a96e8862f9a7",
             "title": "Test Task",

@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:07.309Z",
+  "captured_at": "2026-02-15T05:21:29.888Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -11,6 +11,22 @@
               "foo": "bar"
             },
             "timestamp": 1770845527285
+          },
+          {
+            "id": "f87e4581-3d75-4d8e-9b0f-ef9c0dd1d03d",
+            "type": "test_event",
+            "data": {
+              "foo": "bar"
+            },
+            "timestamp": 1771132788389
+          },
+          {
+            "id": "9f9abdff-0230-46ce-bac3-514c5c074570",
+            "type": "test_event",
+            "data": {
+              "foo": "bar"
+            },
+            "timestamp": 1771132889861
           }
         ]
       }

@@ -1,0 +1,21 @@
+{
+  "captured_at": "2026-02-15T05:22:12.314Z",
+  "env": {
+    "platform": "darwin",
+    "node_version": "v23.8.0"
+  },
+  "tools": {
+    "codex_cli": {
+      "available": true,
+      "command": "codex",
+      "version": "codex-cli 0.98.0",
+      "error": null
+    },
+    "gemini_cli": {
+      "available": false,
+      "command": "gemini",
+      "version": null,
+      "error": "spawnSync gemini ETIMEDOUT"
+    }
+  }
+}

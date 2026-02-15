@@ -1,9 +1,9 @@
 {
-  "id": "d6b678b5-ca27-441d-978d-5868a7cecca2",
+  "id": "a5286d26-17a4-4761-b07c-bab4741b1e87",
   "agentId": "sample-agent",
   "tool": "register_agent",
-  "timestamp": 1770845521265,
+  "timestamp": 1771132883883,
   "argsSummary": "{\"name\":\"codex\"}",
   "resultSummary": "{\"id\":\"sample\"}",
-  "captured_at": "2026-02-11T21:32:01.265Z"
+  "captured_at": "2026-02-15T05:21:23.883Z"
 }

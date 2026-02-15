@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:32.626Z",
+  "captured_at": "2026-02-15T05:21:55.135Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -9,7 +9,7 @@
         "taskCount": 0,
         "messageCount": 0,
         "agentCount": 0,
-        "uptimeMs": 18
+        "uptimeMs": 14
       }
     }
   }

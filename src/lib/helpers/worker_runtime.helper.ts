@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import {
   IWorkerRuntime,
   WorkerModel,
+  WorkerRuntimeMode,
   WorkerRuntimeInvocation,
   WorkerRuntimeResult,
 } from "../../../contracts/worker_orchestrator.contract.js";
@@ -23,6 +24,8 @@ type ToolProfileMap = Record<WorkerModel, WorkerCommandTemplate>;
  * Hardened: No shell, bounded output capture, timeout kill strategy.
  */
 export class WorkerRuntimeHelper implements IWorkerRuntime {
+  readonly mode: WorkerRuntimeMode = "cli";
+
   async run(invocation: WorkerRuntimeInvocation): Promise<WorkerRuntimeResult> {
     return new Promise((resolve) => {
       const startedAt = Date.now();
@@ -101,7 +104,17 @@ export class WorkerRuntimeHelper implements IWorkerRuntime {
       args,
       cwd,
       timeoutMs,
+      prompt,
+      workerModel: model,
+      runtimeModel: this.resolveModel(model),
     };
+  }
+
+  resolveModel(model: WorkerModel): string {
+    if (model === "codex_cli") {
+      return process.env.MCP_CODEX_MODEL || "gpt-5.2-codex";
+    }
+    return process.env.MCP_GEMINI_MODEL || "gemini-2.5-flash";
   }
 
   getProfiles(): ToolProfileMap {

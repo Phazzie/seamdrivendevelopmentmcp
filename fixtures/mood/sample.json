@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:19.211Z",
+  "captured_at": "2026-02-15T05:21:41.829Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -9,6 +9,18 @@
             "agentId": "a1",
             "mood": "productive",
             "timestamp": 1770845539186
+          },
+          {
+            "id": "cf9d8b86-1b86-49ce-b88d-181ed54e66a3",
+            "agentId": "a1",
+            "mood": "productive",
+            "timestamp": 1771132801106
+          },
+          {
+            "id": "54dfb767-3432-4a99-b3aa-d4eed9b6630c",
+            "agentId": "a1",
+            "mood": "productive",
+            "timestamp": 1771132901803
           }
         ]
       }

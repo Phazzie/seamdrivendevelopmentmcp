@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-02-11T21:32:13.712Z",
+  "captured_at": "2026-02-15T05:21:36.280Z",
   "scenarios": {
     "success": {
       "outputs": {
@@ -10,6 +10,20 @@
             "content": "SDD",
             "created_at": 1770845533686,
             "updated_at": 1770845533686
+          },
+          {
+            "id": "11b1d132-5911-4fc5-b7c2-94ddbf7a05f3",
+            "type": "concept",
+            "content": "SDD",
+            "created_at": 1771132794994,
+            "updated_at": 1771132794994
+          },
+          {
+            "id": "9ea2c3ae-56e0-42c1-8569-6faf6b363149",
+            "type": "concept",
+            "content": "SDD",
+            "created_at": 1771132896245,
+            "updated_at": 1771132896245
           }
         ],
         "edges": []

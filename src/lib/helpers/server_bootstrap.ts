@@ -44,6 +44,8 @@ import { MetaProvider } from "../providers/meta.provider.js";
 import { DevInfraProvider } from "../providers/dev_infra.provider.js";
 import { OrchestrationProvider } from "../providers/orchestration.provider.js";
 import { WorkerRuntimeHelper } from "./worker_runtime.helper.js";
+import { WorkerRuntimeOpenAiSdkHelper } from "./worker_runtime_openai_sdk.helper.js";
+import { WorkerRuntimeGoogleSdkHelper } from "./worker_runtime_google_sdk.helper.js";
 
 /**
  * Purpose: Centralized wiring harness for the MCP Server (infrastructure seam).
@@ -116,9 +118,14 @@ export class ServerBootstrap {
     const webHud = new WebCockpitAdapter(store, pathGuard, Number(process.env.MCP_WEB_PORT || 3000));
     const workerOrchestrator = new WorkerOrchestratorAdapter(
       store,
-      new WorkerRuntimeHelper(),
+      {
+        cli: new WorkerRuntimeHelper(),
+        openai_sdk: new WorkerRuntimeOpenAiSdkHelper(),
+        google_sdk: new WorkerRuntimeGoogleSdkHelper(),
+      },
       pathGuard,
-      this.rootDir
+      this.rootDir,
+      (process.env.MCP_WORKER_RUNTIME_MODE as "cli" | "openai_sdk" | "google_sdk") || "cli"
     );
     
     // Register Suites
